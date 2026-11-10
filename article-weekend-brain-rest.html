@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>주말에 침대에만 누워있는데 왜 더 피곤할까? | 하루 한 스푼, 뇌과학 - MINA Wellness World</title>
+  <link rel="canonical" href="https://www.minaworld.co.kr/article-weekend-brain-rest.html" />
+  <meta property="og:url" content="https://www.minaworld.co.kr/article-weekend-brain-rest.html" />
+  <meta property="og:title" content="주말에 침대에만 누워있는데 왜 더 피곤할까? | 하루 한 스푼, 뇌과학 - MINA Wellness World" />
+  <meta property="og:description" content="주말 내내 침대에서 뒹굴거리며 넷플릭스와 스마트폰을 봤는데 월요일 아침 몸이 천근만근 무거웠던 적이 있으신가요? 몸은 누워있었지만 뇌는 단 1초도 쉬지 못했습니다. 뇌의 잡념 회로 DMN을 끄고 진짜 알파파 휴식을 취하는 법을 알아봅니다." />
+  <meta property="og:type" content="article" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+    #reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(to right, #FF7E95, #A855F7, #3CD070);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-white">
+  
+  <!-- 상단 읽기 진행률 바 -->
+  <div id="reading-bar"></div>
+
+  <!-- 헤더 / 내비게이션 바 -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/85 border-b border-white/10 transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="font-serif font-bold text-xl tracking-wider text-white group-hover:text-brand-accent transition">MINA</span>
+        <span class="text-xs uppercase tracking-widest text-brand-accent font-semibold">Wellness World</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="index.html#articles" class="hidden sm:inline-flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          <span>📚 하루 한 스푼 뇌과학 목록</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 text-slate-300 hover:text-brand-accent transition">
+          <span>← 메인 홈으로</span>
+        </a>
+        <a href="index.html#contact" class="px-4 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white shadow-md shadow-brand-accent/20 transition">
+          상담/제휴 문의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 본문 영역 -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16 w-full">
+    
+    <!-- 빵부스러기 내비게이션 -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8 overflow-x-auto no-scrollbar">
+      <a href="index.html" class="hover:text-white transition">홈</a>
+      <span>/</span>
+      <a href="index.html#articles" class="hover:text-white transition">하루 한 스푼, 뇌과학</a>
+      <span>/</span>
+      <span class="text-brand-accent font-medium">일요일 · 웰니스 생활 습관</span>
+    </nav>
+
+    <!-- 아티클 헤더 -->
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-xs">
+        <span class="px-3 py-1 rounded-full font-bold bg-brand-accent/15 text-brand-accent border border-brand-accent/30">일요일 · 웰니스 생활 습관</span>
+        <span class="text-slate-400">2026.11.08</span>
+        <span class="text-slate-500">·</span>
+        <span class="text-slate-400">5분 완독</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
+        주말에 침대에만 누워있는데 왜 더 피곤할까?
+      </h1>
+      
+      <p class="text-base md:text-xl text-slate-300 font-medium leading-relaxed mb-8">
+        뇌의 에너지를 80% 고갈시키는 DMN(디폴트 모드 네트워크) 셧다운 루틴
+      </p>
+
+      <!-- 작성자 정보 -->
+      <div class="flex items-center gap-4 py-4 px-5 rounded-2xl bg-brand-card/70 border border-white/10">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-accent to-purple-600 flex items-center justify-center text-lg font-bold text-white shadow-md">
+          M
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white flex items-center gap-2">
+            이미나 대표
+            <span class="text-[11px] font-normal text-slate-400">| 뇌교육상담사 · MINA Wellness World</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            뇌과학 기반 뉴로웰니스 솔루션과 신체 움직임을 결합하여 건강한 뇌 컨디션을 만듭니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 핵심 요약 콜아웃 박스 -->
+      <div class="mt-8 p-6 rounded-2xl bg-brand-navy border-l-4 border-brand-accent border-r border-t border-b border-white/10 card-glow">
+        <div class="flex items-center gap-2 text-brand-accent font-bold text-xs uppercase tracking-wider mb-2">
+          <span>💡 30초 핵심 요약 (Executive Summary)</span>
+        </div>
+        <p class="text-sm text-slate-200 leading-relaxed">
+          주말 내내 침대에서 뒹굴거리며 넷플릭스와 스마트폰을 봤는데 월요일 아침 몸이 천근만근 무거웠던 적이 있으신가요? 몸은 누워있었지만 뇌는 단 1초도 쉬지 못했습니다. 뇌의 잡념 회로 DMN을 끄고 진짜 알파파 휴식을 취하는 법을 알아봅니다.
+        </p>
+      </div>
+    </header>
+
+    <!-- 상세 본문 -->
+    <article class="mb-16">
+      
+          <div class="prose prose-invert max-w-none text-slate-300 space-y-8 text-base leading-relaxed">
+            
+            <section class="space-y-4">
+              <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+                <span class="text-brand-accent">01.</span> 몸은 쉬어도 뇌는 풀가동 중: DMN의 역설
+              </h2>
+              <p>
+                인간의 뇌는 체중의 약 2%에 불과하지만, 신체 전체 에너지의 20% 이상을 소비합니다. 그렇다면 아무 일도 하지 않고 멍하니 쉴 때 뇌는 에너지를 얼마나 아낄 수 있을까요? 놀랍게도 뇌 과학자 마커스 라이클(Marcus Raichle) 교수의 연구에 따르면, <strong>의식적으로 일할 때와 가만히 쉴 때 뇌의 에너지 소비량 차이는 단 5% 미만</strong>에 불과합니다.
+              </p>
+              <p>
+                우리가 아무것도 하지 않을 때도 뇌에서는 거대한 뇌 신경망이 맹렬하게 작동하고 있는데, 이를 <strong class="text-white">DMN (Default Mode Network, 디폴트 모드 네트워크)</strong>이라고 부릅니다. 뇌가 소비하는 총 에너지의 무려 60~80%가 바로 이 DMN을 유지하는 데 쓰입니다.
+              </p>
+              <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+                <h4 class="text-sm font-bold text-brand-accent mb-2">⚡ DMN 과부하가 초래하는 증상</h4>
+                <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+                  <li>과거의 실수나 인간관계에 대한 후회와 반추</li>
+                  <li>아직 일어나지 않은 미래의 일(월요일 출근, 경제적 불안)에 대한 끊임없는 걱정</li>
+                  <li>스마트폰 숏폼 영상을 멍하니 보면서 도파민만 과다 분비되는 수동적 각성 상태</li>
+                  <li>충분히 잤음에도 머리가 무겁고 안개 낀 듯한 <strong>브레인 포그(Brain Fog)</strong> 지속</li>
+                </ul>
+              </div>
+            </section>
+
+            <section class="space-y-4">
+              <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+                <span class="text-brand-accent">02.</span> 뇌를 진짜 쉬게 만드는 주말 4단계 루틴
+              </h2>
+              <p>
+                뇌를 쉬게 하려면 ‘아무것도 안 하기’가 아니라, <strong>‘DMN을 끄고 감각에 온전히 주의를 기울이는 상태(Task-positive Network)’</strong>로 스위치를 전환해야 합니다.
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                <div class="p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <span class="text-xs font-bold text-brand-accent uppercase tracking-wider block mb-2">단계 1 · 시각 디톡스</span>
+                  <h3 class="text-lg font-bold text-white mb-2">15분 완벽한 눈 감기</h3>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    뇌로 들어오는 감각 정보의 80% 이상은 시각 정보입니다. 스마트폰을 멀리 두고 암막 안대를 쓴 채 15분간 가만히 누워 있는 것만으로 시각 피질의 활동이 멈추고 뇌파가 <strong>알파파(8-12Hz)</strong>로 급전환됩니다.
+                  </p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <span class="text-xs font-bold text-brand-mint uppercase tracking-wider block mb-2">단계 2 · 자연 자극</span>
+                  <h3 class="text-lg font-bold text-white mb-2">자연 속 20분 포레스트 배스</h3>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    자연의 프랙탈 패턴(나뭇잎, 파도, 구름)을 바라볼 때 전두엽의 피로도가 현저히 감소합니다. 피톤치드와 햇빛은 신경전달물질 <strong>세로토닌</strong>을 합성하여 뇌의 회복 탄력성을 회복시킵니다.
+                  </p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <span class="text-xs font-bold text-brand-blue uppercase tracking-wider block mb-2">단계 3 · 생체 시계</span>
+                  <h3 class="text-lg font-bold text-white mb-2">사회적 시차(Social Jetlag) 방지</h3>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    주말에 늦잠을 3시간 이상 자면 월요일 아침 시차 적응 실패와 같은 고통을 겪습니다. 기상 시간은 평소와 1시간 이내로 유지하고, 부족한 잠은 오후 1~3시 사이 20분 파워 낮잠으로 보충하세요.
+                  </p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-white/5 border border-white/10">
+                  <span class="text-xs font-bold text-brand-gold uppercase tracking-wider block mb-2">단계 4 · 청각 이완</span>
+                  <h3 class="text-lg font-bold text-white mb-2">바이노럴 비트 알파파 사운드</h3>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    양쪽 귀에 미세하게 다른 주파수를 들려주어 뇌파를 10Hz 알파파 대역으로 동조(Entrainment)시키는 음향 요법입니다. 잡념을 지우고 뇌 깊은 곳까지 맑은 이완을 선사합니다.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section class="space-y-4">
+              <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+                <span class="text-brand-accent">03.</span> 이번 주말 실천 플랜
+              </h2>
+              <div class="bg-brand-navy p-6 rounded-2xl border border-white/10 space-y-3">
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" class="mt-1 accent-brand-accent rounded">
+                  <span class="text-sm"><strong>토요일 밤 11시:</strong> 침대 반경 2미터 밖으로 스마트폰 격리하기</span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" class="mt-1 accent-brand-accent rounded">
+                  <span class="text-sm"><strong>일요일 아침:</strong> 기상 직후 창문을 열고 10분간 자연광 쬐며 스트레칭</span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" class="mt-1 accent-brand-accent rounded">
+                  <span class="text-sm"><strong>일요일 오후:</strong> 30분간 가벼운 산책하며 오감(바람, 발바닥 감각, 새소리)에 집중하기</span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" class="mt-1 accent-brand-accent rounded">
+                  <span class="text-sm"><strong>취침 전:</strong> 4-7-8 이완 호흡으로 뇌 쿨다운 완료하기</span>
+                </label>
+              </div>
+            </section>
+
+            <section class="space-y-4 pt-4 border-t border-white/10">
+              <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+                <span class="text-brand-accent">04.</span> 미나월드 맞춤형 케어 안내
+              </h2>
+              <p>
+                만성적인 뇌 피로와 번아웃으로 주말에도 휴식이 불가능하다면, <strong>2. 1:1 뉴로웰니스 & 뇌파 코칭</strong>을 통해 뇌파 동조 및 뇌 가소성 훈련 루틴을 처방받아 보세요.
+              </p>
+              <div class="mt-4 p-5 rounded-2xl bg-brand-card border border-brand-accent/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <h4 class="text-base font-bold text-white mb-1">🧬 1:1 뉴로웰니스 & 뇌파 코칭</h4>
+                  <p class="text-xs text-slate-400">4주 단위 뇌 컨디션 변화 추적 및 맞춤형 뉴로피드백 훈련 세션</p>
+                </div>
+                <a href="index.html#contact" class="px-6 py-2.5 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white text-xs font-bold shrink-0 transition">
+                  상담 신청하기
+                </a>
+              </div>
+            </section>
+
+          </div>
+        
+    </article>
+
+    <!-- 공유 및 하단 내비게이션 -->
+    <div class="py-8 border-t border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">아티클 공유하기:</span>
+        <button onclick="copyCurrentUrl()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-1.5">
+          <span>🔗 링크 복사</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="index.html#articles" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+          목록으로 돌아가기
+        </a>
+        <a href="index.html#contact" class="px-5 py-2 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white shadow-md transition">
+          1:1 프로그램 상담 신청
+        </a>
+      </div>
+    </div>
+
+    <!-- 다른 요일의 '하루 한 스푼, 뇌과학' 추천 링크 -->
+    <section class="mt-16">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>✨</span> 다른 요일의 뇌과학 인사이트
+        </h3>
+        <a href="index.html#articles" class="text-xs text-brand-accent hover:underline">전체보기 →</a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="article-stress-reset.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-pink-500/40 transition block group">
+          <div class="text-[11px] text-pink-400 font-bold mb-1">화요일 · 스트레스와 감정</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-accent transition mb-1">
+            감정에 휘둘리는 뇌를 구하는 4대 스트레스 리셋 원리
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">편도체 납치를 막고 전두엽 브레이크를 작동시키는 4단계 신경과학 솔루션</p>
+        </a>
+
+        <a href="article-weekend-brain-rest.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-accent/40 transition block group">
+          <div class="text-[11px] text-brand-accent font-bold mb-1">일요일 · 웰니스 생활 습관</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-accent transition mb-1">
+            주말에 침대에만 누워있는데 왜 더 피곤할까?
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">DMN(디폴트 모드 네트워크) 셧다운과 알파파 회복 루틴</p>
+        </a>
+
+        <a href="article-glymphatic-sleep.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-blue/40 transition block group">
+          <div class="text-[11px] text-brand-blue font-bold mb-1">목요일 · 수면과 뇌 건강</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-blue transition mb-1">
+            수면 중 뇌 청소 시스템 '글림파틱 시스템'의 비밀
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">베타 아밀로이드 노폐물 배출과 깊은 델타파 숙면 환경</p>
+        </a>
+
+        <a href="article-exercise-bdnf.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-gold/40 transition block group">
+          <div class="text-[11px] text-brand-gold font-bold mb-1">금요일 · 명상·운동과 뇌파</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-gold transition mb-1">
+            가벼운 러닝이 뇌의 BDNF(뇌신경성장인자)를 폭발시키는 원리
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">뉴로스포츠와 해마 신경세포 재생의 과학적 메커니즘</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 -->
+  <footer class="py-12 border-t border-white/10 text-xs text-slate-500 mt-20">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <span class="font-serif font-bold text-base text-slate-300">MINA Wellness World</span>
+          <span class="text-slate-600">|</span>
+          <span class="text-slate-400">대표 이미나</span>
+        </div>
+        <p class="text-slate-500 leading-relaxed">
+          뇌과학 기반 뉴로웰니스 솔루션 &amp; 테마파크 · <a href="https://www.minaworld.co.kr" class="text-slate-400 hover:text-white transition">www.minaworld.co.kr</a> · Email: minawellnessworld@gmail.com
+        </p>
+      </div>
+
+      <div class="flex items-center gap-6 text-slate-400">
+        <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="hover:text-brand-accent transition">Instagram @wellnessworld.zip</a>
+        <a href="https://www.threads.com/@wellnessworld.zip" target="_blank" class="hover:text-brand-accent transition">Threads</a>
+        <a href="index.html" class="hover:text-white transition">메인 홈으로 ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 읽기 진행률 표시
+    window.addEventListener('scroll', function() {
+      var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      var bar = document.getElementById('reading-bar');
+      if (bar) {
+        bar.style.width = scrolled + '%';
+      }
+    });
+
+    // 현재 URL 클립보드 복사
+    function copyCurrentUrl() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          alert('아티클 링크가 복사되었습니다! 원하는 곳에 공유해보세요.');
+        });
+      } else {
+        alert('주소창의 링크를 복사해주세요: ' + window.location.href);
+      }
+    }
+  </script>
+</body>
+</html>
