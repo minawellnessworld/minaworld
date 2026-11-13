@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      location.replace(location.href.replace('http:', 'https:'));
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ABOUT US | MINA Wellness World</title>
+  <link rel="canonical" href="https://www.minaworld.co.kr" />
+  <meta property="og:url" content="https://www.minaworld.co.kr" />
+  <meta property="og:title" content="MINA Wellness World | 뇌과학 기반 웰니스 테마파크" />
+  <meta property="og:description" content="건강검진에 뇌 건강도 포함하셨나요? 뇌가 쉬어야 삶이 회복됩니다. 1분 뇌 피로도 자가진단 및 맞춤 솔루션." />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+  </style>
+</head>
+<body class="selection:bg-brand-accent selection:text-white">
+
+  <!-- 네비게이션 바 -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-brand-dark/95 backdrop-blur-md border-b border-white/10 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="data:image/webp;base64,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" alt="MINA Wellness World Logo" class="h-9 md:h-11 w-auto object-contain transition-transform group-hover:scale-105 duration-300 drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">
+      </a>
+
+      <!-- 데스크톱 메뉴 (아임웹 4대 메뉴 체계) -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+        <a href="about.html" class="transition-colors text-brand-accent font-semibold">ABOUT US</a>
+        <a href="programs.html" class="transition-colors text-slate-300 hover:text-brand-accent">PROGRAM</a>
+        <a href="community.html" class="transition-colors text-slate-300 hover:text-brand-accent">COMMUNITY</a>
+        <a href="contact.html" class="transition-colors text-slate-300 hover:text-brand-accent">CONTACT</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="diagnostic.html" class="bg-gradient-to-r from-brand-accent to-pink-500 hover:from-brand-accentHover hover:to-pink-600 text-white text-xs md:text-sm font-semibold px-4 md:px-5 py-2 md:py-2.5 rounded-full shadow-lg shadow-brand-accent/30 transition-all transform hover:-translate-y-0.5">
+          뇌건강 자가진단
+        </a>
+
+        <!-- 모바일 햄버거 토글 버튼 -->
+        <button id="mobile-menu-btn" type="button" class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 focus:outline-none transition" aria-label="메뉴 열기">
+          <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+          <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 모바일 드롭다운 메뉴 레이어 -->
+    <div id="mobile-menu" class="hidden md:hidden bg-brand-dark/98 backdrop-blur-xl border-b border-white/10 px-6 py-6 transition-all duration-300 shadow-2xl">
+      <nav class="flex flex-col gap-3 text-base font-medium">
+        <a href="about.html" class="py-2.5 px-3 rounded-lg hover:bg-white/5 transition text-brand-accent font-semibold">ABOUT US</a>
+        <a href="programs.html" class="py-2.5 px-3 rounded-lg hover:bg-white/5 transition text-slate-300 hover:text-brand-accent">PROGRAM</a>
+        <a href="community.html" class="py-2.5 px-3 rounded-lg hover:bg-white/5 transition text-slate-300 hover:text-brand-accent">COMMUNITY</a>
+        <a href="contact.html" class="py-2.5 px-3 rounded-lg hover:bg-white/5 transition text-slate-300 hover:text-brand-accent">CONTACT</a>
+        <div class="pt-3 mt-1 border-t border-white/10">
+          <a href="diagnostic.html" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-brand-accent to-pink-500 text-white font-semibold text-sm shadow-md">
+            <span>🎯</span> 뇌건강 자가진단 (1분)
+          </a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- 2. ABOUT US 섹션 (아임웹 3대 체계: 브랜드 스토리, M-I-N-A 철학, 대표 이미나 프로필) -->
+  <section id="about" class="pt-32 pb-24 md:pt-36 md:pb-32 relative overflow-hidden">
+    <!-- 배경 은은한 빛 효과 -->
+    <div class="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-brand-accent/10 rounded-full blur-[140px] pointer-events-none"></div>
+    <div class="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-brand-gold/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-6 space-y-28">
+
+      <!-- 블록 1: Mina World | 미나월드 브랜드 소개 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- 좌측 핑크 성 엠블럼 -->
+        <div class="lg:col-span-5 text-center">
+          <div class="relative inline-block group">
+            <div class="absolute -inset-4 bg-gradient-to-tr from-brand-accent/20 via-pink-400/20 to-brand-gold/20 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 transition-opacity"></div>
+            <img src="assets/crown-clean-cutout.png?v=2" alt="Mina World Emblem" class="relative w-72 sm:w-80 md:w-96 h-auto mx-auto object-contain drop-shadow-[0_15px_35px_rgba(255,126,149,0.3)] transform group-hover:scale-105 transition-transform duration-500">
+          </div>
+        </div>
+
+        <!-- 우측 브랜드 비전 텍스트 -->
+        <div class="lg:col-span-7">
+          <div class="inline-block px-3.5 py-1 rounded-full bg-brand-accent/10 text-brand-accent text-xs font-semibold mb-4 tracking-wider uppercase">ABOUT US · BRAND STORY</div>
+          <h2 class="text-3xl md:text-4xl font-bold text-white mb-2 leading-snug">
+            Mina World <span class="text-slate-400 font-normal">| 미나월드</span>
+          </h2>
+          <h3 class="text-lg md:text-xl text-brand-gold font-medium mb-6">
+            MINA Wellness World · 뇌과학 기반 웰니스 브랜드
+          </h3>
+          <div class="space-y-4 text-slate-300 text-sm md:text-base leading-relaxed">
+            <p>
+              <strong>MINA Wellness World</strong>는 뇌과학 기반 콘텐츠를 통해 마음과 인지, 뇌의 균형을 이해하고 건강한 라이프스타일을 제안하는 웰니스 브랜드입니다.
+            </p>
+            <p>
+              단순한 체험을 넘어 <strong>뇌 건강, 정서 안정, 스트레스 관리, 집중력 향상</strong>을 목표로 교육기관, 산후조리원, 어린이집, 유치원, 기업 등 다양한 기관과 함께 과학적이고 실용적인 웰니스 콘텐츠를 제공합니다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 블록 2: MINA Brand Philosophy (M-I-N-A 4대 브랜드 철학) -->
+      <div class="rounded-3xl border border-white/10 bg-brand-navy/60 p-8 md:p-12 relative overflow-hidden card-glow">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <div class="inline-block px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue text-xs font-semibold mb-3 tracking-widest uppercase">CORE PHILOSOPHY</div>
+          <h3 class="text-2xl md:text-3xl font-bold text-white mb-2 font-serif">MINA Brand Philosophy</h3>
+          <p class="text-brand-accent text-xs md:text-sm font-semibold tracking-wider mb-4">Mind · Intelligence · Neuro · Alignment</p>
+          <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+            MINA는 인간의 삶을 구성하는 마음, 인지, 뇌, 균형의 네 가지 요소를 이해하고 이들의 조화를 통해 최적의 웰니스 상태를 만드는 것을 목표로 하는 브랜드 철학입니다.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- M: Mind -->
+          <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-brand-accent/40 transition group">
+            <div class="w-12 h-12 rounded-2xl bg-brand-accent/10 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+              🤍
+            </div>
+            <div class="flex items-baseline gap-2 mb-1">
+              <span class="text-lg font-bold text-white font-serif">M · Mind</span>
+            </div>
+            <p class="text-xs text-brand-accent font-medium mb-3">스트레스 / 감정 / 번아웃</p>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              마음과 감정 상태를 이해하고 건강한 감정 균형을 만드는 방법을 연구합니다.
+            </p>
+          </div>
+
+          <!-- I: Intelligence -->
+          <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-brand-gold/40 transition group">
+            <div class="w-12 h-12 rounded-2xl bg-brand-gold/10 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+              🎯
+            </div>
+            <div class="flex items-baseline gap-2 mb-1">
+              <span class="text-lg font-bold text-white font-serif">I · Intelligence</span>
+            </div>
+            <p class="text-xs text-brand-gold font-medium mb-3">집중력 / 인지 / 기억력</p>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              인지 기능을 이해하고 더 나은 사고와 학습을 돕는 접근을 탐구합니다.
+            </p>
+          </div>
+
+          <!-- N: Neuro -->
+          <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-brand-blue/40 transition group">
+            <div class="w-12 h-12 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+              🧠
+            </div>
+            <div class="flex items-baseline gap-2 mb-1">
+              <span class="text-lg font-bold text-white font-serif">N · Neuro</span>
+            </div>
+            <p class="text-xs text-brand-blue font-medium mb-3">뇌과학 / 유전자 / 뇌건강</p>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              뇌과학과 신경과학 기반의 데이터와 연구를 통해 몸과 마음을 이해하는 접근을 추구합니다.
+            </p>
+          </div>
+
+          <!-- A: Alignment -->
+          <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-brand-mint/40 transition group">
+            <div class="w-12 h-12 rounded-2xl bg-brand-mint/10 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+              ⚖️
+            </div>
+            <div class="flex items-baseline gap-2 mb-1">
+              <span class="text-lg font-bold text-white font-serif">A · Alignment</span>
+            </div>
+            <p class="text-xs text-brand-mint font-medium mb-3">수면 / 운동 / 생활 균형</p>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              마음, 인지, 뇌의 균형을 통해 지속 가능한 최적의 웰니스 상태를 지향합니다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 블록 3: MINA Wellness World 대표 이미나 프로필 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- 좌측 대표님 고화질 프로필 사진 -->
+        <div class="lg:col-span-5 text-center">
+          <div class="relative inline-block">
+            <div class="absolute -inset-4 bg-gradient-to-tr from-brand-accent/20 to-brand-blue/20 rounded-3xl blur-2xl opacity-60"></div>
+            <img src="assets/ceo-mina.jpg" alt="MINA Wellness World 대표 이미나" class="relative rounded-3xl border border-white/15 w-72 sm:w-80 md:w-96 h-auto mx-auto object-cover shadow-2xl">
+          </div>
+        </div>
+
+        <!-- 우측 대표자 철학 & 약력 설명 -->
+        <div class="lg:col-span-7">
+          <div class="inline-block px-3.5 py-1 rounded-full bg-brand-gold/10 text-brand-gold text-xs font-semibold mb-3 tracking-wider uppercase">LEADERSHIP & VISION</div>
+          <h3 class="text-2xl md:text-3xl font-bold text-white mb-2 leading-snug">
+            MINA Wellness World 대표 이미나
+          </h3>
+          <p class="text-lg md:text-xl text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-brand-gold font-bold mb-8">
+            "변화의 시작은 이미 나로부터"
+          </p>
+
+          <div class="space-y-4">
+            <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+              <div class="w-10 h-10 rounded-xl bg-brand-accent/10 flex items-center justify-center text-xl shrink-0">
+                🤍
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-white mb-1">Mind · 마음과 감정</h4>
+                <p class="text-xs text-slate-400 leading-relaxed">마음과 감정 상태를 이해하고 건강한 감정 균형을 만드는 방법을 연구합니다.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+              <div class="w-10 h-10 rounded-xl bg-brand-gold/10 flex items-center justify-center text-xl shrink-0">
+                🎯
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-white mb-1">Intelligence · 인지와 사고</h4>
+                <p class="text-xs text-slate-400 leading-relaxed">인지 기능을 이해하고 더 나은 사고와 학습을 돕는 접근을 탐구합니다.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+              <div class="w-10 h-10 rounded-xl bg-brand-blue/10 flex items-center justify-center text-xl shrink-0">
+                🧠
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-white mb-1">Neuro · 신경과 뇌</h4>
+                <p class="text-xs text-slate-400 leading-relaxed">뇌과학과 신경과학 기반의 데이터와 연구를 통해 몸과 마음을 이해하는 접근을 추구합니다.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+              <div class="w-10 h-10 rounded-xl bg-brand-mint/10 flex items-center justify-center text-xl shrink-0">
+                ⚖️
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-white mb-1">Alignment · 균형과 정렬</h4>
+                <p class="text-xs text-slate-400 leading-relaxed">마음, 인지, 뇌의 균형을 통해 지속 가능한 최상의 웰니스 상태를 함께 설계합니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  </main>
+
+  <footer class="py-14 border-t border-white/10 text-xs text-slate-400 bg-brand-dark/95">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- 1열: 브랜드 로고 및 저작권 -->
+        <div>
+          <h4 class="text-base font-bold text-white tracking-wider mb-2 font-serif">MINA WORLD</h4>
+          <p class="text-slate-500 text-xs">© 2026 Make.</p>
+        </div>
+
+        <!-- 2열: SITEMAP -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">SITEMAP</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="about.html" class="hover:text-white transition">ABOUT US</a></li>
+            <li><a href="programs.html" class="hover:text-white transition">PROGRAM</a></li>
+            <li><a href="community.html" class="hover:text-white transition">COMMUNITY</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">CONTACT</a></li>
+          </ul>
+        </div>
+
+        <!-- 3열: SERVICE & BANK -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">SERVICE</h4>
+          <p class="text-slate-300 font-medium mb-1">010-5424-0807</p>
+          <p class="text-slate-500 mb-0.5">Mon - Fri AM 09:00 - 18:00</p>
+          <p class="text-slate-500 mb-4">Sat.Sun.Red-Day Off</p>
+
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">BANK</h4>
+          <p class="text-slate-400">KAKAO BANK 3333-37-1190044</p>
+        </div>
+
+        <!-- 4열: INSTAGRAM, NAVER, KAKAO TALK -->
+        <div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">INSTAGRAM</h4>
+            <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://www.instagram.com/wellnessworld.zip</a>
+          </div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">NAVER</h4>
+            <a href="https://naver.me/xhPGBxC0" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://naver.me/xhPGBxC0</a>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">KAKAO TALK</h4>
+            <a href="http://pf.kakao.com/_WxmhEX" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">http://pf.kakao.com/_WxmhEX</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 mb-6">
+        <div>
+          <span>Seoul, Korea</span>
+          <span class="mx-2">|</span>
+          <span>Biz License 893-53-00975</span>
+          <span class="mx-2">|</span>
+          <span>© 2026 MINA WORLD. All rights reserved</span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+          <span class="text-slate-600">|</span>
+          <a href="#" class="hover:text-slate-300 transition">Privacy</a>
+        </div>
+      </div>
+
+      <!-- 맨 하단 한 줄 사업자 상세 정보 -->
+      <div class="text-[11px] text-slate-600 leading-relaxed">
+        상호명: 미나월드 대표자: 이미나 사업장주소: 서울 송파구 오금로46길 41 (가락동) 2층 2567호 연락처: 01054240807 사업자등록번호: 893-53-00975 대표자 이메일: minawellnesslab@gmail.com
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // 모바일 메뉴 토글 스크립트
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const iconOpen = document.getElementById('menu-icon-open');
+    const iconClose = document.getElementById('menu-icon-close');
+
+    if (mobileBtn && mobileMenu) {
+      mobileBtn.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.contains('hidden');
+        if (isHidden) {
+          mobileMenu.classList.remove('hidden');
+          iconOpen.classList.add('hidden');
+          iconClose.classList.remove('hidden');
+        } else {
+          mobileMenu.classList.add('hidden');
+          iconOpen.classList.remove('hidden');
+          iconClose.classList.add('hidden');
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
