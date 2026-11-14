@@ -107,28 +107,28 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label class="block text-xs font-semibold text-slate-300 mb-2">성함 / 담당자명 *</label>
-              <input type="text" required placeholder="예: 이미나" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition">
+              <input type="text" name="성함_담당자명" required placeholder="예: 이미나" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition">
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-300 mb-2">기업 / 소속 기관 (선택)</label>
-              <input type="text" placeholder="예: xx컴퍼니, xx센터" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition">
+              <input type="text" name="기업_소속기관" placeholder="예: xx컴퍼니, xx센터" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition">
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label class="block text-xs font-semibold text-slate-300 mb-2">연락처 *</label>
-              <input type="tel" required placeholder="010-0000-0000" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition">
+              <input type="tel" name="연락처" required placeholder="010-0000-0000" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition">
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-300 mb-2">이메일 *</label>
-              <input type="email" required placeholder="name@company.com" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition">
+              <input type="email" name="이메일" required placeholder="name@company.com" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition">
             </div>
           </div>
 
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-2">문의 유형 *</label>
-            <select class="w-full px-4 py-3 rounded-xl bg-brand-navy border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition">
+            <select name="문의_유형" id="contact-type" class="w-full px-4 py-3 rounded-xl bg-brand-navy border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition">
               <option value="b2b">🏢 기업 맞춤 마인드 & 뇌 피로 관리 워크숍</option>
               <option value="personal">🧬 1:1 뉴로웰니스 & 뇌파 코칭</option>
               <option value="sports">⚡ 뉴로스포츠 & 브레인 퍼포먼스 프로그램</option>
@@ -139,11 +139,11 @@
 
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-2">문의 내용</label>
-            <textarea rows="4" placeholder="예상 인원, 희망 일정, 중점적으로 다루고 싶은 주제 등을 자유롭게 적어주세요." class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition"></textarea>
+            <textarea name="문의_내용" rows="4" placeholder="예상 인원, 희망 일정, 중점적으로 다루고 싶은 주제 등을 자유롭게 적어주세요." class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-brand-accent transition"></textarea>
           </div>
 
           <div class="text-center pt-2">
-            <button type="submit" class="w-full sm:w-auto px-12 py-4 rounded-full bg-gradient-to-r from-brand-accent to-pink-500 hover:from-brand-accentHover hover:to-pink-600 text-white font-bold text-sm shadow-xl shadow-brand-accent/30 transition-all transform hover:-translate-y-0.5">
+            <button type="submit" id="contact-submit" class="w-full sm:w-auto px-12 py-4 rounded-full bg-gradient-to-r from-brand-accent to-pink-500 hover:from-brand-accentHover hover:to-pink-600 text-white font-bold text-sm shadow-xl shadow-brand-accent/30 transition-all transform hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none">
               문의 및 제안 접수하기 🚀
             </button>
           </div>
@@ -151,6 +151,19 @@
 
         <div id="contact-success" class="hidden mt-6 p-4 rounded-2xl bg-brand-mint/10 border border-brand-mint/30 text-brand-mint text-sm text-center">
           ✨ 문의가 정상적으로 접수되었습니다. 담당자(minawellnessworld@gmail.com) 확인 후 빠르게 회신드리겠습니다!
+        </div>
+
+        <div id="contact-error" class="hidden mt-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-200 text-sm text-center leading-relaxed">
+          ⚠️ 문의 접수가 잠시 원활하지 않습니다. 번거롭지만 <a href="mailto:minawellnessworld@gmail.com" class="font-semibold underline">minawellnessworld@gmail.com</a> 으로 직접 메일을 보내주시거나, 아래 카카오톡 채널로 문의해 주세요.
+        </div>
+
+        <!-- 카카오톡 채널 바로 문의 -->
+        <div class="border-t border-white/10 pt-6 mt-8 text-center">
+          <p class="text-slate-400 text-sm mb-4">더 빠른 1:1 실시간 상담을 원하시나요?</p>
+          <a href="http://pf.kakao.com/_WxmhEX" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full bg-[#FEE500] hover:bg-[#F5DC00] text-[#191919] font-bold text-sm shadow-lg transition-all transform hover:-translate-y-0.5">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.84 1.84 5.33 4.6 6.75-.2.74-.73 2.7-.84 3.12-.13.52.19.51.4.37.16-.11 2.6-1.77 3.66-2.49.7.1 1.43.15 2.18.15 5.52 0 10-3.58 10-8s-4.48-8-10-8z"/></svg>
+            카카오톡 채널로 바로 문의하기
+          </a>
         </div>
       </div>
     </div>
@@ -246,10 +259,64 @@
       }
     });
 
-    function handleContactSubmit(e) {
+    async function handleContactSubmit(e) {
       e.preventDefault();
-      alert('문의 및 제안이 성공적으로 접수되었습니다! 담당자가 24시간 이내에 안내해 드리겠습니다.');
-      e.target.reset();
+      const form = e.target;
+      const btn = document.getElementById('contact-submit');
+      const successBox = document.getElementById('contact-success');
+      const errorBox = document.getElementById('contact-error');
+      const select = form.querySelector('select[name="문의_유형"]');
+      const emailInput = form.querySelector('input[name="이메일"]');
+
+      const val = (name) => {
+        const el = form.querySelector('[name="' + name + '"]');
+        return el ? el.value.trim() : '';
+      };
+
+      const payload = {
+        '성함_담당자명': val('성함_담당자명'),
+        '기업_소속기관': val('기업_소속기관') || '-',
+        '연락처': val('연락처'),
+        '이메일': val('이메일'),
+        '문의_유형': select && select.selectedIndex >= 0 ? select.options[select.selectedIndex].text : '',
+        '문의_내용': val('문의_내용') || '(내용 미기재)',
+        _replyto: emailInput ? emailInput.value.trim() : '',
+        _subject: '[MINA Wellness World] 홈페이지 새 문의/제안 도착',
+        _template: 'table',
+        _captcha: 'false'
+      };
+
+      if (successBox) successBox.classList.add('hidden');
+      if (errorBox) errorBox.classList.add('hidden');
+      if (btn) {
+        btn.disabled = true;
+        btn.dataset.originalText = btn.dataset.originalText || btn.textContent;
+        btn.textContent = '접수 중...';
+      }
+
+      try {
+        const res = await fetch('https://formsubmit.co/ajax/minawellnessworld@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        let data = {};
+        try { data = await res.json(); } catch (err) { data = {}; }
+
+        if (res.ok && (data.success === 'true' || data.success === true)) {
+          if (successBox) successBox.classList.remove('hidden');
+          form.reset();
+        } else {
+          throw new Error('FormSubmit response not successful');
+        }
+      } catch (err) {
+        if (errorBox) errorBox.classList.remove('hidden');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = btn.dataset.originalText || '문의 및 제안 접수하기 🚀';
+        }
+      }
     }
   </script>
 
