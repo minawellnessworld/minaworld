@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      location.replace(location.href.replace('http:', 'https:'));
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>월요일만 되면 머리가 멈추는 이유 — 전두엽 의사결정 피로와 번아웃 리셋 | 하루 한 스푼, 뇌과학 - MINA Wellness World</title>
+  <meta name="description" content="월요일 오후만 되면 사소한 선택조차 버거워지는 이유는 의지 부족이 아니라 전전두엽의 '의사결정 피로(Decision Fatigue)' 때문입니다. 작업기억 과부하를 끄고 뇌 에너지를 회복하는 4단계 리셋 루틴을 만나보세요." />
+  <meta name="keywords" content="의사결정 피로, 전두엽 번아웃, 월요병 뇌과학, 작업기억, 울트라디안 리듬, 직장인 멘탈케어, 기업웰니스, 미나월드" />
+  <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="Vi6kKPe24ViYvS4NbUpW02Nco_04PP_qHLX9UmNT3QM" />
+  <meta name="naver-site-verification" content="b397311e6eb26e5eec40f3994740c10e6a243a4a" />
+  <link rel="canonical" href="https://www.minaworld.co.kr/article-2026-11-16-prefrontal-burnout.html" />
+  <meta property="og:site_name" content="MINA Wellness World" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.minaworld.co.kr/article-2026-11-16-prefrontal-burnout.html" />
+  <meta property="og:title" content="월요일만 되면 머리가 멈추는 이유 — 전두엽 의사결정 피로와 번아웃 리셋 | 하루 한 스푼, 뇌과학 - MINA Wellness World" />
+  <meta property="og:description" content="월요일 오후만 되면 사소한 선택조차 버거워지는 이유는 의지 부족이 아니라 전전두엽의 '의사결정 피로(Decision Fatigue)' 때문입니다. 작업기억 과부하를 끄고 뇌 에너지를 회복하는 4단계 리셋 루틴을 만나보세요." />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+    #reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(to right, #FF7E95, #A855F7, #3CD070);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-white">
+  
+  <!-- 상단 읽기 진행률 바 -->
+  <div id="reading-bar"></div>
+
+  <!-- 헤더 / 내비게이션 바 -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/85 border-b border-white/10 transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="font-serif font-bold text-xl tracking-wider text-white group-hover:text-brand-accent transition">MINA</span>
+        <span class="text-xs uppercase tracking-widest text-brand-accent font-semibold">Wellness World</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="community.html" class="hidden sm:inline-flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          <span>📚 하루 한 스푼 뇌과학 목록</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 text-slate-300 hover:text-brand-accent transition">
+          <span>← 메인 홈으로</span>
+        </a>
+        <a href="contact.html" class="px-4 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white shadow-md shadow-brand-accent/20 transition">
+          상담/제휴 문의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 본문 영역 -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16 w-full">
+    
+    <!-- 빵부스러기 내비게이션 -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8 overflow-x-auto no-scrollbar">
+      <a href="index.html" class="hover:text-white transition">홈</a>
+      <span>/</span>
+      <a href="community.html" class="hover:text-white transition">하루 한 스푼, 뇌과학</a>
+      <span>/</span>
+      <span class="text-brand-accent font-medium">월요일 · 뇌과학 기초</span>
+    </nav>
+
+    <!-- 아티클 헤더 -->
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-xs">
+        <span class="px-3 py-1 rounded-full font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">월요일 · 뇌과학 기초</span>
+        <span class="text-slate-400">2026.11.16</span>
+        <span class="text-slate-500">·</span>
+        <span class="text-slate-400">5분 완독</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
+        월요일만 되면 머리가 멈추는 이유 — 전두엽 의사결정 피로와 번아웃 리셋
+      </h1>
+      
+      <p class="text-base md:text-xl text-slate-300 font-medium leading-relaxed mb-8">
+        의지력이 약해서가 아닙니다. 하루 수천 번의 작은 선택이 전전두엽 에너지를 고갈시키는 '의사결정 피로'의 원리와 회복 루틴
+      </p>
+
+      <!-- 작성자 정보 -->
+      <div class="flex items-center gap-4 py-4 px-5 rounded-2xl bg-brand-card/70 border border-white/10">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-accent to-purple-600 flex items-center justify-center text-lg font-bold text-white shadow-md">
+          M
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white flex items-center gap-2">
+            이미나 대표
+            <span class="text-[11px] font-normal text-slate-400">| 뇌교육상담사 · MINA Wellness World</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            뇌과학 기반 뉴로웰니스 솔루션과 신체 움직임을 결합하여 건강한 뇌 컨디션을 만듭니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 핵심 요약 콜아웃 박스 -->
+      <div class="mt-8 p-6 rounded-2xl bg-brand-navy border-l-4 border-brand-accent border-r border-t border-b border-white/10 card-glow">
+        <div class="flex items-center gap-2 text-brand-accent font-bold text-xs uppercase tracking-wider mb-2">
+          <span>💡 30초 핵심 요약 (Executive Summary)</span>
+        </div>
+        <p class="text-sm text-slate-200 leading-relaxed">
+          월요일 아침부터 메일·메신저·일정 결정을 연속으로 처리하면, 뇌의 최고 사령관인 전전두엽(PFC)의 대사 에너지가 빠르게 소진됩니다. 이를 '의사결정 피로(Decision Fatigue)'라고 하며, 한계에 다다르면 뇌는 판단을 멈추고 충동이나 회피로 도망칩니다. 전두엽 배터리를 지키는 4단계 리셋 루틴을 정리했습니다.
+        </p>
+      </div>
+    </header>
+
+    <!-- 상세 본문 -->
+    <article class="mb-16">
+      <div class="prose prose-invert max-w-none text-slate-300 space-y-8 text-base leading-relaxed">
+        
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-purple-400">01.</span> 전두엽의 배터리는 매일 정해져 있다 — 의사결정 피로
+          </h2>
+          <p>
+            성인의 뇌는 체중의 약 2%에 불과하지만 전체 에너지의 20% 이상을 소비합니다. 특히 계획, 우선순위 판단, 감정 조절을 담당하는 <strong class="text-white">전전두엽(Prefrontal Cortex, PFC)</strong>은 가장 많은 포도당과 신경전달물질을 쓰는 고비용 영역입니다.
+          </p>
+          <p>
+            문제는 뇌가 <strong>'중요한 경영 판단'</strong>과 <strong>'오늘 점심 뭐 먹지?'</strong> 같은 사소한 선택을 구분하지 않고, 선택의 횟수 자체마다 전두엽 자원을 소모한다는 점입니다. 아침부터 수십 개의 알림과 메신저를 처리하고 나면, 정작 오후에는 판단력이 급격히 무뎌지는 <strong class="text-white">의사결정 피로(Decision Fatigue)</strong> 상태에 빠집니다.
+          </p>
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+            <h4 class="text-sm font-bold text-purple-400 mb-2">🔋 전두엽 고갈 시 뇌에서 벌어지는 일</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>실행기능 저하:</strong> 우선순위를 세우는 작업기억(Working Memory)이 과부하되어 쉬운 잡무만 붙잡게 됩니다.</li>
+              <li><strong>변연계 우위 전환:</strong> 전두엽의 브레이크가 느슨해지면 편도체가 예민해져 사소한 말에도 짜증이 올라옵니다.</li>
+              <li><strong>회피 및 즉각 보상 추구:</strong> 뇌가 에너지를 아끼려 결정을 미루거나 숏폼·단 음식 같은 즉각 도파민을 찾습니다.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-purple-400">02.</span> 번아웃 직전, 뇌가 보내는 3가지 적신호
+          </h2>
+          <p>
+            의사결정 피로가 하루 이틀로 끝나지 않고 누적되면, 뇌는 방어 모드로 진입합니다. 아래 신호가 잦아졌다면 의지 탓을 멈추고 뇌의 작업 부하를 줄여야 할 타이밍입니다.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-purple-400 uppercase tracking-wider block mb-1">신호 1</span>
+              <h4 class="text-base font-bold text-white mb-2">오픈 루프 과잉</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                끝내지 못한 할 일들이 머릿속 작업기억에 계속 떠 있어, 쉬는 시간에도 뇌가 백그라운드 전력을 씁니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-purple-400 uppercase tracking-wider block mb-1">신호 2</span>
+              <h4 class="text-base font-bold text-white mb-2">선택 마비 (Analysis Paralysis)</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                답장 한 줄, 메뉴 고르기 같은 1분짜리 결정 앞에서 10분 이상 멈춰 서게 됩니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-purple-400 uppercase tracking-wider block mb-1">신호 3</span>
+              <h4 class="text-base font-bold text-white mb-2">도파민 반동 현상</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                업무는 손에 안 잡히는데 밤늦게까지 휴대폰 스크롤만 놓지 못하는 보상 갈증이 심해집니다.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-purple-400">03.</span> 전두엽을 살리는 4단계 의사결정 리셋 루틴
+          </h2>
+          <div class="bg-brand-navy p-6 rounded-2xl border border-white/10 space-y-3">
+            <p class="text-xs text-slate-300">
+              최고의 뇌 퍼포먼스는 더 오래 버티는 것이 아니라, <strong>불필요한 선택을 줄여 전두엽의 화력을 핵심 과업에 아껴 쓰는 설계</strong>에서 나옵니다.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-2 list-disc pl-5">
+              <li><strong>1단계 · 오전 90분 '무선택 블록' 고정:</strong> 업무 시작 직후 90분은 메신저·메일을 열지 않고 전날 정해 둔 가장 중요한 1가지 일만 처리해 전두엽의 첫 에너지를 지킵니다.</li>
+              <li><strong>2단계 · 저가치 결정 자동화:</strong> 출근 복장, 아침 식단, 반복 안내 문구처럼 고민할 가치가 낮은 선택은 미리 규칙이나 템플릿으로 고정합니다.</li>
+              <li><strong>3단계 · 90분 울트라디안 리듬 5분 언플러그:</strong> 뇌의 자연 집중 주기(약 90분)가 끝나면 5분간 화면에서 눈을 떼고 먼 곳을 보며 느린 복식호흡으로 전두엽 과열을 식힙니다.</li>
+              <li><strong>4단계 · 퇴근 전 3줄 셧다운 메모:</strong> 내일 할 첫 작업 1개와 남은 일 2줄을 종이에 적어 작업기억을 비워야 밤사이 뇌가 온전한 회복 모드로 들어갑니다.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="space-y-4 pt-4 border-t border-white/10">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <span class="text-purple-400">04.</span> 미나월드의 전두엽 밸런스 케어
+          </h2>
+          <p>
+            미나월드의 <strong>기업 맞춤 마인드 &amp; 뇌 피로 관리 워크숍</strong>과 <strong>1:1 뉴로웰니스 &amp; 뇌파 코칭</strong>은 실제 2채널 뇌파 측정을 통해 전두엽의 긴장도와 집중 리듬을 확인하고, 개인과 조직의 업무 패턴에 맞춘 회복 루틴을 설계해 드립니다.
+          </p>
+          <div class="mt-4 p-5 rounded-2xl bg-brand-card border border-purple-500/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">🏢 기업웰니스 &amp; 1:1 뇌파 코칭</h4>
+              <p class="text-xs text-slate-400">임직원 번아웃 예방 워크숍부터 개인 맞춤형 뇌 컨디션 리셋까지</p>
+            </div>
+            <a href="contact.html" class="px-6 py-2.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shrink-0 transition">
+              프로그램 문의하기
+            </a>
+          </div>
+        </section>
+
+      </div>
+    </article>
+
+    <!-- 공유 및 하단 내비게이션 -->
+    <div class="py-8 border-t border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">아티클 공유하기:</span>
+        <button onclick="copyCurrentUrl()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-1.5">
+          <span>🔗 링크 복사</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="community.html" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+          목록으로 돌아가기
+        </a>
+        <a href="contact.html" class="px-5 py-2 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white shadow-md transition">
+          1:1 프로그램 상담 신청
+        </a>
+      </div>
+    </div>
+
+    <!-- 다른 요일의 '하루 한 스푼, 뇌과학' 추천 링크 -->
+    <section class="mt-16">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>✨</span> 함께 읽으면 좋은 뇌과학 인사이트
+        </h3>
+        <a href="community.html" class="text-xs text-brand-accent hover:underline">전체보기 →</a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="article-neuroplasticity.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-purple-400/40 transition block group">
+          <div class="text-[11px] text-purple-400 font-bold mb-1">뇌과학 기초</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-purple-400 transition mb-1">
+            나이 들어도 뇌는 변한다 — 신경가소성(Neuroplasticity)의 기적
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">굳어진 습관 회로를 지우고 새로운 시냅스를 연결하는 뇌 회로 개편 법칙</p>
+        </a>
+
+        <a href="article-stress-reset.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-pink-500/40 transition block group">
+          <div class="text-[11px] text-pink-400 font-bold mb-1">스트레스와 감정</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-accent transition mb-1">
+            감정에 휘둘리는 뇌를 구하는 4대 스트레스 리셋 원리
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">편도체 납치를 막고 전두엽 브레이크를 작동시키는 4단계 신경과학 솔루션</p>
+        </a>
+
+        <a href="article-flow-focus.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-cyan-400/40 transition block group">
+          <div class="text-[11px] text-cyan-400 font-bold mb-1">집중력과 기억력</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-cyan-400 transition mb-1">
+            산만한 뇌를 초몰입(Flow) 상태로 이끄는 뇌파의 비밀
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">주의 전환 잔여물을 제거하고 세타-감마 결합으로 몰입하는 방법</p>
+        </a>
+
+        <a href="article-glymphatic-sleep.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-blue/40 transition block group">
+          <div class="text-[11px] text-brand-blue font-bold mb-1">수면과 뇌 건강</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-blue transition mb-1">
+            수면 중 뇌 청소 시스템 '글림파틱 시스템'의 비밀
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">베타 아밀로이드 노폐물 배출과 깊은 델타파 숙면 환경</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (아임웹 정보 100% 반영) -->
+  <footer class="py-14 border-t border-white/10 text-xs text-slate-400 bg-brand-dark/95">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- 1열: 브랜드 로고 및 저작권 -->
+        <div>
+          <h4 class="text-base font-bold text-white tracking-wider mb-2 font-serif">MINA WORLD</h4>
+          <p class="text-slate-500 text-xs">© 2026 Make.</p>
+        </div>
+
+        <!-- 2열: SITEMAP -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">SITEMAP</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="about.html" class="hover:text-white transition">ABOUT US</a></li>
+            <li><a href="programs.html" class="hover:text-white transition">PROGRAM</a></li>
+            <li><a href="community.html" class="hover:text-white transition">COMMUNITY</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">CONTACT</a></li>
+          </ul>
+        </div>
+
+        <!-- 3열: SERVICE & BANK -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">SERVICE</h4>
+          <p class="text-slate-300 font-medium mb-1">010-5424-0807</p>
+          <p class="text-slate-500 mb-0.5">Mon - Fri AM 09:00 - 18:00</p>
+          <p class="text-slate-500 mb-4">Sat.Sun.Red-Day Off</p>
+
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">BANK</h4>
+          <p class="text-slate-400">KAKAO BANK 3333-37-1190044</p>
+        </div>
+
+        <!-- 4열: INSTAGRAM, NAVER, KAKAO TALK -->
+        <div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">INSTAGRAM</h4>
+            <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://www.instagram.com/wellnessworld.zip</a>
+          </div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">NAVER</h4>
+            <a href="https://naver.me/xhPGBxC0" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://naver.me/xhPGBxC0</a>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">KAKAO TALK</h4>
+            <a href="http://pf.kakao.com/_WxmhEX" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">http://pf.kakao.com/_WxmhEX</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 mb-6">
+        <div>
+          <span>Seoul, Korea</span>
+          <span class="mx-2">|</span>
+          <span>Biz License 893-53-00975</span>
+          <span class="mx-2">|</span>
+          <span>© 2026 MINA WORLD. All rights reserved</span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+          <span class="text-slate-600">|</span>
+          <a href="#" class="hover:text-slate-300 transition">Privacy</a>
+        </div>
+      </div>
+
+      <!-- 맨 하단 한 줄 사업자 상세 정보 -->
+      <div class="text-[11px] text-slate-600 leading-relaxed">
+        상호명: 미나월드 대표자: 이미나 사업장주소: 서울 송파구 오금로46길 41 (가락동) 2층 2567호 연락처: 01054240807 사업자등록번호: 893-53-00975 대표자 이메일: minawellnesslab@gmail.com
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // 읽기 진행률 표시
+    window.addEventListener('scroll', function() {
+      var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      var bar = document.getElementById('reading-bar');
+      if (bar) {
+        bar.style.width = scrolled + '%';
+      }
+    });
+
+    // 현재 URL 클립보드 복사
+    function copyCurrentUrl() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          alert('아티클 링크가 복사되었습니다! 원하는 곳에 공유해보세요.');
+        });
+      } else {
+        alert('주소창의 링크를 복사해주세요: ' + window.location.href);
+      }
+    }
+  </script>
+</body>
+</html>
