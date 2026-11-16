@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko" class="scroll-smooth">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TTMVKBHNZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TTMVKBHNZM');
+  </script>
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <script>
     if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
@@ -380,6 +388,7 @@
   <script>
     // 아티클 요일/카테고리별 필터링
     function filterArticles(day) {
+      window.__articleTag = day;
       const cards = document.querySelectorAll('.article-card');
       const buttons = document.querySelectorAll('.tab-btn');
 
@@ -399,6 +408,89 @@
         }
       });
     }
+  </script>
+
+
+  <!-- 미나 님이 관리자(/admin.html)에서 직접 올린 글을 불러와 목록에 합칩니다 -->
+  <script>
+    (function () {
+      var grid = document.getElementById('articles-grid');
+      if (!grid) return;
+
+      var CAT = {
+        '월': 'bg-purple-500/20 text-purple-300',
+        '화': 'bg-pink-500/15 text-pink-400',
+        '수': 'bg-cyan-500/15 text-cyan-400',
+        '목': 'bg-blue-500/15 text-blue-400',
+        '금': 'bg-amber-500/15 text-amber-300',
+        '토': 'bg-emerald-500/15 text-emerald-400',
+        '일': 'bg-rose-500/15 text-rose-300',
+        '브': 'bg-brand-accent/20 text-brand-accent'
+      };
+
+      function esc(v) {
+        return String(v == null ? '' : v)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function fmtDate(v) {
+        var m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+        return m ? m[1] + '.' + m[2] + '.' + m[3] : (v || '');
+      }
+      function cardDate(el) {
+        var m = (el.textContent || '').match(/20\d{2}\.\d{2}\.\d{2}/);
+        return m ? m[0].replace(/\./g, '-') : '0000-00-00';
+      }
+
+      function buildCard(a) {
+        var day = String(a.category || '').charAt(0) || '브';
+        var pill = CAT[day] || CAT['브'];
+        var url = 'article.html?id=' + encodeURIComponent(a.id);
+        var el = document.createElement('article');
+        el.className = 'article-card p-6 rounded-2xl bg-brand-card/90 border border-brand-accent/40 hover:border-brand-accent transition-all flex flex-col justify-between group';
+        el.setAttribute('data-category', day);
+        el.setAttribute('data-date', a.date || '');
+        el.innerHTML =
+          '<div>' +
+            '<div class="flex items-center justify-between text-xs text-slate-400 mb-3">' +
+              '<span class="px-2.5 py-0.5 rounded-full ' + pill + ' font-semibold">' + esc(a.category || '브랜드 소식·칼럼') + '</span>' +
+              '<span class="text-brand-accent font-semibold">' + esc(fmtDate(a.date)) + '</span>' +
+            '</div>' +
+            '<a href="' + url + '" class="block">' +
+              '<h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-accent transition">' + esc(a.title || '') + '</h3>' +
+            '</a>' +
+            (a.summary ? '<p class="text-slate-400 text-xs leading-relaxed mb-4">' + esc(a.summary) + '</p>' : '<p class="mb-4"></p>') +
+          '</div>' +
+          '<a href="' + url + '" class="text-xs text-brand-accent font-medium flex items-center gap-1 hover:underline pt-2 border-t border-white/5">자세히 읽기 →</a>';
+        return el;
+      }
+
+      fetch('data/articles.json?v=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (list) {
+          if (!Array.isArray(list) || !list.length) return;
+          list.slice()
+            .sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); })
+            .forEach(function (a) {
+              if (!a || !a.id) return;
+              var el = buildCard(a);
+              var kids = Array.prototype.slice.call(grid.children);
+              var placed = false;
+              for (var i = 0; i < kids.length; i++) {
+                if (cardDate(kids[i]) < String(a.date || '')) {
+                  grid.insertBefore(el, kids[i]);
+                  placed = true;
+                  break;
+                }
+              }
+              if (!placed) grid.appendChild(el);
+            });
+          if (window.__articleTag && window.__articleTag !== 'all' && typeof filterArticles === 'function') {
+            filterArticles(window.__articleTag);
+          }
+        })
+        .catch(function () { /* 목록 로딩 실패는 정적 카드에 영향 없음 */ });
+    })();
   </script>
 
 </body>
