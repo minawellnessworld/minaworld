@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TTMVKBHNZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TTMVKBHNZM');
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      location.replace(location.href.replace('http:', 'https:'));
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>월요일만 되면 머리가 멈추는 이유 — 전두엽 의사결정 피로와 번아웃 리셋 | 하루 한 스푼, 뇌과학 - MINA Wellness World</title>
+  <meta name="description" content="미나월드 하루 한 스푼 뇌과학 아티클. 일상의 뇌 컨디션을 바꾸는 신경과학 인사이트를 이미나 대표가 직접 정리합니다." />
+  <meta name="keywords" content="의사결정 피로, 전두엽 번아웃, 월요병 뇌과학, 작업기억, 울트라디안 리듬, 직장인 멘탈케어, 기업웰니스, 미나월드" />
+  <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="Vi6kKPe24ViYvS4NbUpW02Nco_04PP_qHLX9UmNT3QM" />
+  <meta name="naver-site-verification" content="b397311e6eb26e5eec40f3994740c10e6a243a4a" />
+  <link rel="canonical" href="https://www.minaworld.co.kr/article.html" />
+  <meta property="og:site_name" content="MINA Wellness World" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.minaworld.co.kr/article.html" />
+  <meta property="og:title" content="뇌과학 아티클 | MINA Wellness World" />
+  <meta property="og:description" content="미나월드 하루 한 스푼 뇌과학 아티클." />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+    #reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(to right, #FF7E95, #A855F7, #3CD070);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-white">
+
+  <!-- 상단 읽기 진행률 바 -->
+  <div id="reading-bar"></div>
+
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/85 border-b border-white/10 transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="font-serif font-bold text-xl tracking-wider text-white group-hover:text-brand-accent transition">MINA</span>
+        <span class="text-xs uppercase tracking-widest text-brand-accent font-semibold">Wellness World</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="community.html" class="hidden sm:inline-flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          <span>📚 하루 한 스푼 뇌과학 목록</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 text-slate-300 hover:text-brand-accent transition">
+          <span>← 메인 홈으로</span>
+        </a>
+        <a href="contact.html" class="px-4 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white shadow-md shadow-brand-accent/20 transition">
+          상담/제휴 문의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 본문 영역 -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16 w-full">
+
+    <!-- 빵부스러기 내비게이션 -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8 overflow-x-auto no-scrollbar">
+      <a href="index.html" class="hover:text-white transition">홈</a>
+      <span>/</span>
+      <a href="community.html" class="hover:text-white transition">하루 한 스푼, 뇌과학</a>
+      <span>/</span>
+      <span class="text-brand-accent font-medium" id="art-crumb">아티클</span>
+    </nav>
+
+    <!-- 글을 찾을 수 없을 때 안내 -->
+    <section id="art-error" class="hidden text-center py-20">
+      <div class="text-5xl mb-6">🍵</div>
+      <h1 class="text-2xl md:text-3xl font-extrabold text-white mb-3">앗, 이 글을 찾을 수 없어요</h1>
+      <p class="text-slate-400 text-sm leading-relaxed mb-8">
+        주소가 바뀌었거나 삭제된 글일 수 있어요.<br>
+        커뮤니티에서 지금 읽을 수 있는 뇌과학 아티클 목록을 확인해 보세요.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="community.html" class="px-6 py-3 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white text-sm font-bold shadow-md shadow-brand-accent/20 transition">
+          하루 한 스푼, 뇌과학 목록 보기
+        </a>
+        <a href="index.html" class="px-6 py-3 rounded-full bg-white/5 hover:bg-white/10 text-slate-200 text-sm font-semibold border border-white/10 transition">
+          메인 홈으로
+        </a>
+      </div>
+    </section>
+
+    <!-- 아티클 본문 -->
+    <div id="art-wrap" class="hidden">
+
+      <header class="mb-12">
+        <div class="flex flex-wrap items-center gap-3 mb-4 text-xs">
+          <span id="art-badge" class="px-3 py-1 rounded-full font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30">뇌과학</span>
+          <span class="text-slate-400" id="art-date">2026.01.01</span>
+          <span class="text-slate-500">·</span>
+          <span class="text-slate-400" id="art-read">4분 완독</span>
+        </div>
+
+        <h1 id="art-title" class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight"></h1>
+        <p id="art-summary" class="text-base md:text-xl text-slate-300 font-medium leading-relaxed mb-8"></p>
+
+        <!-- 작성자 정보 -->
+        <div class="flex items-center gap-4 py-4 px-5 rounded-2xl bg-brand-card/70 border border-white/10">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-accent to-purple-600 flex items-center justify-center text-lg font-bold text-white shadow-md">
+            M
+          </div>
+          <div>
+            <div class="text-sm font-bold text-white flex items-center gap-2">
+              이미나 대표
+              <span class="text-[11px] font-normal text-slate-400">| 뇌교육상담사 · MINA Wellness World</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-0.5">
+              뇌과학 기반 뉴로웰니스 솔루션과 신체 움직임을 결합하여 건강한 뇌 컨디션을 만듭니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- 30초 핵심 요약 -->
+        <div id="exec-box" class="hidden mt-8 p-6 rounded-2xl bg-brand-navy border-l-4 border-brand-accent border-r border-t border-b border-white/10 card-glow">
+          <div class="flex items-center gap-2 text-brand-accent font-bold text-xs uppercase tracking-wider mb-2">
+            <span>💡 30초 핵심 요약 (Executive Summary)</span>
+          </div>
+          <p id="art-exec" class="text-sm text-slate-200 leading-relaxed"></p>
+        </div>
+      </header>
+
+      <!-- 상세 본문 -->
+      <article class="mb-14">
+        <div id="art-content" class="prose prose-invert max-w-none text-slate-300 space-y-4 text-base leading-relaxed"></div>
+      </article>
+
+      <!-- 미나월드 3대 프로그램 안내 -->
+      <section class="mb-12">
+        <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2"><span>🌿</span> 미나월드의 3대 프로그램</h2>
+        <p class="text-xs text-slate-400 mb-6">읽고 끝내지 않고, 뇌 컨디션을 실제로 바꾸고 싶다면 아래 프로그램으로 이어가세요.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="p-5 rounded-2xl bg-brand-card/80 border border-white/10">
+            <div class="text-[11px] font-bold text-purple-400 mb-1">PROGRAM 01</div>
+            <h3 class="text-sm font-bold text-white mb-2">기업 맞춤 마인드 &amp; 뇌 피로 관리 워크숍</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">임직원 번아웃·스트레스 리셋과 집중력 관리를 위한 조직 맞춤형 뇌과학 교육</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-brand-card/80 border border-white/10">
+            <div class="text-[11px] font-bold text-brand-accent mb-1">PROGRAM 02</div>
+            <h3 class="text-sm font-bold text-white mb-2">1:1 뉴로웰니스 &amp; 뇌파 코칭</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">2채널 뇌파 측정으로 나의 뇌 상태를 확인하고 개인 맞춤 회복 루틴을 설계</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-brand-card/80 border border-white/10">
+            <div class="text-[11px] font-bold text-emerald-400 mb-1">PROGRAM 03</div>
+            <h3 class="text-sm font-bold text-white mb-2">뉴로스포츠 &amp; 브레인 퍼포먼스</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">몸의 움직임과 뇌파 훈련을 결합해 집중력과 수행력을 끌어올리는 퍼포먼스 프로그램</p>
+          </div>
+        </div>
+        <div class="mt-5 p-5 rounded-2xl bg-brand-card border border-brand-accent/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h4 class="text-base font-bold text-white mb-1">📩 나에게 맞는 프로그램이 궁금하다면</h4>
+            <p class="text-xs text-slate-400">기업 강의 · 뇌파 측정 · 1:1 코칭, 1분이면 상담 신청할 수 있어요.</p>
+          </div>
+          <a href="contact.html" class="px-6 py-2.5 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white text-xs font-bold shrink-0 transition">
+            상담 / 제휴 문의
+          </a>
+        </div>
+      </section>
+
+      <!-- 공유 및 하단 내비게이션 -->
+      <div class="py-8 border-t border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+        <div class="flex items-center gap-3">
+          <span class="text-slate-400">아티클 공유하기:</span>
+          <button onclick="copyCurrentUrl()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-1.5">
+            <span>🔗 링크 복사</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="community.html" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+            목록으로 돌아가기
+          </a>
+          <a href="contact.html" class="px-5 py-2 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white shadow-md transition">
+            1:1 프로그램 상담 신청
+          </a>
+        </div>
+      </div>
+
+      <!-- 함께 읽으면 좋은 뇌과학 인사이트 -->
+      <section class="mt-14">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-white flex items-center gap-2">
+            <span>✨</span> 함께 읽으면 좋은 뇌과학 인사이트
+          </h3>
+          <a href="community.html" class="text-xs text-brand-accent hover:underline">전체보기 →</a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <a href="article-neuroplasticity.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-purple-400/40 transition block group">
+            <div class="text-[11px] text-purple-400 font-bold mb-1">뇌과학 기초</div>
+            <h4 class="text-sm font-bold text-white group-hover:text-purple-400 transition mb-1">나이 들어도 뇌는 변한다 — 신경가소성(Neuroplasticity)의 기적</h4>
+            <p class="text-xs text-slate-400 line-clamp-2">굳어진 습관 회로를 지우고 새로운 시냅스를 연결하는 뇌 회로 개편 법칙</p>
+          </a>
+          <a href="article-stress-reset.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-pink-500/40 transition block group">
+            <div class="text-[11px] text-pink-400 font-bold mb-1">스트레스와 감정</div>
+            <h4 class="text-sm font-bold text-white group-hover:text-brand-accent transition mb-1">감정에 휘둘리는 뇌를 구하는 4대 스트레스 리셋 원리</h4>
+            <p class="text-xs text-slate-400 line-clamp-2">편도체 납치를 막고 전두엽 브레이크를 작동시키는 4단계 신경과학 솔루션</p>
+          </a>
+          <a href="article-flow-focus.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-cyan-400/40 transition block group">
+            <div class="text-[11px] text-cyan-400 font-bold mb-1">집중력과 기억력</div>
+            <h4 class="text-sm font-bold text-white group-hover:text-cyan-400 transition mb-1">산만한 뇌를 초몰입(Flow) 상태로 이끄는 뇌파의 비밀</h4>
+            <p class="text-xs text-slate-400 line-clamp-2">주의 전환 잔여물을 제거하고 세타-감마 결합으로 몰입하는 방법</p>
+          </a>
+          <a href="article-glymphatic-sleep.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-blue/40 transition block group">
+            <div class="text-[11px] text-brand-blue font-bold mb-1">수면과 뇌 건강</div>
+            <h4 class="text-sm font-bold text-white group-hover:text-brand-blue transition mb-1">수면 중 뇌 청소 시스템 '글림파틱 시스템'의 비밀</h4>
+            <p class="text-xs text-slate-400 line-clamp-2">베타 아밀로이드 노폐물 배출과 깊은 델타파 숙면 환경</p>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="py-14 border-t border-white/10 text-xs text-slate-400 bg-brand-dark/95">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- 1열: 브랜드 로고 및 저작권 -->
+        <div>
+          <h4 class="text-base font-bold text-white tracking-wider mb-2 font-serif">MINA WORLD</h4>
+          <p class="text-slate-500 text-xs">© 2026 Make.</p>
+        </div>
+
+        <!-- 2열: SITEMAP -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">SITEMAP</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="about.html" class="hover:text-white transition">ABOUT US</a></li>
+            <li><a href="programs.html" class="hover:text-white transition">PROGRAM</a></li>
+            <li><a href="community.html" class="hover:text-white transition">COMMUNITY</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">CONTACT</a></li>
+          </ul>
+        </div>
+
+        <!-- 3열: SERVICE & BANK -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">SERVICE</h4>
+          <p class="text-slate-300 font-medium mb-1">010-5424-0807</p>
+          <p class="text-slate-500 mb-0.5">Mon - Fri AM 09:00 - 18:00</p>
+          <p class="text-slate-500 mb-4">Sat.Sun.Red-Day Off</p>
+
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">BANK</h4>
+          <p class="text-slate-400">KAKAO BANK 3333-37-1190044</p>
+        </div>
+
+        <!-- 4열: INSTAGRAM, NAVER, KAKAO TALK -->
+        <div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">INSTAGRAM</h4>
+            <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://www.instagram.com/wellnessworld.zip</a>
+          </div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">NAVER</h4>
+            <a href="https://naver.me/xhPGBxC0" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://naver.me/xhPGBxC0</a>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">KAKAO TALK</h4>
+            <a href="http://pf.kakao.com/_WxmhEX" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">http://pf.kakao.com/_WxmhEX</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 mb-6">
+        <div>
+          <span>Seoul, Korea</span>
+          <span class="mx-2">|</span>
+          <span>Biz License 893-53-00975</span>
+          <span class="mx-2">|</span>
+          <span>© 2026 MINA WORLD. All rights reserved</span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+          <span class="text-slate-600">|</span>
+          <a href="#" class="hover:text-slate-300 transition">Privacy</a>
+        </div>
+      </div>
+
+      <!-- 맨 하단 한 줄 사업자 상세 정보 -->
+      <div class="text-[11px] text-slate-600 leading-relaxed">
+        상호명: 미나월드 대표자: 이미나 사업장주소: 서울 송파구 오금로46길 41 (가락동) 2층 2567호 연락처: 01054240807 사업자등록번호: 893-53-00975 대표자 이메일: minawellnesslab@gmail.com
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 읽기 진행률 표시
+    window.addEventListener('scroll', function() {
+      var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      var bar = document.getElementById('reading-bar');
+      if (bar) { bar.style.width = scrolled + '%'; }
+    });
+
+    // 현재 URL 클립보드 복사
+    function copyCurrentUrl() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          alert('아티클 링크가 복사되었습니다! 원하는 곳에 공유해보세요.');
+        });
+      } else {
+        alert('주소창의 링크를 복사해주세요: ' + window.location.href);
+      }
+    }
+
+    // ===== 동적 아티클 렌더링 =====
+    var CAT_STYLE = {
+      '월': ['bg-purple-500/15 text-purple-400 border-purple-500/30', 'text-purple-400'],
+      '화': ['bg-pink-500/15 text-pink-400 border-pink-500/30', 'text-pink-400'],
+      '수': ['bg-cyan-500/15 text-cyan-400 border-cyan-500/30', 'text-cyan-400'],
+      '목': ['bg-blue-500/15 text-blue-400 border-blue-500/30', 'text-blue-400'],
+      '금': ['bg-amber-500/15 text-amber-300 border-amber-500/30', 'text-amber-300'],
+      '토': ['bg-emerald-500/15 text-emerald-400 border-emerald-500/30', 'text-emerald-400'],
+      '일': ['bg-rose-500/15 text-rose-300 border-rose-500/30', 'text-rose-300'],
+      '브': ['bg-brand-accent/15 text-brand-accent border-brand-accent/30', 'text-brand-accent']
+    };
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function inline(s) {
+      return esc(s).replace(/\*\*([^*]+)\*\*/g, '<strong class="text-white">$1</strong>');
+    }
+
+    // 본문 텍스트 -> 브랜드 스타일 HTML (## 소제목 / ### 소제목 / - 불릿 / 일반 단락)
+    function renderContent(text) {
+      var lines = String(text || '').replace(/\r/g, '').split('\n');
+      var out = [];
+      var list = [];
+      var para = [];
+      var secNo = 0;
+
+      function flushPara() {
+        if (para.length) {
+          out.push('<p class="text-slate-300 leading-relaxed">' + inline(para.join(' ')) + '</p>');
+          para = [];
+        }
+      }
+      function flushList() {
+        if (list.length) {
+          out.push('<ul class="text-slate-300 space-y-2 list-disc pl-5">' +
+            list.map(function(li) { return '<li>' + inline(li) + '</li>'; }).join('') + '</ul>');
+          list = [];
+        }
+      }
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].replace(/\s+$/, '');
+        if (/^###\s+/.test(line)) {
+          flushPara(); flushList();
+          out.push('<h3 class="text-lg md:text-xl font-bold text-white mt-8 mb-2">' + inline(line.replace(/^###\s+/, '')) + '</h3>');
+        } else if (/^##\s+/.test(line)) {
+          flushPara(); flushList();
+          secNo++;
+          var no = ('0' + secNo).slice(-2);
+          out.push('<h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3 mt-10 mb-4">' +
+            '<span class="text-purple-400">' + no + '.</span> ' + inline(line.replace(/^##\s+/, '')) + '</h2>');
+        } else if (/^\s*[-*]\s+/.test(line)) {
+          flushPara();
+          list.push(line.replace(/^\s*[-*]\s+/, ''));
+        } else if (/^\s*>\s?/.test(line)) {
+          flushPara(); flushList();
+          out.push('<blockquote class="p-5 rounded-2xl bg-brand-card/90 border-l-4 border-brand-accent border-r border-t border-b border-white/10 text-sm text-slate-200">' +
+            inline(line.replace(/^\s*>\s?/, '')) + '</blockquote>');
+        } else if (line.trim() === '') {
+          flushPara(); flushList();
+        } else {
+          flushList();
+          para.push(line.trim());
+        }
+      }
+      flushPara(); flushList();
+      return out.join('\n');
+    }
+
+    function fmtDate(d) {
+      var m = String(d || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+      return m ? m[1] + '.' + m[2] + '.' + m[3] : (d || '');
+    }
+
+    function showError() {
+      document.getElementById('art-error').classList.remove('hidden');
+      document.getElementById('art-wrap').classList.add('hidden');
+      document.title = '글을 찾을 수 없습니다 | MINA Wellness World';
+    }
+
+    function render(a) {
+      var day = String(a.category || '').charAt(0);
+      var st = CAT_STYLE[day] || CAT_STYLE['브'];
+      var badge = document.getElementById('art-badge');
+      badge.className = 'px-3 py-1 rounded-full font-bold border ' + st[0];
+      badge.textContent = a.category || '브랜드 소식·칼럼';
+      document.getElementById('art-crumb').textContent = a.category || '아티클';
+      document.getElementById('art-date').textContent = fmtDate(a.date);
+      document.getElementById('art-read').textContent = a.readTime || '4분 완독';
+      document.getElementById('art-title').textContent = a.title || '';
+      var sum = document.getElementById('art-summary');
+      if (a.summary) { sum.textContent = a.summary; } else { sum.style.display = 'none'; }
+
+      if (a.execSummary) {
+        document.getElementById('exec-box').classList.remove('hidden');
+        document.getElementById('art-exec').textContent = a.execSummary;
+      }
+      document.getElementById('art-content').innerHTML = renderContent(a.content);
+      document.getElementById('art-wrap').classList.remove('hidden');
+
+      document.title = a.title + ' | MINA Wellness World';
+      var md = document.querySelector('meta[name="description"]');
+      if (md && a.summary) md.setAttribute('content', a.summary);
+      var og = document.querySelector('meta[property="og:title"]');
+      if (og) og.setAttribute('content', a.title + ' | MINA Wellness World');
+      var ogu = document.querySelector('meta[property="og:url"]');
+      if (ogu) ogu.setAttribute('content', 'https://www.minaworld.co.kr/article.html?id=' + encodeURIComponent(a.id));
+      var can = document.querySelector('link[rel="canonical"]');
+      if (can) can.setAttribute('href', 'https://www.minaworld.co.kr/article.html?id=' + encodeURIComponent(a.id));
+    }
+
+    (function() {
+      var id = '';
+      try { id = new URLSearchParams(window.location.search).get('id') || ''; } catch (e) { id = ''; }
+      if (!id) { showError(); return; }
+      fetch('data/articles.json?v=' + Date.now(), { cache: 'no-store' })
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .then(function(list) {
+          if (!Array.isArray(list)) list = [];
+          var found = null;
+          for (var i = 0; i < list.length; i++) {
+            if (list[i] && list[i].id === id) { found = list[i]; break; }
+          }
+          if (found) { render(found); } else { showError(); }
+        })
+        .catch(function() { showError(); });
+    })();
+  </script>
+</body>
+</html>
