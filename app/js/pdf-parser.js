@@ -15,7 +15,7 @@
    · 그래프 안에 그림(래스터)으로 박힌 수치는 어떤 텍스트 파서도 읽을 수 없습니다.
      그런 항목은 비워 두고 몇 건을 채웠는지만 안내합니다.
    ===================================================================== */
-import { esc } from './ui.js?v=2.0.14';
+import { esc } from './ui.js?v=2.0.15';
 
 var PDFJS_VERSION = '3.11.174';
 var PDFJS_CDN = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + PDFJS_VERSION + '/';
@@ -482,6 +482,7 @@ function readOverviewNotes(pages) {
         if (!/[가-힣]/.test(text) || text.length < 8) continue;
         if (/^[0-9.%\s]+$/.test(text)) continue;
         if (/^(Neuro|Brain)\b/.test(text)) continue;
+        if (/^(좌|우)\s*뇌/.test(text)) continue;
         out[category.name] = text;
         break;
       }

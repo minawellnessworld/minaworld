@@ -5,17 +5,17 @@ import {
   state, signIn, signUp, signOut, updateProfile, listBookings, listPayments,
   listCoupons, validateCoupon, listNotifications, markNotificationRead, isStaff, isOrgWorker,
   friendlyError, passwordIssue
-} from '../store.js?v=2.0.14';
-import { listMyMemberships, setShareBrainResults, requestOrgMembership, listOrganizationsFiltered } from '../store-org.js?v=2.0.14';
-import { CONSENT_ITEMS, CONSENT_LABELS, ROLES, PRIVACY_POLICY, privacyPolicyHtml } from '../config.js?v=2.0.14';
+} from '../store.js?v=2.0.15';
+import { listMyMemberships, setShareBrainResults, requestOrgMembership, listOrganizationsFiltered } from '../store-org.js?v=2.0.15';
+import { CONSENT_ITEMS, CONSENT_LABELS, ROLES, PRIVACY_POLICY, privacyPolicyHtml } from '../config.js?v=2.0.15';
 import {
   recordConsents, listMyConsents, changeMyPassword, withdrawMyAccount, logAudit
-} from '../store-security.js?v=2.0.14';
+} from '../store-security.js?v=2.0.15';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, sectionHead,
   badge, openSheet, closeSheet, setBusy, go, timeAgo, paymentStatusTone, confirmDialog
-} from '../ui.js?v=2.0.14';
-import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.14';
+} from '../ui.js?v=2.0.15';
+import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.15';
 
 var GRADE_ORDER = ['Welcome', 'Mind', 'Neuro', 'Alignment'];
 var GRADE_DESC = {
