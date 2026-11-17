@@ -156,23 +156,23 @@ export function bindEditor(root, prefix, typeSelector, onNotice) {
     wrap.innerHTML = rowsHtml([{ name: '', hint: '' }]);
     while (wrap.firstChild) itemsEl.appendChild(wrap.firstChild);
     bindRemove();
+    dirty = true;
   }
 
   function applyTemplate(list) {
     itemsEl.innerHTML = rowsHtml(list);
     bindRemove();
+    dirty = false;
     refreshHint();
   }
 
-  function isBlank() {
-    var rows = itemsEl.querySelectorAll('.kv-row');
-    for (var i = 0; i < rows.length; i++) {
-      var keyEl = rows[i].querySelector('.kv-key');
-      var valEl = rows[i].querySelector('.kv-value');
-      if ((keyEl && keyEl.value.trim()) || (valEl && valEl.value.trim())) return false;
-    }
-    return true;
-  }
+  /* 기본 항목이 자동으로 채워진 상태(사용자가 아무것도 고치지 않은 상태)에서만
+     검사 유형 변경 시 항목 세트를 통째로 교체한다. 한 글자라도 고쳤으면 덮어쓰지 않는다. */
+  var dirty = false;
+  itemsEl.addEventListener('input', function () { dirty = true; });
+  itemsEl.addEventListener('click', function (event) {
+    if (event.target && event.target.closest && event.target.closest('[data-kv-remove]')) dirty = true;
+  });
 
   function currentRows() {
     var rows = itemsEl.querySelectorAll('.kv-row');
@@ -236,7 +236,7 @@ export function bindEditor(root, prefix, typeSelector, onNotice) {
 
   if (typeEl) {
     typeEl.addEventListener('change', function () {
-      if (isBlank()) {
+      if (!dirty) {
         applyTemplate(getItemTemplate(currentType()));
         return;
       }
