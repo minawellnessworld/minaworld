@@ -1,18 +1,19 @@
 /* S01. 홈 — 개인 회원 메인 대시보드(PART 2-2) + 오늘의 뇌 컨디션 체크인 */
-import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.4';
+import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.5';
 import {
   state, listWellness, addWellness, listBookings, listPosts, listResults, listPackages,
   listSessions, getPrograms, isStaff, isOrgWorker,
   friendlyError, dateKey, todayStr
-} from '../store.js?v=2.0.4';
+} from '../store.js?v=2.0.5';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listMyMemberships, setShareBrainResults
-} from '../store-org.js?v=2.0.4';
-import { recordConsents, logAudit } from '../store-security.js?v=2.0.4';
+} from '../store-org.js?v=2.0.5';
+import { recordConsents, logAudit } from '../store-security.js?v=2.0.5';
 import {
   icon, esc, fmtKRW, fmtDate, todayLabel, toast, emptyState, setBusy, sectionHead, go, track, noticeBox
-} from '../ui.js?v=2.0.4';
-import { requireLoginSheet } from '../booking.js?v=2.0.4';
+} from '../ui.js?v=2.0.5';
+import { requireLoginSheet } from '../booking.js?v=2.0.5';
+import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.5';
 
 var MENU = [
   { key: 'brain_check', title: 'BRAIN CHECK', sub: '뇌파측정 · 뇌기능검사 예약', ico: 'pulse', href: '#/brain-check', tone: 'navy' },
@@ -185,6 +186,32 @@ export async function render(ctx) {
   recommend = recommend.slice(0, 3);
 
   var topNotice = events[0] || notices[0] || null;
+
+  var spoonLatest = null;
+  try {
+    spoonLatest = await latestSpoonArticle();
+  } catch (err) {
+    spoonLatest = null;
+  }
+
+  var spoonSection = spoonLatest
+    ? '<section class="section">' +
+        sectionHead('오늘의 하루 한 스푼, 뇌과학',
+          '<a class="spoon-all-link" href="#/community?c=neuroscience">전체 보기' + icon('chevronRight', 13) + '</a>') +
+        '<a class="spoon-hero" href="#/community/spoon/' + esc(spoonLatest.id) + '">' +
+          '<div class="spoon-hero-top">' +
+            '<span class="spoon-hero-tag">DAILY BRAIN INSIGHTS</span>' +
+            '<span class="spoon-hero-date">' + esc(spoonDateLabel(spoonLatest.date)) + '</span>' +
+          '</div>' +
+          '<strong class="spoon-hero-title">' + esc(spoonLatest.title) + '</strong>' +
+          (spoonLatest.summary ? '<p class="spoon-hero-summary">' + esc(spoonLatest.summary) + '</p>' : '') +
+          '<div class="spoon-hero-foot">' +
+            '<span class="pill pill-gold">' + esc(spoonLatest.categoryLabel) + '</span>' +
+            '<span class="spoon-hero-cta">30초 요약으로 읽기' + icon('chevronRight', 13) + '</span>' +
+          '</div>' +
+        '</a>' +
+      '</section>'
+    : '';
   var dash = '';
   if (state.session) {
     var name = (state.profile && (state.profile.full_name || state.profile.email)) || '회원';
@@ -234,6 +261,8 @@ export async function render(ctx) {
       '<h1 class="hero-title">' + BRAND.question + '</h1>' +
       checkinCard +
     '</section>' +
+
+    spoonSection +
 
     (state.session && upcoming
       ? '<section class="section">' +

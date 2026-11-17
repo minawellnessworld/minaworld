@@ -1,13 +1,59 @@
-/* S07. MINA COMMUNITY — 7개 카테고리 · 게시글 · 댓글 */
-import { COMMUNITY_CATEGORIES, categoryLabel } from '../config.js?v=2.0.4';
+/* S07. MINA COMMUNITY — 7개 카테고리 · 게시글 · 댓글 + 하루 한 스푼, 뇌과학 연재 */
+import { COMMUNITY_CATEGORIES, categoryLabel, BRAND } from '../config.js?v=2.0.5';
 import {
   state, listPosts, getPost, createPost, updatePost, deletePost,
   listComments, addComment, deleteComment, isStaff, isAdmin, friendlyError
-} from '../store.js?v=2.0.4';
+} from '../store.js?v=2.0.5';
+import {
+  listSpoonArticles, getSpoonArticle, spoonDateLabel, spoonWeekday
+} from '../spoon.js?v=2.0.5';
 import {
   icon, esc, timeAgo, fmtDateTime, toast, emptyState, noticeBox, sectionHead,
-  badge, openSheet, closeSheet, setBusy, confirmDialog, go
-} from '../ui.js?v=2.0.4';
+  badge, openSheet, closeSheet, setBusy, confirmDialog, go, track
+} from '../ui.js?v=2.0.5';
+
+var SPOON_TAG = '하루 한 스푼';
+
+function spoonCard(article) {
+  return '<a class="spoon-card" href="#/community/spoon/' + esc(article.id) + '">' +
+    '<div class="spoon-card-top">' +
+      '<span class="pill pill-gold">' + esc(SPOON_TAG) + '</span>' +
+      '<span class="spoon-date">' + esc(spoonDateLabel(article.date)) + '</span>' +
+    '</div>' +
+    '<h3 class="spoon-title">' + esc(article.title) + '</h3>' +
+    (article.summary ? '<p class="spoon-preview">' + esc(article.summary) + '</p>' : '') +
+    '<div class="spoon-meta"><span>' + esc(article.categoryLabel) + '</span>' +
+      '<span class="spoon-more">읽기' + icon('chevronRight', 12) + '</span></div>' +
+  '</a>';
+}
+
+/* 본문 평탄화 텍스트 → 읽기 좋은 문단/불릿 HTML */
+function spoonBody(body) {
+  var lines = String(body || '').split('\n');
+  var html = '';
+  var bullets = [];
+  function flush() {
+    if (!bullets.length) return;
+    html += '<ul class="spoon-list">' + bullets.join('') + '</ul>';
+    bullets = [];
+  }
+  for (var i = 0; i < lines.length; i++) {
+    var line = String(lines[i] || '').trim();
+    if (!line) continue;
+    if (line.slice(0, 2) === '• ') {
+      bullets.push('<li>' + esc(line.slice(2)) + '</li>');
+      continue;
+    }
+    flush();
+    if (line.slice(0, 2) === '▸ ') {
+      html += '<p class="spoon-sub">' + esc(line.slice(2)) + '</p>';
+    } else {
+      html += '<p class="spoon-p">' + esc(line) + '</p>';
+    }
+  }
+  flush();
+  return html;
+}
 
 function postRow(post) {
   return '<a class="post-row" href="#/community/post/' + esc(post.id) + '">' +
@@ -80,6 +126,100 @@ function writeSheet(ctx, defaultCategory) {
       });
     }
   });
+}
+
+async function renderSpoonDetail(ctx, articleId) {
+  var article = null;
+  var error = '';
+  try {
+    article = await getSpoonArticle(articleId);
+  } catch (err) {
+    error = friendlyError(err);
+  }
+
+  if (!article) {
+    return {
+      title: '하루 한 스푼, 뇌과학',
+      html:
+        '<div class="detail-nav">' +
+          '<a class="btn btn-ghost btn-xs" href="#/community?c=neuroscience">' + icon('chevronLeft', 15) + '뇌과학 정보</a>' +
+          '<span class="muted small">' + esc(SPOON_TAG) + '</span>' +
+        '</div>' +
+        (error ? noticeBox(esc(error), 'warn') : emptyState({
+          icon: 'search',
+          title: '아티클을 찾을 수 없습니다',
+          desc: '주소가 바뀌었거나 아직 앱에 반영되지 않은 글입니다. 홈페이지에서 원문을 확인해 주세요.',
+          action: '<a class="btn btn-ghost btn-sm" href="#/community?c=neuroscience">목록으로</a>' +
+            '<a class="btn btn-ghost btn-sm" href="https://www.minaworld.co.kr/community.html" target="_blank" rel="noopener">홈페이지 연재</a>'
+        }))
+    };
+  }
+
+  var tldrHtml = '';
+  if (article.tldr && article.tldr.length) {
+    tldrHtml =
+      '<div class="spoon-tldr">' +
+        '<div class="spoon-tldr-head">' + icon('sparkle', 15) + '<span>30초 핵심 요약</span></div>' +
+        '<ul>' + article.tldr.map(function (line) { return '<li>' + esc(line) + '</li>'; }).join('') + '</ul>' +
+      '</div>';
+  }
+
+  var sectionsHtml = article.sections.map(function (sec) {
+    var heading = String(sec.heading || '');
+    var num = '';
+    var text = heading;
+    var matched = heading.match(/^(\d{1,2}\.)\s+(.+)$/);
+    if (matched) {
+      num = matched[1];
+      text = matched[2];
+    }
+    return '<section class="spoon-section">' +
+      (heading ? '<h2 class="spoon-h2">' + (num ? '<span class="spoon-num">' + esc(num) + '</span>' : '') +
+        esc(text) + '</h2>' : '') +
+      '<div class="spoon-rich">' + spoonBody(sec.body) + '</div>' +
+    '</section>';
+  }).join('');
+
+  var html =
+    '<div class="detail-nav">' +
+      '<a class="btn btn-ghost btn-xs" href="#/community?c=neuroscience">' + icon('chevronLeft', 15) + '뇌과학 정보</a>' +
+      '<span class="muted small">' + esc(SPOON_TAG) + '</span>' +
+    '</div>' +
+
+    '<article class="spoon-reader">' +
+      '<div class="spoon-reader-head">' +
+        '<span class="pill pill-gold">' + esc(SPOON_TAG) + '</span>' +
+        '<h1 class="spoon-reader-title">' + esc(article.title) + '</h1>' +
+        (article.summary ? '<p class="spoon-lead">' + esc(article.summary) + '</p>' : '') +
+        '<div class="spoon-reader-meta">' +
+          '<span class="badge badge-gold">' + esc(spoonWeekday(article.categoryLabel)) + '</span>' +
+          '<span>' + esc(spoonDateLabel(article.date)) + '</span>' +
+          '<span class="spoon-dot">·</span>' +
+          '<span>' + esc(article.categoryLabel) + '</span>' +
+        '</div>' +
+      '</div>' +
+
+      tldrHtml +
+
+      '<div class="spoon-body">' + sectionsHtml + '</div>' +
+
+      noticeBox(esc(BRAND.nonMedical), 'neutral') +
+
+      '<div class="spoon-actions">' +
+        '<a class="btn btn-primary btn-block" href="#/brain-check">' + icon('pulse', 16) + 'BRAIN CHECK 바로 예약</a>' +
+        '<a class="btn btn-ghost btn-block" href="' + esc(article.url) + '" target="_blank" rel="noopener">홈페이지 원문 보기' + icon('chevronRight', 14) + '</a>' +
+      '</div>' +
+    '</article>' +
+
+    '<footer class="app-footer"><p class="footer-note">미나월드의 연재 콘텐츠는 일상 속 뇌 컨디션 관리를 위한 참고 자료입니다.</p></footer>';
+
+  return {
+    title: article.title,
+    html: html,
+    mount: function () {
+      track('spoon_read', { id: article.id, title: article.title });
+    }
+  };
 }
 
 async function renderDetail(ctx, postId) {
@@ -226,24 +366,64 @@ export async function render(ctx) {
   if (ctx.segments[1] === 'post' && ctx.segments[2]) {
     return renderDetail(ctx, ctx.segments[2]);
   }
+  if (ctx.segments[1] === 'spoon' && ctx.segments[2]) {
+    return renderSpoonDetail(ctx, ctx.segments[2]);
+  }
 
   var category = ctx.query.get('c') || 'notice';
-  var valid = COMMUNITY_CATEGORIES.filter(function (c) { return c.id === category; });
-  if (!valid.length) category = 'notice';
+  var showAll = category === 'all';
+  if (!showAll) {
+    var valid = COMMUNITY_CATEGORIES.filter(function (c) { return c.id === category; });
+    if (!valid.length) category = 'notice';
+  }
+  var showSpoon = showAll || category === 'neuroscience';
 
   var posts = [];
+  var spoonArticles = [];
   var error = '';
   try {
-    posts = await listPosts({ category: category });
+    posts = await listPosts({ category: showAll ? '' : category });
   } catch (err) {
     error = friendlyError(err);
   }
+  if (showSpoon) {
+    try {
+      spoonArticles = await listSpoonArticles();
+    } catch (err) {
+      spoonArticles = [];
+    }
+  }
 
-  var tabs = COMMUNITY_CATEGORIES.map(function (cat) {
-    return '<a class="chip' + (cat.id === category ? ' is-on' : '') + '" href="#/community?c=' + cat.id + '">' + esc(cat.label) + '</a>';
-  }).join('');
+  var tabs = '<a class="chip' + (showAll ? ' is-on' : '') + '" href="#/community?c=all">전체</a>' +
+    COMMUNITY_CATEGORIES.map(function (cat) {
+      return '<a class="chip' + (!showAll && cat.id === category ? ' is-on' : '') + '" href="#/community?c=' + cat.id + '">' + esc(cat.label) + '</a>';
+    }).join('');
 
-  var writable = isStaff() || (state.session && COMMUNITY_CATEGORIES.filter(function (c) { return c.id === category && c.writable; }).length > 0);
+  var writable = !showAll && (isStaff() || (state.session && COMMUNITY_CATEGORIES.filter(function (c) { return c.id === category && c.writable; }).length > 0));
+
+  var spoonBlock = showSpoon
+    ? '<div class="spoon-block">' +
+        '<div class="spoon-block-head">' +
+          '<div><span class="spoon-eyebrow">DAILY BRAIN INSIGHTS</span>' +
+            '<h2 class="spoon-block-title">하루 한 스푼, 뇌과학</h2></div>' +
+          '<span class="muted small">' + spoonArticles.length + '편</span>' +
+        '</div>' +
+        '<p class="spoon-block-desc">매일 새로 올라오는 뇌과학 연재 글을 앱에서 바로 읽어보세요. 30초 핵심 요약과 4개 본문 섹션으로 정리되어 있습니다.</p>' +
+        (spoonArticles.length
+          ? '<div class="spoon-list-wrap">' + spoonArticles.map(spoonCard).join('') + '</div>'
+          : (error ? '' : '<p class="muted small">연재 글을 불러오지 못했습니다. 홈페이지 community.html에서 확인해 주세요.</p>')) +
+      '</div>'
+    : '';
+
+  var listHead = showSpoon
+    ? '<div class="list-toolbar"><span class="muted small">' +
+        esc(showAll ? '커뮤니티 전체' : categoryLabel(category)) + ' · ' + posts.length + '건</span>' +
+        (writable ? '<button type="button" class="btn btn-primary btn-xs" id="write-btn">글쓰기</button>' : '') +
+      '</div>'
+    : '<div class="list-toolbar">' +
+        '<span class="muted small">' + esc(categoryLabel(category)) + ' · ' + posts.length + '건</span>' +
+        (writable ? '<button type="button" class="btn btn-primary btn-xs" id="write-btn">글쓰기</button>' : '') +
+      '</div>';
 
   return {
     title: 'MINA COMMUNITY',
@@ -257,18 +437,18 @@ export async function render(ctx) {
       '<section class="section">' +
         '<div class="chip-scroll">' + tabs + '</div>' +
         (error ? noticeBox(esc(error), 'warn') : '') +
-        '<div class="list-toolbar">' +
-          '<span class="muted small">' + esc(categoryLabel(category)) + ' · ' + posts.length + '건</span>' +
-          (writable ? '<button type="button" class="btn btn-primary btn-xs" id="write-btn">글쓰기</button>' : '') +
-        '</div>' +
+        spoonBlock +
+        listHead +
         (posts.length
           ? posts.map(postRow).join('')
-          : emptyState({
-              icon: 'chat',
-              title: '아직 등록된 글이 없습니다',
-              desc: isStaff() ? '관리자로서 첫 글을 작성할 수 있습니다.' : '곧 새로운 소식이 올라옵니다.',
-              action: writable ? '<button type="button" class="btn btn-ghost btn-sm" id="write-btn-empty">글쓰기</button>' : ''
-            })) +
+          : (showSpoon
+            ? '<p class="spoon-empty-note">' + (showAll ? '아직 커뮤니티 게시글이 없습니다.' : '이 카테고리에 등록된 게시글이 아직 없습니다.') + '</p>'
+            : emptyState({
+                icon: 'chat',
+                title: '아직 등록된 글이 없습니다',
+                desc: isStaff() ? '관리자로서 첫 글을 작성할 수 있습니다.' : '곧 새로운 소식이 올라옵니다.',
+                action: writable ? '<button type="button" class="btn btn-ghost btn-sm" id="write-btn-empty">글쓰기</button>' : ''
+              }))) +
       '</section>' +
 
       '<footer class="app-footer"><p class="footer-note">커뮤니티의 모든 정보는 웰니스 참고 자료이며 의료적 진단을 대체하지 않습니다.</p></footer>',

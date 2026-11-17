@@ -1,4 +1,4 @@
-# MINA WORLD 통합 플랫폼 앱 (PWA) — `website/app/` · v2.0.0
+# MINA WORLD 통합 플랫폼 앱 (PWA) — `website/app/` · v2.0.5
 
 MINA Wellness World의 **통합 웰니스 플랫폼**입니다. B2C 회원 앱 + 전체 관리자 콘솔 + 제휴 기관(파트너) 대시보드 + 기관 직원 권한이 하나의 코드베이스에서 동작합니다. 빌드 도구 없이 GitHub Pages에서 바로 실행되며 `minaworld.co.kr/app/` 경로 배포를 전제로 합니다.
 
@@ -24,6 +24,8 @@ python3 -m http.server 8099
 | `#/neuro` | NEURO TRAINING · 이용권 | 전체 |
 | `#/my-brain` | MY BRAIN (검사 기록·항목별 설명·이전 vs 현재·상담사 안내·다음 재검사 권장일) | 로그인 |
 | `#/programs` `#/academy` `#/community` | 프로그램 10종 · 아카데미 · 커뮤니티/FAQ | 전체 |
+| `#/community?c=neuroscience` | MINA COMMUNITY — **하루 한 스푼, 뇌과학** 연재 9편 + 카테고리 게시글 | 전체 |
+| `#/community/spoon/{id}` | 연재 아티클 리더(요일 배지 · 30초 핵심 요약 · 본문 01~04 · 원문 링크 · BRAIN CHECK 예약) | 전체 |
 | `#/account` | 로그인·회원가입(3종 동의)·마이페이지·기관 결과 공유 토글·비밀번호 변경·회원 탈퇴 | 전체 |
 | `#/admin-login` | **관리자 · 기관 담당자 공용 로그인 포털** (+ TOTP 2단계 인증) | 전체 |
 | `#/admin` | **전체 관리자 콘솔** (15탭 · PC 풀와이드) | `admin` · `super_admin` · `counselor`(조회) |
@@ -89,6 +91,7 @@ app/
    ├─ store.js               인증·회원·예약·결제·결과·뉴로·커뮤니티 (live/local)
    ├─ store-org.js           기관·지점·운영시간·소속·계정 발급·정산
    ├─ store-security.js      동의·감사 로그·기간 지표·비밀번호/탈퇴·TOTP
+   ├─ spoon.js              '하루 한 스푼, 뇌과학' 피드 로더 (spoon-feed.json + articles.json 병합)
    ├─ ui.js                  아이콘·시트·토스트·포맷·차트·CSV
    ├─ booking.js             통합 예약 플로우·예약 상태·관리자 예약 등록
    ├─ app.js                 해시 라우터·헤더/탭바·권한 분기
@@ -101,6 +104,13 @@ app/
       ├─ admin-login.js      관리자·기관 로그인 포털 + MFA
       └─ partner.js          제휴 기관 대시보드
 ```
+
+## 하루 한 스푼, 뇌과학 연재 연동 (v2.0.5)
+
+- 데이터: `website/data/spoon-feed.json` (매일 08:30 스케줄이 새 아티클을 index 0에 추가) + `website/data/articles.json`(`/admin.html` 직접 작성 글)을 앱이 `cache: 'no-store'`로 읽어 `id` 중복 제거 후 `date` 최신순으로 병합합니다.
+- 생성 스크립트: `python3 scratch/spoon/build_spoon_feed.py` — `website/article-*.html` 9편의 제목·날짜·요일 배지·리드·30초 요약·본문 섹션을 파싱하고 `community.html` 카드와 교차 검수합니다. (`articles.json`은 읽지도 쓰지도 않습니다.)
+- 서비스워커: `/data/*.json` 요청은 캐시하지 않고 네트워크 직통으로 통과합니다.
+- 홈: `오늘의 하루 한 스푼, 뇌과학` 카드가 가장 최신 글을 보여주고 `#/community/spoon/{id}`로 연결됩니다.
 
 ## 검증 스크립트
 

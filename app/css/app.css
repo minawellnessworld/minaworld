@@ -2244,3 +2244,141 @@ body.portal-mode .mode-banner { display: none; }
   body:not(.admin-mode):not(.portal-mode) .app { max-width: 640px; }
   body:not(.admin-mode):not(.portal-mode) .dash-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ============================================================ 하루 한 스푼 */
+/* 홈페이지 '하루 한 스푼, 뇌과학' 연재를 앱에서 읽는 카드 · 리더 뷰 */
+
+.spoon-all-link {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 11.5px; font-weight: 700; color: var(--gold-dark);
+}
+
+/* 홈 — 오늘의 연재 카드 */
+.spoon-hero {
+  position: relative;
+  display: block;
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(152deg, #0B142A 0%, #070D1E 60%, #16223F 100%);
+  border: 1px solid rgba(201, 169, 110, 0.42);
+  box-shadow: 0 14px 34px rgba(7, 13, 30, 0.22);
+  color: var(--white);
+  overflow: hidden;
+  transition: transform 0.18s var(--ease);
+}
+.spoon-hero::after {
+  content: '';
+  position: absolute; top: -46px; right: -34px;
+  width: 132px; height: 132px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 169, 110, 0.34) 0%, rgba(201, 169, 110, 0) 70%);
+  pointer-events: none;
+}
+.spoon-hero:active { transform: scale(0.985); }
+.spoon-hero-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.spoon-hero-tag {
+  font-size: 9.5px; font-weight: 800; letter-spacing: 0.2em;
+  color: #E3C88F; text-transform: uppercase;
+}
+.spoon-hero-date { font-size: 10.5px; font-weight: 600; color: rgba(255, 255, 255, 0.58); }
+.spoon-hero-title {
+  display: block; margin-top: 10px;
+  font-size: 17px; font-weight: 800; line-height: 1.4; letter-spacing: -0.025em;
+}
+.spoon-hero-summary {
+  margin-top: 8px; font-size: 12px; line-height: 1.62; color: rgba(255, 255, 255, 0.72);
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.spoon-hero-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  margin-top: 14px;
+}
+.spoon-hero-foot .pill-gold { background: rgba(201, 169, 110, 0.18); color: #E9D3A4; border-color: rgba(201, 169, 110, 0.45); }
+.spoon-hero-cta {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 700; color: var(--yellow);
+}
+
+/* 커뮤니티 — 연재 블록 + 카드 */
+.spoon-block { margin: 4px 0 16px; }
+.spoon-block-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.spoon-eyebrow {
+  font-size: 9.5px; font-weight: 800; letter-spacing: 0.18em;
+  color: var(--gold-dark); text-transform: uppercase;
+}
+.spoon-block-title { margin-top: 4px; font-size: 18px; font-weight: 800; letter-spacing: -0.03em; }
+.spoon-block-desc { margin: 6px 0 12px; font-size: 11.5px; line-height: 1.6; color: var(--muted); }
+.spoon-list-wrap { display: flex; flex-direction: column; gap: 8px; }
+.spoon-card {
+  display: block;
+  padding: 14px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.spoon-card:active { transform: scale(0.99); border-color: var(--line-strong); }
+.spoon-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.spoon-date { font-size: 10.5px; font-weight: 600; color: var(--muted-2); }
+.spoon-title { margin-top: 8px; font-size: 14.5px; font-weight: 800; line-height: 1.42; letter-spacing: -0.02em; }
+.spoon-preview {
+  margin-top: 5px; font-size: 11.5px; line-height: 1.55; color: var(--muted);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.spoon-meta {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  margin-top: 10px; padding-top: 9px;
+  border-top: 1px dashed var(--line);
+  font-size: 10.5px; color: var(--muted-2);
+}
+.spoon-more { display: inline-flex; align-items: center; gap: 1px; font-weight: 700; color: var(--gold-dark); }
+.spoon-empty-note { padding: 6px 2px 2px; font-size: 12px; color: var(--muted-2); }
+
+/* 리더 뷰 */
+.spoon-reader { padding: 4px 18px 0; }
+.spoon-reader-head { padding-top: 2px; }
+.spoon-reader-title { margin-top: 10px; font-size: 22px; font-weight: 800; line-height: 1.34; letter-spacing: -0.03em; }
+.spoon-lead { margin-top: 9px; font-size: 13px; line-height: 1.66; color: var(--muted); }
+.spoon-reader-meta {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  margin-top: 12px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 10.5px; color: var(--muted-2);
+}
+.spoon-dot { color: var(--line-strong); }
+.spoon-tldr {
+  margin-top: 16px; padding: 16px;
+  background: var(--gold-soft);
+  border: 1px solid #E8D9BC;
+  border-radius: var(--radius-md);
+}
+.spoon-tldr-head {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #7A5F2C;
+}
+.spoon-tldr ul { margin-top: 9px; display: flex; flex-direction: column; gap: 7px; }
+.spoon-tldr li { position: relative; padding-left: 13px; font-size: 12.5px; line-height: 1.66; color: #4A3C22; }
+.spoon-tldr li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--gold);
+}
+.spoon-body { margin-top: 18px; }
+.spoon-section + .spoon-section { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
+.spoon-h2 {
+  display: flex; align-items: baseline; gap: 7px;
+  font-size: 16.5px; font-weight: 800; line-height: 1.42; letter-spacing: -0.02em;
+}
+.spoon-num { font-size: 13px; font-weight: 800; color: var(--gold-dark); }
+.spoon-rich { margin-top: 10px; }
+.spoon-p { font-size: 13.5px; line-height: 1.85; color: #202A40; }
+.spoon-p + .spoon-p { margin-top: 9px; }
+.spoon-sub { margin-top: 12px; font-size: 12.5px; font-weight: 800; color: var(--navy); }
+.spoon-sub + .spoon-p { margin-top: 5px; }
+.spoon-list { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.spoon-list li { position: relative; padding-left: 12px; font-size: 12.5px; line-height: 1.72; color: #2C3550; }
+.spoon-list li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--line-strong);
+}
+.spoon-reader .notice { margin-top: 16px; }
+.spoon-actions { display: flex; flex-direction: column; gap: 8px; margin: 18px 0 10px; }

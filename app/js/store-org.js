@@ -10,9 +10,9 @@
 import {
   state, isAdmin, isOrgWorker, myOrgId, friendlyError, nowIso, todayStr,
   localRows, localInsertRow, localUpdateRow, localDeleteRow, saveLocalNow, currentUser
-} from './store.js?v=2.0.4';
-import { clientSync, createSecondaryClient } from './supabase.js?v=2.0.4';
-import { CONFIG } from './config.js?v=2.0.4';
+} from './store.js?v=2.0.5';
+import { clientSync, createSecondaryClient } from './supabase.js?v=2.0.5';
+import { CONFIG } from './config.js?v=2.0.5';
 
 function uid() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
