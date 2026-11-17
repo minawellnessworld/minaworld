@@ -1,0 +1,50 @@
+{
+  "id": "/app/",
+  "name": "MINA WORLD",
+  "short_name": "MINA WORLD",
+  "description": "뇌과학 기반 웰니스 플랫폼 — 뇌파측정(BRAIN CHECK) 예약, 뉴로피드백 훈련 기록, MY BRAIN 대시보드, 마인드케어·브레인웰니스 프로그램, 뇌교육상담사 아카데미, 커뮤니티.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "/app/",
+  "scope": "/app/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "theme_color": "#070D1E",
+  "background_color": "#FAF7F2",
+  "categories": ["health", "lifestyle", "education"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "브레인체크 예약",
+      "short_name": "브레인체크",
+      "url": "/app/#/brain-check",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "MY BRAIN",
+      "short_name": "MY BRAIN",
+      "url": "/app/#/my-brain",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
