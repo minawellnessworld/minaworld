@@ -4,7 +4,7 @@
    - 신규 v2 모듈(store-org / store-security / admin-login / partner / admin/*) 포함
    - Supabase · CDN · GA4 요청은 네트워크 패스스루 (캐시하지 않음)
    ===================================================================== */
-const VERSION = 'mina-app-v2.0.0';
+const VERSION = 'mina-app-v2.0.1';
 const CACHE_NAME = VERSION + '-shell';          // 앱 셸 선캐시
 const RUNTIME_CACHE = VERSION + '-runtime';     // 런타임 보조 캐시
 

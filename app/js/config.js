@@ -74,7 +74,7 @@ export var COLORS = {
 export var BRAND = {
   name: 'MINA WORLD',
   fullName: 'MINA Wellness World',
-  slogan: '내 탓이 아니라 뇌 탓이다, 변화는 이미 나로부터',
+  slogan: '내 탓이 아니라 뇌 탓이다, 변화의 시작은 이미 나로부터',
   welcome: 'Welcome to MINA WORLD',
   question: '오늘의 뇌 컨디션은 어떠신가요?',
   greetingTagline: '오늘의 나를 이해하는 것부터 변화는 시작됩니다.',
