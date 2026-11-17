@@ -3,7 +3,7 @@
    - 앱 셸(HTML/CSS/JS/아이콘) 캐시 → 오프라인에서도 껍데기 실행
    - Supabase · CDN · GA4 요청은 네트워크 패스스루 (캐시하지 않음)
    ===================================================================== */
-const VERSION = 'mina-app-v1.0.0';
+const VERSION = 'mina-app-v1.0.1';
 const SHELL_CACHE = VERSION + '-shell';
 const RUNTIME_CACHE = VERSION + '-runtime';
 
@@ -34,7 +34,7 @@ const SHELL_FILES = [
   './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png',
   './icons/favicon-32.png',
-  '../assets/logo-pulse-web.png',
+  '../assets/logo-pulse-accent.png',
   '../assets/logo-pulse-white.png'
 ];
 

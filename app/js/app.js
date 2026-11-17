@@ -67,7 +67,7 @@ function renderHeader() {
   var label = profile ? initials(profile.full_name, profile.email) : 'M';
   header.innerHTML =
     '<a class="brand" href="#/home" aria-label="MINA WORLD 홈">' +
-      '<img class="brand-logo" src="../assets/logo-pulse-web.png" alt="MINA WORLD">' +
+      '<img class="brand-logo" src="../assets/logo-pulse-accent.png" alt="MINA WORLD">' +
       '<span class="brand-word">MINA WORLD</span>' +
     '</a>' +
     '<div class="header-actions">' +

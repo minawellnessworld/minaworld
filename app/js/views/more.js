@@ -45,7 +45,7 @@ export async function render(ctx) {
     '<section class="section">' +
       sectionHead('브랜드', '') +
       '<div class="card brand-card">' +
-        '<img class="brand-card-logo" src="../assets/logo-pulse-web.png" alt="MINA Wellness World">' +
+        '<img class="brand-card-logo" src="../assets/logo-pulse-accent.png" alt="MINA Wellness World">' +
         '<p class="brand-slogan">“' + esc(BRAND.slogan) + '”</p>' +
         '<div class="mina-chips">' + mi + '</div>' +
       '</div>' +
