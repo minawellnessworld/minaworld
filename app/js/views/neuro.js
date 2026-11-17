@@ -48,7 +48,8 @@ export async function render(ctx) {
   try {
     programs = await getPrograms('neuro_training');
     if (state.session) {
-      var loaded = await Promise.all([listPackages(), listSessions(), listBookings()]);
+      var uid = state.session.user.id;
+      var loaded = await Promise.all([listPackages(uid), listSessions(uid), listBookings(uid)]);
       packages = loaded[0];
       sessions = loaded[1];
       bookings = loaded[2].filter(function (b) { return String(b.program_id || '').indexOf('neuro_') === 0; });

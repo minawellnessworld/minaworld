@@ -32,7 +32,8 @@ export async function render(ctx) {
   try {
     cohorts = await listCohorts();
     if (state.session) {
-      var loaded = await Promise.all([listEnrollments(), listMaterials()]);
+      var uid = state.session.user.id;
+      var loaded = await Promise.all([listEnrollments(uid), listMaterials()]);
       enrollments = loaded[0];
       materials = loaded[1];
     }

@@ -100,7 +100,8 @@ export async function render(ctx) {
   try {
     programs = await getPrograms('brain_check');
     if (state.session) {
-      var loaded = await Promise.all([listResults(), listBookings()]);
+      var uid = state.session.user.id;
+      var loaded = await Promise.all([listResults(uid), listBookings(uid)]);
       results = loaded[0];
       bookings = loaded[1].filter(function (b) { return String(b.program_id || '').indexOf('brain_check') === 0; });
     }

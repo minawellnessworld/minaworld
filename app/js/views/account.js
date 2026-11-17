@@ -208,7 +208,8 @@ export async function render(ctx) {
   var loadError = '';
 
   try {
-    var loaded = await Promise.all([listBookings(), listPayments(), listNotifications(), listCoupons(), listMyMemberships(), listMyConsents()]);
+    var uid = state.session.user.id;
+    var loaded = await Promise.all([listBookings(uid), listPayments(uid), listNotifications(), listCoupons(), listMyMemberships(), listMyConsents()]);
     bookings = loaded[0];
     payments = loaded[1];
     notifications = loaded[2];

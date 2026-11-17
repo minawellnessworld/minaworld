@@ -76,8 +76,9 @@ export async function render(ctx) {
   var loadError = '';
 
   try {
+    var uid = state.session.user.id;
     var loaded = await Promise.all([
-      listResults(), listPackages(), listSessions(), listBookings(), listWellness(undefined, 30), listMyMemberships()
+      listResults(uid), listPackages(uid), listSessions(uid), listBookings(uid), listWellness(uid, 30), listMyMemberships()
     ]);
     results = loaded[0];
     packages = loaded[1];

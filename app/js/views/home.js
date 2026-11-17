@@ -69,7 +69,8 @@ export async function render(ctx) {
   try {
     var jobs = [listPosts({ category: 'notice' }), listPosts({ category: 'event' })];
     if (state.session) {
-      jobs.push(listWellness(undefined, 20), listBookings(), listResults(), listPackages(), listSessions(), listMyMemberships());
+      var uid = state.session.user.id;
+      jobs.push(listWellness(uid, 20), listBookings(uid), listResults(uid), listPackages(uid), listSessions(uid), listMyMemberships());
     }
     var loaded = await Promise.all(jobs);
     notices = loaded[0] || [];
