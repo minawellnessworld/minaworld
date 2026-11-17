@@ -4,7 +4,7 @@
    - 신규 v2 모듈(store-org / store-security / admin-login / partner / admin/*) 포함
    - Supabase · CDN · GA4 요청은 네트워크 패스스루 (캐시하지 않음)
    ===================================================================== */
-const VERSION = 'mina-app-v2.0.5';
+const VERSION = 'mina-app-v2.0.6';
 const CACHE_NAME = VERSION + '-shell';          // 앱 셸 선캐시
 const RUNTIME_CACHE = VERSION + '-runtime';     // 런타임 보조 캐시
 
@@ -13,44 +13,44 @@ const PRECACHE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './css/app.css?v=2.0.5',
+  './css/app.css?v=2.0.6',
 
   /* core modules */
-  './js/app.js?v=2.0.5',
-  './js/config.js?v=2.0.5',
-  './js/catalog.js?v=2.0.5',
-  './js/supabase.js?v=2.0.5',
-  './js/store.js?v=2.0.5',
-  './js/spoon.js?v=2.0.5',
-  './js/store-org.js?v=2.0.5',
-  './js/store-security.js?v=2.0.5',
-  './js/ui.js?v=2.0.5',
-  './js/booking.js?v=2.0.5',
+  './js/app.js?v=2.0.6',
+  './js/config.js?v=2.0.6',
+  './js/catalog.js?v=2.0.6',
+  './js/supabase.js?v=2.0.6',
+  './js/store.js?v=2.0.6',
+  './js/spoon.js?v=2.0.6',
+  './js/store-org.js?v=2.0.6',
+  './js/store-security.js?v=2.0.6',
+  './js/ui.js?v=2.0.6',
+  './js/booking.js?v=2.0.6',
 
   /* B2C views */
-  './js/views/home.js?v=2.0.5',
-  './js/views/brain-check.js?v=2.0.5',
-  './js/views/neuro.js?v=2.0.5',
-  './js/views/my-brain.js?v=2.0.5',
-  './js/views/programs.js?v=2.0.5',
-  './js/views/academy.js?v=2.0.5',
-  './js/views/community.js?v=2.0.5',
-  './js/views/account.js?v=2.0.5',
-  './js/views/more.js?v=2.0.5',
+  './js/views/home.js?v=2.0.6',
+  './js/views/brain-check.js?v=2.0.6',
+  './js/views/neuro.js?v=2.0.6',
+  './js/views/my-brain.js?v=2.0.6',
+  './js/views/programs.js?v=2.0.6',
+  './js/views/academy.js?v=2.0.6',
+  './js/views/community.js?v=2.0.6',
+  './js/views/account.js?v=2.0.6',
+  './js/views/more.js?v=2.0.6',
 
   /* admin · partner */
-  './js/views/admin.js?v=2.0.5',
-  './js/views/admin-login.js?v=2.0.5',
-  './js/views/partner.js?v=2.0.5',
-  './js/views/admin/overview.js?v=2.0.5',
-  './js/views/admin/bookings.js?v=2.0.5',
-  './js/views/admin/members.js?v=2.0.5',
-  './js/views/admin/results.js?v=2.0.5',
-  './js/views/admin/content.js?v=2.0.5',
-  './js/views/admin/orgs.js?v=2.0.5',
-  './js/views/admin/settlements.js?v=2.0.5',
-  './js/views/admin/audit.js?v=2.0.5',
-  './js/views/admin/security.js?v=2.0.5',
+  './js/views/admin.js?v=2.0.6',
+  './js/views/admin-login.js?v=2.0.6',
+  './js/views/partner.js?v=2.0.6',
+  './js/views/admin/overview.js?v=2.0.6',
+  './js/views/admin/bookings.js?v=2.0.6',
+  './js/views/admin/members.js?v=2.0.6',
+  './js/views/admin/results.js?v=2.0.6',
+  './js/views/admin/content.js?v=2.0.6',
+  './js/views/admin/orgs.js?v=2.0.6',
+  './js/views/admin/settlements.js?v=2.0.6',
+  './js/views/admin/audit.js?v=2.0.6',
+  './js/views/admin/security.js?v=2.0.6',
 
   /* icons · assets */
   './icons/icon-192.png',

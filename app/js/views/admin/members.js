@@ -1,14 +1,14 @@
 /* 관리자 → 회원 관리: 통합 상세 뷰(가입·프로그램·예약·결제·검사·훈련·상담) + 상태 관리 */
-import { ROLES, GRADES, PROFILE_STATUS, CHECK_TYPES, BOOKING_STATUS } from '../../config.js?v=2.0.5';
+import { ROLES, GRADES, PROFILE_STATUS, CHECK_TYPES, BOOKING_STATUS } from '../../config.js?v=2.0.6';
 import {
   state, listProfiles, adminUpdateProfile, listBookings, listResults, listSessions,
   listPayments, listNotes, listPackages, listOrganizations, friendlyError
-} from '../../store.js?v=2.0.5';
-import { listMembershipsForUser } from '../../store-org.js?v=2.0.5';
-import { logAudit } from '../../store-security.js?v=2.0.5';
+} from '../../store.js?v=2.0.6';
+import { listMembershipsForUser } from '../../store-org.js?v=2.0.6';
+import { logAudit } from '../../store-security.js?v=2.0.6';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, badge, openSheet, closeSheet, noticeBox, loadingBlock
-} from '../../ui.js?v=2.0.5';
+} from '../../ui.js?v=2.0.6';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';

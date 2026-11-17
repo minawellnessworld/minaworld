@@ -1,4 +1,4 @@
-# MINA WORLD 통합 플랫폼 앱 (PWA) — `website/app/` · v2.0.5
+# MINA WORLD 통합 플랫폼 앱 (PWA) — `website/app/` · v2.0.6
 
 MINA Wellness World의 **통합 웰니스 플랫폼**입니다. B2C 회원 앱 + 전체 관리자 콘솔 + 제휴 기관(파트너) 대시보드 + 기관 직원 권한이 하나의 코드베이스에서 동작합니다. 빌드 도구 없이 GitHub Pages에서 바로 실행되며 `minaworld.co.kr/app/` 경로 배포를 전제로 합니다.
 
@@ -105,7 +105,7 @@ app/
       └─ partner.js          제휴 기관 대시보드
 ```
 
-## 하루 한 스푼, 뇌과학 연재 연동 (v2.0.5)
+## 하루 한 스푼, 뇌과학 연재 연동 (v2.0.5 ~)
 
 - 데이터: `website/data/spoon-feed.json` (매일 08:30 스케줄이 새 아티클을 index 0에 추가) + `website/data/articles.json`(`/admin.html` 직접 작성 글)을 앱이 `cache: 'no-store'`로 읽어 `id` 중복 제거 후 `date` 최신순으로 병합합니다.
 - 생성 스크립트: `python3 scratch/spoon/build_spoon_feed.py` — `website/article-*.html` 9편의 제목·날짜·요일 배지·리드·30초 요약·본문 섹션을 파싱하고 `community.html` 카드와 교차 검수합니다. (`articles.json`은 읽지도 쓰지도 않습니다.)

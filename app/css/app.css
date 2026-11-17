@@ -2282,10 +2282,12 @@ body.portal-mode .mode-banner { display: none; }
 .spoon-hero-date { font-size: 10.5px; font-weight: 600; color: rgba(255, 255, 255, 0.58); }
 .spoon-hero-title {
   display: block; margin-top: 10px;
+  word-break: keep-all;
   font-size: 17px; font-weight: 800; line-height: 1.4; letter-spacing: -0.025em;
 }
 .spoon-hero-summary {
-  margin-top: 8px; font-size: 12px; line-height: 1.62; color: rgba(255, 255, 255, 0.72);
+  margin-top: 8px;
+  word-break: keep-all; font-size: 12px; line-height: 1.62; color: rgba(255, 255, 255, 0.72);
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
 .spoon-hero-foot {
@@ -2320,9 +2322,10 @@ body.portal-mode .mode-banner { display: none; }
 .spoon-card:active { transform: scale(0.99); border-color: var(--line-strong); }
 .spoon-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .spoon-date { font-size: 10.5px; font-weight: 600; color: var(--muted-2); }
-.spoon-title { margin-top: 8px; font-size: 14.5px; font-weight: 800; line-height: 1.42; letter-spacing: -0.02em; }
+.spoon-title { margin-top: 8px; word-break: keep-all; font-size: 14.5px; font-weight: 800; line-height: 1.42; letter-spacing: -0.02em; }
 .spoon-preview {
-  margin-top: 5px; font-size: 11.5px; line-height: 1.55; color: var(--muted);
+  margin-top: 5px;
+  word-break: keep-all; font-size: 11.5px; line-height: 1.55; color: var(--muted);
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .spoon-meta {
@@ -2337,8 +2340,8 @@ body.portal-mode .mode-banner { display: none; }
 /* 리더 뷰 */
 .spoon-reader { padding: 4px 18px 0; }
 .spoon-reader-head { padding-top: 2px; }
-.spoon-reader-title { margin-top: 10px; font-size: 22px; font-weight: 800; line-height: 1.34; letter-spacing: -0.03em; }
-.spoon-lead { margin-top: 9px; font-size: 13px; line-height: 1.66; color: var(--muted); }
+.spoon-reader-title { margin-top: 10px; word-break: keep-all; font-size: 22px; font-weight: 800; line-height: 1.34; letter-spacing: -0.03em; }
+.spoon-lead { margin-top: 9px; word-break: keep-all; font-size: 13px; line-height: 1.66; color: var(--muted); }
 .spoon-reader-meta {
   display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
   margin-top: 12px; padding-bottom: 14px;
@@ -2357,7 +2360,7 @@ body.portal-mode .mode-banner { display: none; }
   font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: #7A5F2C;
 }
 .spoon-tldr ul { margin-top: 9px; display: flex; flex-direction: column; gap: 7px; }
-.spoon-tldr li { position: relative; padding-left: 13px; font-size: 12.5px; line-height: 1.66; color: #4A3C22; }
+.spoon-tldr li { position: relative; word-break: keep-all; padding-left: 13px; font-size: 12.5px; line-height: 1.66; color: #4A3C22; }
 .spoon-tldr li::before {
   content: ''; position: absolute; left: 0; top: 8px;
   width: 5px; height: 5px; border-radius: 50%; background: var(--gold);
@@ -2365,17 +2368,18 @@ body.portal-mode .mode-banner { display: none; }
 .spoon-body { margin-top: 18px; }
 .spoon-section + .spoon-section { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
 .spoon-h2 {
+  word-break: keep-all;
   display: flex; align-items: baseline; gap: 7px;
   font-size: 16.5px; font-weight: 800; line-height: 1.42; letter-spacing: -0.02em;
 }
 .spoon-num { font-size: 13px; font-weight: 800; color: var(--gold-dark); }
 .spoon-rich { margin-top: 10px; }
-.spoon-p { font-size: 13.5px; line-height: 1.85; color: #202A40; }
+.spoon-p { word-break: keep-all; font-size: 13.5px; line-height: 1.85; color: #202A40; }
 .spoon-p + .spoon-p { margin-top: 9px; }
-.spoon-sub { margin-top: 12px; font-size: 12.5px; font-weight: 800; color: var(--navy); }
+.spoon-sub { margin-top: 12px; word-break: keep-all; font-size: 12.5px; font-weight: 800; color: var(--navy); }
 .spoon-sub + .spoon-p { margin-top: 5px; }
 .spoon-list { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
-.spoon-list li { position: relative; padding-left: 12px; font-size: 12.5px; line-height: 1.72; color: #2C3550; }
+.spoon-list li { position: relative; word-break: keep-all; padding-left: 12px; font-size: 12.5px; line-height: 1.72; color: #2C3550; }
 .spoon-list li::before {
   content: ''; position: absolute; left: 0; top: 8px;
   width: 5px; height: 5px; border-radius: 50%; background: var(--line-strong);

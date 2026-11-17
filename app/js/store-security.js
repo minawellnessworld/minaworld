@@ -7,12 +7,12 @@
    - supabase.auth.mfa TOTP 등록/검증/해제
    - withdraw_my_account() RPC
    ===================================================================== */
-import { CONSENT_VERSION } from './config.js?v=2.0.5';
+import { CONSENT_VERSION } from './config.js?v=2.0.6';
 import {
   state, myOrgId, friendlyError, nowIso, todayStr,
   localRows, localInsertRow, refreshProfile, signOut
-} from './store.js?v=2.0.5';
-import { clientSync, listTotpFactors, assuranceLevel } from './supabase.js?v=2.0.5';
+} from './store.js?v=2.0.6';
+import { clientSync, listTotpFactors, assuranceLevel } from './supabase.js?v=2.0.6';
 
 function live() { return state.mode === 'live'; }
 

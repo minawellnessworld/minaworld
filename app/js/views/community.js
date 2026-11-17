@@ -1,16 +1,16 @@
 /* S07. MINA COMMUNITY — 7개 카테고리 · 게시글 · 댓글 + 하루 한 스푼, 뇌과학 연재 */
-import { COMMUNITY_CATEGORIES, categoryLabel, BRAND } from '../config.js?v=2.0.5';
+import { COMMUNITY_CATEGORIES, categoryLabel, BRAND } from '../config.js?v=2.0.6';
 import {
   state, listPosts, getPost, createPost, updatePost, deletePost,
   listComments, addComment, deleteComment, isStaff, isAdmin, friendlyError
-} from '../store.js?v=2.0.5';
+} from '../store.js?v=2.0.6';
 import {
   listSpoonArticles, getSpoonArticle, spoonDateLabel, spoonWeekday
-} from '../spoon.js?v=2.0.5';
+} from '../spoon.js?v=2.0.6';
 import {
   icon, esc, timeAgo, fmtDateTime, toast, emptyState, noticeBox, sectionHead,
   badge, openSheet, closeSheet, setBusy, confirmDialog, go, track
-} from '../ui.js?v=2.0.5';
+} from '../ui.js?v=2.0.6';
 
 var SPOON_TAG = '하루 한 스푼';
 
@@ -195,7 +195,7 @@ async function renderSpoonDetail(ctx, articleId) {
           '<span class="badge badge-gold">' + esc(spoonWeekday(article.categoryLabel)) + '</span>' +
           '<span>' + esc(spoonDateLabel(article.date)) + '</span>' +
           '<span class="spoon-dot">·</span>' +
-          '<span>' + esc(article.categoryLabel) + '</span>' +
+          '<span>' + esc(String(article.categoryLabel).replace(/^[월화수목금토일]요일\s*·\s*/, '')) + '</span>' +
         '</div>' +
       '</div>' +
 
