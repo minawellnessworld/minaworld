@@ -6,26 +6,27 @@ import {
   ORG_TYPES, BOOKING_STATUS, SETTLEMENT_STATUS, MEMBERSHIP_STATUS,
   STAFF_PERMISSIONS, STAFF_ROLE_OPTIONS, CHECK_TYPES, ROLES, WEEKDAYS,
   hasPermission, staffPermissionLabels
-} from '../config.js?v=2.0.3';
+} from '../config.js?v=2.0.4';
 import {
   state, isAdmin, isOrgAdmin, myOrgId, friendlyError, todayStr,
   listProfiles, listBookings, adminSetBookingStatus, listResults, adminSaveResult, uploadResultFile,
   adminUpdateProfile
-} from '../store.js?v=2.0.3';
+} from '../store.js?v=2.0.4';
 import {
   getPartnerMetrics, listOrgMemberships, updateMembership, requestResultAccess,
   issueStaffAccount, issueOrgMemberAccount, listPreAssignments, deletePreAssignment,
   listOrgSchedules, saveSchedule, deleteSchedule, listBranchesForOrg, saveBranch,
   listOrgPrograms, saveOrgProgram, setOrgProgramActive,
   listOrgPayments, settlementTotals, listSettlements, createSettlement, markSettlementPaid,
+  listOrgResults, listOrgBookings,
   getOrganization
-} from '../store-org.js?v=2.0.3';
-import { logAudit } from '../store-security.js?v=2.0.3';
-import { openAdminBookingModal } from '../booking.js?v=2.0.3';
+} from '../store-org.js?v=2.0.4';
+import { logAudit } from '../store-security.js?v=2.0.4';
+import { openAdminBookingModal } from '../booking.js?v=2.0.4';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, confirmDialog, setBusy, downloadCsv, loadingBlock
-} from '../ui.js?v=2.0.3';
+} from '../ui.js?v=2.0.4';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -68,7 +69,7 @@ function permCheckboxes(selected, prefix) {
 async function buildDashboard(org) {
   var metrics = await getPartnerMetrics(org.id);
   var bookings = [];
-  try { bookings = await listBookings(); } catch (err) { bookings = []; }
+  try { bookings = await listOrgBookings(org.id); } catch (err) { bookings = []; }
   var mine = bookings.filter(function (b) { return String(b.org_id) === String(org.id); }).slice(0, 8);
   var staffRows = metrics.staffStats.length
     ? metrics.staffStats.map(function (s) {
@@ -323,7 +324,7 @@ async function openMemberResults(org, userId, profiles) {
 
 /* --------------------------------------------------------------- 예약 관리 */
 async function buildBookings(org) {
-  var bookings = (await listBookings()).filter(function (b) { return String(b.org_id) === String(org.id); });
+  var bookings = (await listOrgBookings(org.id)).filter(function (b) { return String(b.org_id) === String(org.id); });
   var canWrite = hasPermission(state.profile, 'bookings');
 
   var rows = bookings.map(function (b) {
@@ -375,7 +376,7 @@ async function buildResults(org) {
   try { profiles = await listProfiles(); } catch (err) { profiles = []; }
   var shared = memberships.filter(function (m) { return m.status === 'approved' && m.share_brain_results; });
   var results = [];
-  try { results = await listResults(); } catch (err) { results = []; }
+  try { results = await listOrgResults(org.id); } catch (err) { results = []; }
   var orgResults = results.filter(function (r) { return String(r.org_id || '') === String(org.id); });
 
   var rows = orgResults.map(function (r) {

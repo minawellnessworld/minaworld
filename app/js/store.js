@@ -6,9 +6,9 @@
      · 프로그램·기수·쿠폰·기본 게시글만 시드로 보관
      · 개인 측정 데이터는 절대 임의 생성하지 않음 (빈 상태 표시)
    ===================================================================== */
-import { CONFIG } from './config.js?v=2.0.3';
-import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.3';
-import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.3';
+import { CONFIG } from './config.js?v=2.0.4';
+import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.4';
+import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.4';
 
 export var state = {
   mode: 'local',

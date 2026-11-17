@@ -1,13 +1,13 @@
 /* S07. MINA COMMUNITY — 7개 카테고리 · 게시글 · 댓글 */
-import { COMMUNITY_CATEGORIES, categoryLabel } from '../config.js?v=2.0.3';
+import { COMMUNITY_CATEGORIES, categoryLabel } from '../config.js?v=2.0.4';
 import {
   state, listPosts, getPost, createPost, updatePost, deletePost,
   listComments, addComment, deleteComment, isStaff, isAdmin, friendlyError
-} from '../store.js?v=2.0.3';
+} from '../store.js?v=2.0.4';
 import {
   icon, esc, timeAgo, fmtDateTime, toast, emptyState, noticeBox, sectionHead,
   badge, openSheet, closeSheet, setBusy, confirmDialog, go
-} from '../ui.js?v=2.0.3';
+} from '../ui.js?v=2.0.4';
 
 function postRow(post) {
   return '<a class="post-row" href="#/community/post/' + esc(post.id) + '">' +

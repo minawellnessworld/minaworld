@@ -10,9 +10,9 @@
 import {
   state, isAdmin, isOrgWorker, myOrgId, friendlyError, nowIso, todayStr,
   localRows, localInsertRow, localUpdateRow, localDeleteRow, saveLocalNow, currentUser
-} from './store.js?v=2.0.3';
-import { clientSync, createSecondaryClient } from './supabase.js?v=2.0.3';
-import { CONFIG } from './config.js?v=2.0.3';
+} from './store.js?v=2.0.4';
+import { clientSync, createSecondaryClient } from './supabase.js?v=2.0.4';
+import { CONFIG } from './config.js?v=2.0.4';
 
 function uid() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
@@ -483,6 +483,28 @@ export async function listOrgPayments(orgId, month) {
     rows = rows.filter(function (p) { return String(p.created_at || '').slice(0, 7) === month; });
   }
   return rows;
+}
+
+export async function listOrgResults(orgId) {
+  var target = orgId || orgScope();
+  if (!target) return [];
+  if (live()) {
+    var res = await clientSync().from('brain_check_results').select('*').eq('org_id', target).order('measured_at', { ascending: false });
+    if (res.error) throw new Error(friendlyError(res.error));
+    return res.data || [];
+  }
+  return localRows('brain_results').filter(function (r) { return String(r.org_id) === String(target); });
+}
+
+export async function listOrgBookings(orgId) {
+  var target = orgId || orgScope();
+  if (!target) return [];
+  if (live()) {
+    var res = await clientSync().from('bookings').select('*').eq('org_id', target).order('preferred_date', { ascending: false });
+    if (res.error) throw new Error(friendlyError(res.error));
+    return res.data || [];
+  }
+  return localRows('bookings').filter(function (b) { return String(b.org_id) === String(target); });
 }
 
 export function settlementTotals(payments, commissionRate) {
