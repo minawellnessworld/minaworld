@@ -1,8 +1,8 @@
 /* S05. MIND CARE & BRAIN WELLNESS — 10종 프로그램 */
-import { BRAND } from '../config.js';
-import { getPrograms, friendlyError } from '../store.js';
-import { icon, esc, fmtKRW, emptyState, noticeBox, openSheet, closeSheet } from '../ui.js';
-import { openBookingFlow } from '../booking.js';
+import { BRAND } from '../config.js?v=2.0.3';
+import { getPrograms, friendlyError } from '../store.js?v=2.0.3';
+import { icon, esc, fmtKRW, emptyState, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.3';
+import { openBookingFlow } from '../booking.js?v=2.0.3';
 
 var FILTERS = [
   { id: 'all', label: '전체' },

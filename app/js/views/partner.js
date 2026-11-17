@@ -6,12 +6,12 @@ import {
   ORG_TYPES, BOOKING_STATUS, SETTLEMENT_STATUS, MEMBERSHIP_STATUS,
   STAFF_PERMISSIONS, STAFF_ROLE_OPTIONS, CHECK_TYPES, ROLES, WEEKDAYS,
   hasPermission, staffPermissionLabels
-} from '../config.js';
+} from '../config.js?v=2.0.3';
 import {
   state, isAdmin, isOrgAdmin, myOrgId, friendlyError, todayStr,
   listProfiles, listBookings, adminSetBookingStatus, listResults, adminSaveResult, uploadResultFile,
   adminUpdateProfile
-} from '../store.js';
+} from '../store.js?v=2.0.3';
 import {
   getPartnerMetrics, listOrgMemberships, updateMembership, requestResultAccess,
   issueStaffAccount, issueOrgMemberAccount, listPreAssignments, deletePreAssignment,
@@ -19,13 +19,13 @@ import {
   listOrgPrograms, saveOrgProgram, setOrgProgramActive,
   listOrgPayments, settlementTotals, listSettlements, createSettlement, markSettlementPaid,
   getOrganization
-} from '../store-org.js';
-import { logAudit } from '../store-security.js';
-import { openAdminBookingModal } from '../booking.js';
+} from '../store-org.js?v=2.0.3';
+import { logAudit } from '../store-security.js?v=2.0.3';
+import { openAdminBookingModal } from '../booking.js?v=2.0.3';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, confirmDialog, setBusy, downloadCsv, loadingBlock
-} from '../ui.js';
+} from '../ui.js?v=2.0.3';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';

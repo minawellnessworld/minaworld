@@ -4,7 +4,7 @@
    - 신규 v2 모듈(store-org / store-security / admin-login / partner / admin/*) 포함
    - Supabase · CDN · GA4 요청은 네트워크 패스스루 (캐시하지 않음)
    ===================================================================== */
-const VERSION = 'mina-app-v2.0.2';
+const VERSION = 'mina-app-v2.0.3';
 const CACHE_NAME = VERSION + '-shell';          // 앱 셸 선캐시
 const RUNTIME_CACHE = VERSION + '-runtime';     // 런타임 보조 캐시
 
@@ -16,40 +16,40 @@ const PRECACHE_ASSETS = [
   './css/app.css',
 
   /* core modules */
-  './js/app.js',
-  './js/config.js',
-  './js/catalog.js',
-  './js/supabase.js',
-  './js/store.js',
-  './js/store-org.js',
-  './js/store-security.js',
-  './js/ui.js',
-  './js/booking.js',
+  './js/app.js?v=2.0.3',
+  './js/config.js?v=2.0.3',
+  './js/catalog.js?v=2.0.3',
+  './js/supabase.js?v=2.0.3',
+  './js/store.js?v=2.0.3',
+  './js/store-org.js?v=2.0.3',
+  './js/store-security.js?v=2.0.3',
+  './js/ui.js?v=2.0.3',
+  './js/booking.js?v=2.0.3',
 
   /* B2C views */
-  './js/views/home.js',
-  './js/views/brain-check.js',
-  './js/views/neuro.js',
-  './js/views/my-brain.js',
-  './js/views/programs.js',
-  './js/views/academy.js',
-  './js/views/community.js',
-  './js/views/account.js',
-  './js/views/more.js',
+  './js/views/home.js?v=2.0.3',
+  './js/views/brain-check.js?v=2.0.3',
+  './js/views/neuro.js?v=2.0.3',
+  './js/views/my-brain.js?v=2.0.3',
+  './js/views/programs.js?v=2.0.3',
+  './js/views/academy.js?v=2.0.3',
+  './js/views/community.js?v=2.0.3',
+  './js/views/account.js?v=2.0.3',
+  './js/views/more.js?v=2.0.3',
 
   /* admin · partner */
-  './js/views/admin.js',
-  './js/views/admin-login.js',
-  './js/views/partner.js',
-  './js/views/admin/overview.js',
-  './js/views/admin/bookings.js',
-  './js/views/admin/members.js',
-  './js/views/admin/results.js',
-  './js/views/admin/content.js',
-  './js/views/admin/orgs.js',
-  './js/views/admin/settlements.js',
-  './js/views/admin/audit.js',
-  './js/views/admin/security.js',
+  './js/views/admin.js?v=2.0.3',
+  './js/views/admin-login.js?v=2.0.3',
+  './js/views/partner.js?v=2.0.3',
+  './js/views/admin/overview.js?v=2.0.3',
+  './js/views/admin/bookings.js?v=2.0.3',
+  './js/views/admin/members.js?v=2.0.3',
+  './js/views/admin/results.js?v=2.0.3',
+  './js/views/admin/content.js?v=2.0.3',
+  './js/views/admin/orgs.js?v=2.0.3',
+  './js/views/admin/settlements.js?v=2.0.3',
+  './js/views/admin/audit.js?v=2.0.3',
+  './js/views/admin/security.js?v=2.0.3',
 
   /* icons · assets */
   './icons/icon-192.png',

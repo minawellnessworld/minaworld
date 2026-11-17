@@ -1,22 +1,22 @@
 /* =====================================================================
    MINA WORLD App — 부트스트랩 & 해시 라우터
    ===================================================================== */
-import { state, boot, subscribe, isStaff, listNotifications, markNotificationRead } from './store.js';
-import { icon, go, openSheet, closeSheet, loadingBlock, esc, timeAgo, toast } from './ui.js';
-import { requireLoginSheet } from './booking.js';
+import { state, boot, subscribe, isStaff, listNotifications, markNotificationRead } from './store.js?v=2.0.3';
+import { icon, go, openSheet, closeSheet, loadingBlock, esc, timeAgo, toast } from './ui.js?v=2.0.3';
+import { requireLoginSheet } from './booking.js?v=2.0.3';
 
-import * as HomeView from './views/home.js';
-import * as BrainCheckView from './views/brain-check.js';
-import * as NeuroView from './views/neuro.js';
-import * as MyBrainView from './views/my-brain.js';
-import * as ProgramsView from './views/programs.js';
-import * as AcademyView from './views/academy.js';
-import * as CommunityView from './views/community.js';
-import * as AccountView from './views/account.js';
-import * as MoreView from './views/more.js';
-import * as AdminView from './views/admin.js';
-import * as AdminLoginView from './views/admin-login.js';
-import * as PartnerView from './views/partner.js';
+import * as HomeView from './views/home.js?v=2.0.3';
+import * as BrainCheckView from './views/brain-check.js?v=2.0.3';
+import * as NeuroView from './views/neuro.js?v=2.0.3';
+import * as MyBrainView from './views/my-brain.js?v=2.0.3';
+import * as ProgramsView from './views/programs.js?v=2.0.3';
+import * as AcademyView from './views/academy.js?v=2.0.3';
+import * as CommunityView from './views/community.js?v=2.0.3';
+import * as AccountView from './views/account.js?v=2.0.3';
+import * as MoreView from './views/more.js?v=2.0.3';
+import * as AdminView from './views/admin.js?v=2.0.3';
+import * as AdminLoginView from './views/admin-login.js?v=2.0.3';
+import * as PartnerView from './views/partner.js?v=2.0.3';
 
 var ROUTES = {
   home: HomeView,
@@ -331,7 +331,7 @@ function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
   if (location.protocol === 'file:') return;
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=2.0.3').then(function (reg) {
       /* 매 방문마다 새 버전이 있는지 확인 → 배포 직후에도 오래된 앱 셸이 남지 않습니다 */
       if (reg && reg.update) {
         reg.update().catch(function () {});
