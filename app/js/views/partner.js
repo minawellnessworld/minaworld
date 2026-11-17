@@ -6,14 +6,14 @@ import {
   ORG_TYPES, BOOKING_STATUS, SETTLEMENT_STATUS, MEMBERSHIP_STATUS,
   STAFF_PERMISSIONS, STAFF_ROLE_OPTIONS, CHECK_TYPES, ROLES, WEEKDAYS,
   hasPermission, staffPermissionLabels
-} from '../config.js?v=2.0.11';
-import { editorHtml, bindEditor, fillItems } from '../check-items.js?v=2.0.11';
-import { bindPdfAutofill } from '../pdf-parser.js?v=2.0.11';
+} from '../config.js?v=2.0.12';
+import { editorHtml, bindEditor, fillItems } from '../check-items.js?v=2.0.12';
+import { bindPdfAutofill } from '../pdf-parser.js?v=2.0.12';
 import {
   state, isAdmin, isOrgAdmin, myOrgId, friendlyError, todayStr,
   listProfiles, listBookings, adminSetBookingStatus, listResults, adminSaveResult, uploadResultFile,
   adminUpdateProfile
-} from '../store.js?v=2.0.11';
+} from '../store.js?v=2.0.12';
 import {
   getPartnerMetrics, listOrgMemberships, updateMembership, requestResultAccess,
   issueStaffAccount, issueOrgMemberAccount, listPreAssignments, deletePreAssignment,
@@ -22,13 +22,13 @@ import {
   listOrgPayments, settlementTotals, listSettlements, createSettlement, markSettlementPaid,
   listOrgResults, listOrgBookings,
   getOrganization
-} from '../store-org.js?v=2.0.11';
-import { logAudit } from '../store-security.js?v=2.0.11';
-import { openAdminBookingModal } from '../booking.js?v=2.0.11';
+} from '../store-org.js?v=2.0.12';
+import { logAudit } from '../store-security.js?v=2.0.12';
+import { openAdminBookingModal } from '../booking.js?v=2.0.12';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, confirmDialog, setBusy, downloadCsv, loadingBlock
-} from '../ui.js?v=2.0.11';
+} from '../ui.js?v=2.0.12';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';

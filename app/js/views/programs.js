@@ -1,20 +1,28 @@
-/* S05. MIND CARE & BRAIN WELLNESS — 10종 프로그램 */
-import { BRAND } from '../config.js?v=2.0.11';
-import { getPrograms, friendlyError } from '../store.js?v=2.0.11';
-import { icon, esc, fmtKRW, emptyState, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.11';
-import { openBookingFlow } from '../booking.js?v=2.0.11';
+/* S05. NEURO TRAINING · MIND CARE · BRAIN WELLNESS — 뉴로피드백 4종 + 10종 프로그램 */
+import { BRAND } from '../config.js?v=2.0.12';
+import { getPrograms, friendlyError } from '../store.js?v=2.0.12';
+import { icon, esc, fmtKRW, emptyState, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.12';
+import { openBookingFlow } from '../booking.js?v=2.0.12';
 
 var FILTERS = [
   { id: 'all', label: '전체' },
+  { id: 'neuro_training', label: '뉴로피드백' },
   { id: 'MIND CARE', label: 'MIND CARE' },
   { id: 'BRAIN WELLNESS', label: 'BRAIN WELLNESS' },
   { id: '생애주기별', label: '생애주기별' }
 ];
 
+function categoryPill(program) {
+  if (program.category === 'neuro_training') {
+    return '뉴로피드백' + (program.sub_category ? ' · ' + program.sub_category : '');
+  }
+  return program.sub_category || '';
+}
+
 function programCard(program) {
   return '<article class="program-card" data-program="' + esc(program.id) + '">' +
     '<div class="program-top">' +
-      '<span class="pill pill-soft">' + esc(program.sub_category || '') + '</span>' +
+      '<span class="pill pill-soft">' + esc(categoryPill(program)) + '</span>' +
       (program.badge ? '<span class="badge badge-neutral">' + esc(program.badge) + '</span>' : '') +
     '</div>' +
     '<h3>' + esc(program.title) + '</h3>' +
@@ -29,7 +37,7 @@ function programCard(program) {
 
 function detailContent(program) {
   return '<div class="detail-hero">' +
-      '<span class="pill pill-navy">' + esc(program.sub_category || '') + '</span>' +
+      '<span class="pill pill-navy">' + esc(categoryPill(program)) + '</span>' +
       '<h2>' + esc(program.title) + '</h2>' +
       '<p class="muted">' + esc(program.subtitle || '') + '</p>' +
     '</div>' +
@@ -44,19 +52,21 @@ function detailContent(program) {
 }
 
 export async function render(ctx) {
+  var neuro = [];
   var mindCare = [];
   var wellness = [];
   var loadError = '';
 
   try {
-    var loaded = await Promise.all([getPrograms('mind_care'), getPrograms('brain_wellness')]);
-    mindCare = loaded[0];
-    wellness = loaded[1];
+    var loaded = await Promise.all([getPrograms('neuro_training'), getPrograms('mind_care'), getPrograms('brain_wellness')]);
+    neuro = loaded[0];
+    mindCare = loaded[1];
+    wellness = loaded[2];
   } catch (err) {
     loadError = friendlyError(err);
   }
 
-  var all = mindCare.concat(wellness);
+  var all = neuro.concat(mindCare, wellness);
   var requested = ctx.query.get('group') || 'all';
   var activeFilter = 'all';
   for (var i = 0; i < FILTERS.length; i++) {
@@ -65,6 +75,7 @@ export async function render(ctx) {
 
   function listFor(filter) {
     if (filter === 'all') return all;
+    if (filter === 'neuro_training') return all.filter(function (p) { return p.category === 'neuro_training'; });
     return all.filter(function (p) { return (p.sub_category || '') === filter; });
   }
 
@@ -78,8 +89,8 @@ export async function render(ctx) {
   var html =
     '<header class="page-head">' +
       '<span class="page-eyebrow">' + icon('grid', 16) + ' PROGRAMS</span>' +
-      '<h1 class="page-title">마인드케어 ·<br>브레인 웰니스</h1>' +
-      '<p class="page-desc">스트레스·번아웃·감정·수면·집중력까지, 뇌과학 기반 10종 프로그램을 1:1로 진행합니다.</p>' +
+      '<h1 class="page-title">뉴로피드백 ·<br>마인드케어 · 브레인 웰니스</h1>' +
+      '<p class="page-desc">뉴로피드백 훈련부터 스트레스·번아웃·감정·수면·집중력까지, 뇌과학 기반 맞춤 프로그램을 1:1로 예약·진행합니다.</p>' +
     '</header>' +
 
     (loadError ? '<section class="section">' + noticeBox(esc(loadError), 'warn') + '</section>' : '') +

@@ -1,16 +1,16 @@
 /* S07. MINA COMMUNITY — 7개 카테고리 · 게시글 · 댓글 + 하루 한 스푼, 뇌과학 연재 */
-import { COMMUNITY_CATEGORIES, categoryLabel, BRAND } from '../config.js?v=2.0.11';
+import { COMMUNITY_CATEGORIES, categoryLabel, BRAND } from '../config.js?v=2.0.12';
 import {
   state, listPosts, getPost, createPost, updatePost, deletePost,
   listComments, addComment, deleteComment, isStaff, isAdmin, friendlyError
-} from '../store.js?v=2.0.11';
+} from '../store.js?v=2.0.12';
 import {
   listSpoonArticles, getSpoonArticle, spoonDateLabel, spoonWeekday
-} from '../spoon.js?v=2.0.11';
+} from '../spoon.js?v=2.0.12';
 import {
   icon, esc, timeAgo, fmtDateTime, toast, emptyState, noticeBox, sectionHead,
   badge, openSheet, closeSheet, setBusy, confirmDialog, go, track
-} from '../ui.js?v=2.0.11';
+} from '../ui.js?v=2.0.12';
 
 var SPOON_TAG = '하루 한 스푼';
 

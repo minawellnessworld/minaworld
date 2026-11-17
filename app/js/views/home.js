@@ -1,19 +1,19 @@
 /* S01. 홈 — 개인 회원 메인 대시보드(PART 2-2) + 오늘의 뇌 컨디션 체크인 */
-import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.11';
+import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.12';
 import {
   state, listWellness, addWellness, listBookings, listPosts, listResults, listPackages,
   listSessions, getPrograms, isStaff, isOrgWorker,
   friendlyError, dateKey, todayStr
-} from '../store.js?v=2.0.11';
+} from '../store.js?v=2.0.12';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listMyMemberships, setShareBrainResults
-} from '../store-org.js?v=2.0.11';
-import { recordConsents, logAudit } from '../store-security.js?v=2.0.11';
+} from '../store-org.js?v=2.0.12';
+import { recordConsents, logAudit } from '../store-security.js?v=2.0.12';
 import {
   icon, esc, fmtKRW, fmtDate, todayLabel, toast, emptyState, setBusy, sectionHead, go, track, noticeBox
-} from '../ui.js?v=2.0.11';
-import { requireLoginSheet } from '../booking.js?v=2.0.11';
-import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.11';
+} from '../ui.js?v=2.0.12';
+import { requireLoginSheet } from '../booking.js?v=2.0.12';
+import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.12';
 
 var MENU = [
   { key: 'brain_check', title: 'BRAIN CHECK', sub: '뇌파측정 · 뇌기능검사 예약', ico: 'pulse', href: '#/brain-check', tone: 'navy' },
@@ -106,6 +106,16 @@ export async function render(ctx) {
     return (b.status === 'pending' || b.status === 'confirmed') && String(b.preferred_date) >= todayStrValue;
   }).sort(function (a, b) { return String(a.preferred_date).localeCompare(String(b.preferred_date)); });
   var upcoming = upcomingList[0];
+
+  /* 다음 예약 동선: 첫 방문은 뇌파검사(BRAIN CHECK), 이후 예약은 프로그램(뉴로피드백) 화면으로 */
+  var isFirstVisit = bookings.length === 0 && results.length === 0 && packages.length === 0;
+  var nextBookingHref = isFirstVisit ? '#/brain-check' : '#/programs';
+  var nextCardHref = '#/programs';
+  if (upcoming) {
+    var upcomingProgramId = String(upcoming.program_id || '');
+    if (upcomingProgramId.indexOf('neuro_') === 0) nextCardHref = '#/neuro';
+    else if (upcomingProgramId.indexOf('brain_check') === 0) nextCardHref = '#/brain-check';
+  }
 
   var latestResult = results.slice().sort(function (a, b) {
     return String(b.measured_at).localeCompare(String(a.measured_at));
@@ -226,7 +236,8 @@ export async function render(ctx) {
           dashTile('file', '최근 검사', latestResult ? fmtDate(latestResult.measured_at) : '기록 없음',
             latestResult ? (latestResult.check_type === 'full' ? '종합검사' : '간편검사') : '검사 후 표시', latestResult ? '#/my-brain' : '#/brain-check') +
           dashTile('calendar', '다음 예약', upcoming ? fmtDate(upcoming.preferred_date) : '예정 없음',
-            upcoming ? (upcoming.preferred_time + ' · ' + upcoming.program_title) : '예약을 잡아보세요', upcoming ? '#/brain-check' : '#/brain-check') +
+            upcoming ? (upcoming.preferred_time + ' · ' + upcoming.program_title)
+              : (isFirstVisit ? '첫 방문 뇌파검사 예약' : '뉴로피드백 · 프로그램 예약'), nextBookingHref) +
           dashTile('grid', '이용 프로그램', String(activePackages.length) + '개', packages.length ? '누적 ' + packages.length + '건' : '이용 전', '#/my-brain') +
           dashTile('sparkle', '뉴로피드백 잔여', String(remaining) + '회', totalUsed ? '누적 ' + totalUsed + '회 훈련' : '이용권 없음', '#/neuro') +
           dashTile('heart', '최근 웰니스', latestWellness ? fmtDate(latestWellness.logged_at) : '기록 없음',
@@ -266,7 +277,7 @@ export async function render(ctx) {
 
     (state.session && upcoming
       ? '<section class="section">' +
-          '<a class="next-card" href="#/brain-check">' +
+          '<a class="next-card" href="' + nextCardHref + '">' +
             '<span class="next-ico">' + icon('calendar', 20) + '</span>' +
             '<span class="next-body"><span class="muted small">다가오는 일정</span>' +
               '<strong>' + esc(upcoming.program_title) + '</strong>' +
