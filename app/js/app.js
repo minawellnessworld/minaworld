@@ -315,7 +315,12 @@ function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
   if (location.protocol === 'file:') return;
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js').catch(function (err) {
+    navigator.serviceWorker.register('./sw.js').then(function (reg) {
+      /* 매 방문마다 새 버전이 있는지 확인 → 배포 직후에도 오래된 앱 셸이 남지 않습니다 */
+      if (reg && reg.update) {
+        reg.update().catch(function () {});
+      }
+    }).catch(function (err) {
       console.warn('[MINA] 서비스워커 등록 실패', err);
     });
   });
