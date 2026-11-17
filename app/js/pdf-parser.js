@@ -15,7 +15,7 @@
    · 그래프 안에 그림(래스터)으로 박힌 수치는 어떤 텍스트 파서도 읽을 수 없습니다.
      그런 항목은 비워 두고 몇 건을 채웠는지만 안내합니다.
    ===================================================================== */
-import { esc } from './ui.js?v=2.0.15';
+import { esc } from './ui.js?v=2.0.16';
 
 var PDFJS_VERSION = '3.11.174';
 var PDFJS_CDN = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + PDFJS_VERSION + '/';
@@ -454,6 +454,21 @@ function readMeasuredAt(pages) {
    (Θ/SMR 수치는 그래프 그림으로만 표시되어 텍스트로 읽을 수 없습니다.) */
 var OVERVIEW_CATEGORIES = ['뇌 산만도', '뇌 활용 능력', '뇌파의 안정성'];
 
+/* 그래프 위에 겹쳐 그려진 라벨(Neuro/Brain · 좌뇌/우뇌 등)을 평가 문장에서 떼어냅니다. */
+function cleanOverviewText(raw) {
+  var text = String(raw || '').trim();
+  for (var i = 0; i < 3; i++) {
+    var next = text
+      .replace(/^(Neuro|Brain)\s*/i, '')
+      .replace(/^(좌|우)\s*뇌\s*/, '')
+      .replace(/^(좌우\s*동조|진폭\s*대칭)\s*/, '')
+      .trim();
+    if (next === text) break;
+    text = next;
+  }
+  return text;
+}
+
 function readOverviewNotes(pages) {
   var out = {};
   pages.forEach(function (page) {
@@ -477,12 +492,10 @@ function readOverviewNotes(pages) {
       for (var k = idx + 1; k < lines.length; k++) {
         var line = lines[k];
         if (line.y >= endY) break;
-        if (line.y - startY < 8 || line.y - startY > 140) continue;
-        var text = String(line.text || '').trim();
+        if (line.y - startY < 8 || line.y - startY > 100) continue;
+        var text = cleanOverviewText(line.text);
         if (!/[가-힣]/.test(text) || text.length < 8) continue;
         if (/^[0-9.%\s]+$/.test(text)) continue;
-        if (/^(Neuro|Brain)\b/.test(text)) continue;
-        if (/^(좌|우)\s*뇌/.test(text)) continue;
         out[category.name] = text;
         break;
       }

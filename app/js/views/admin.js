@@ -4,28 +4,28 @@
 import {
   CHECK_TYPES, BOOKING_STATUS, BOOKING_PAYMENT_STATUS, PAYMENT_STATUS, ROLES, GRADES,
   COMMUNITY_CATEGORIES, ENROLLMENT_STATUS, categoryLabel
-} from '../config.js?v=2.0.15';
+} from '../config.js?v=2.0.16';
 import {
   state, isAdmin, isStaff, listProfiles, listPackages, adminSavePackage, adminUpdatePackage,
   listSessions, adminSaveSession, listAllPrograms, adminUpdateProgram,
   listCohorts, adminCreateCohort, adminUpdateCohort, listEnrollments, adminUpdateEnrollment,
   listMaterials, adminCreateMaterial, listCoupons, adminCreateCoupon, adminUpdateCoupon,
   listNotes, adminCreateNote, listPayments, adminSetPaymentStatus, friendlyError, todayStr
-} from '../store.js?v=2.0.15';
+} from '../store.js?v=2.0.16';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, setBusy, go
-} from '../ui.js?v=2.0.15';
-import { logAudit } from '../store-security.js?v=2.0.15';
-import * as OverviewTab from './admin/overview.js?v=2.0.15';
-import * as BookingsTab from './admin/bookings.js?v=2.0.15';
-import * as MembersTab from './admin/members.js?v=2.0.15';
-import * as ResultsTab from './admin/results.js?v=2.0.15';
-import * as ContentTab from './admin/content.js?v=2.0.15';
-import * as OrgsTab from './admin/orgs.js?v=2.0.15';
-import * as SettlementsTab from './admin/settlements.js?v=2.0.15';
-import * as AuditTab from './admin/audit.js?v=2.0.15';
-import * as SecurityTab from './admin/security.js?v=2.0.15';
+} from '../ui.js?v=2.0.16';
+import { logAudit } from '../store-security.js?v=2.0.16';
+import * as OverviewTab from './admin/overview.js?v=2.0.16';
+import * as BookingsTab from './admin/bookings.js?v=2.0.16';
+import * as MembersTab from './admin/members.js?v=2.0.16';
+import * as ResultsTab from './admin/results.js?v=2.0.16';
+import * as ContentTab from './admin/content.js?v=2.0.16';
+import * as OrgsTab from './admin/orgs.js?v=2.0.16';
+import * as SettlementsTab from './admin/settlements.js?v=2.0.16';
+import * as AuditTab from './admin/audit.js?v=2.0.16';
+import * as SecurityTab from './admin/security.js?v=2.0.16';
 
 var TABS = [
   { id: 'overview', label: '운영 요약', ico: 'chart' },
