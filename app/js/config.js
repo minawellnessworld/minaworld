@@ -43,7 +43,7 @@ export var CONFIG = {
   SUPABASE_SCHEMA: 'public',
   STORAGE_BUCKET: 'brain-results',
   GA_MEASUREMENT_ID: 'G-TTMVKBHNZM',
-  APP_VERSION: '2.0.0',
+  APP_VERSION: '2.0.7',
   SCHEMA_VERSION: 'v2',
   SITE_URL: 'https://www.minaworld.co.kr',
   CONTACT_EMAIL: 'minawellnessworld@gmail.com',
@@ -185,6 +185,35 @@ export var CHECK_ITEM_LABELS = {
   balance_index: '좌우 균형',
   feedback_score: '자기 피드백',
   emotion_type: '감정 성향'
+};
+
+/* 검사 항목 기본 템플릿 — 실제 발행 리포트(간편 2장 · 종합 11장) 기준.
+   관리자·기관 결과 등록 폼의 '항목별 설명' 칸에 이 항목들이 자동으로 세팅되고,
+   화면의 '현재 항목을 기본값으로 저장' 으로 유형별 기본값을 직접 바꿀 수 있습니다.
+   hint 는 입력칸 안내문(placeholder)으로만 쓰이고 결과지에는 저장되지 않습니다. */
+export var CHECK_ITEM_TEMPLATES = {
+  simple: [
+    { name: '뇌 활용 능력', hint: '좌뇌/우뇌 우세 주파수 · 평가' },
+    { name: '뇌파의 안정성', hint: '좌뇌/우뇌 α평균진폭 · 진폭 편차 · 평가' },
+    { name: '뇌 산만도', hint: '좌뇌/우뇌 산만도 · 평가' },
+    { name: '좌우뇌 균형', hint: '좌우동조 · 진폭대칭 · 평가' },
+    { name: '육체적 스트레스', hint: '좌/우 신체 긴장 · 피로도' },
+    { name: '정신적 스트레스', hint: '좌/우 심리 · 정신 긴장' },
+    { name: '행동성향', hint: '좌뇌/우뇌 α/β · 차이비율 · 평가' },
+    { name: '정서성향', hint: '좌뇌/우뇌 α평균 · 차이비율 · 평가' }
+  ],
+  full: [
+    { name: '주파수 출현빈도 및 평균 진폭', hint: '' },
+    { name: '알파파 파형의 변화', hint: '' },
+    { name: '개안·폐안 뇌파의 변화', hint: '' },
+    { name: '뇌 산만비율(Θ/SMR)', hint: '' },
+    { name: '좌우뇌 균형', hint: '' },
+    { name: '육체적 긴장과 스트레스', hint: '' },
+    { name: '정신적 산만과 스트레스', hint: '' },
+    { name: '행동 성향(α/β)', hint: '' },
+    { name: '정서 성향(Lα·Rα)', hint: '' },
+    { name: '자기 피드백 능력', hint: '' }
+  ]
 };
 
 export var ENROLLMENT_STATUS = {

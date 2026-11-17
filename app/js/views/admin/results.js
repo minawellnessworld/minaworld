@@ -1,14 +1,15 @@
 /* 관리자 → 검사 결과: 등록 · 수정 · is_public 공개 토글 · 항목별 설명(item_details) · 결과지 업로드 */
-import { CHECK_TYPES, CHECK_ITEM_LABELS } from '../../config.js?v=2.0.6';
+import { CHECK_TYPES } from '../../config.js?v=2.0.7';
+import { editorHtml, bindEditor } from '../../check-items.js?v=2.0.7';
 import {
   state, listProfiles, listResults, adminSaveResult, adminUpdateResult, adminDeleteResult,
   uploadResultFile, listOrganizations, friendlyError, todayStr
-} from '../../store.js?v=2.0.6';
-import { logAudit } from '../../store-security.js?v=2.0.6';
+} from '../../store.js?v=2.0.7';
+import { logAudit } from '../../store-security.js?v=2.0.7';
 import {
   icon, esc, fmtDate, toast, badge, openSheet, closeSheet, confirmDialog, setBusy,
   noticeBox, emptyState
-} from '../../ui.js?v=2.0.6';
+} from '../../ui.js?v=2.0.7';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -120,11 +121,7 @@ export async function build(ctx) {
           '<label class="field"><span class="field-label">감정 성향</span><input type="text" id="res-emotion" placeholder="예: 안정 균형형"></label>' +
           '<label class="field"><span class="field-label">다음 재검사 권장일</span><input type="date" id="res-recheck"></label>' +
         '</div>' +
-        '<div class="field"><span class="field-label">항목별 설명 (MY BRAIN에 그대로 표시)</span>' +
-          '<div id="res-items">' + itemRowsHtml({}) + '</div>' +
-          '<button type="button" class="btn btn-ghost btn-xs" id="res-add-item">+ 항목 추가</button>' +
-          '<p class="field-hint">기본 항목: ' + Object.keys(CHECK_ITEM_LABELS).map(function (k) { return CHECK_ITEM_LABELS[k]; }).join(' · ') + '</p>' +
-        '</div>' +
+        editorHtml('res', 'simple', { label: '항목별 설명 (MY BRAIN에 그대로 표시)' }) +
         '<label class="field"><span class="field-label">요약 코멘트</span><textarea id="res-summary" rows="2" placeholder="결과 요약 · 웰니스 안내"></textarea></label>' +
         '<label class="field"><span class="field-label">결과지 파일 (PDF · 이미지)</span><input type="file" id="res-file" accept="application/pdf,image/*"></label>' +
         '<p class="field-hint">비공개 Storage 버킷 <code>brain-results/{user_id}/…</code> 에 업로드되며, 회원은 Signed URL로만 열람합니다.</p>' +
@@ -140,25 +137,7 @@ export async function build(ctx) {
   return {
     html: html,
     bind: function (el) {
-      var itemsEl = el.querySelector('#res-items');
-      function bindKvButtons(scope) {
-        var removes = scope.querySelectorAll('[data-kv-remove]');
-        for (var i = 0; i < removes.length; i++) {
-          removes[i].addEventListener('click', function () {
-            var row = this.closest('.kv-row');
-            if (row && scope.querySelectorAll('.kv-row').length > 1) row.remove();
-          });
-        }
-      }
-      bindKvButtons(itemsEl);
-
-      var addItem = el.querySelector('#res-add-item');
-      addItem.addEventListener('click', function () {
-        var wrap = document.createElement('div');
-        wrap.innerHTML = itemRowsHtml({});
-        while (wrap.firstChild) itemsEl.appendChild(wrap.firstChild);
-        bindKvButtons(itemsEl);
-      });
+      var itemEditor = bindEditor(el, 'res', '#res-type', function (message) { toast(message); });
 
       var submit = el.querySelector('#res-submit');
       submit.addEventListener('click', async function () {
@@ -189,7 +168,7 @@ export async function build(ctx) {
             feedback_score: num('#res-feedback'),
             emotion_type: el.querySelector('#res-emotion').value.trim(),
             summary_note: el.querySelector('#res-summary').value.trim(),
-            item_details: collectItems(itemsEl),
+            item_details: itemEditor ? itemEditor.items() : {},
             is_public: el.querySelector('#res-public').checked,
             org_id: el.querySelector('#res-org').value || null,
             file_path: uploaded.file_path,

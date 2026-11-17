@@ -6,12 +6,13 @@ import {
   ORG_TYPES, BOOKING_STATUS, SETTLEMENT_STATUS, MEMBERSHIP_STATUS,
   STAFF_PERMISSIONS, STAFF_ROLE_OPTIONS, CHECK_TYPES, ROLES, WEEKDAYS,
   hasPermission, staffPermissionLabels
-} from '../config.js?v=2.0.6';
+} from '../config.js?v=2.0.7';
+import { editorHtml, bindEditor } from '../check-items.js?v=2.0.7';
 import {
   state, isAdmin, isOrgAdmin, myOrgId, friendlyError, todayStr,
   listProfiles, listBookings, adminSetBookingStatus, listResults, adminSaveResult, uploadResultFile,
   adminUpdateProfile
-} from '../store.js?v=2.0.6';
+} from '../store.js?v=2.0.7';
 import {
   getPartnerMetrics, listOrgMemberships, updateMembership, requestResultAccess,
   issueStaffAccount, issueOrgMemberAccount, listPreAssignments, deletePreAssignment,
@@ -20,13 +21,13 @@ import {
   listOrgPayments, settlementTotals, listSettlements, createSettlement, markSettlementPaid,
   listOrgResults, listOrgBookings,
   getOrganization
-} from '../store-org.js?v=2.0.6';
-import { logAudit } from '../store-security.js?v=2.0.6';
-import { openAdminBookingModal } from '../booking.js?v=2.0.6';
+} from '../store-org.js?v=2.0.7';
+import { logAudit } from '../store-security.js?v=2.0.7';
+import { openAdminBookingModal } from '../booking.js?v=2.0.7';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, confirmDialog, setBusy, downloadCsv, loadingBlock
-} from '../ui.js?v=2.0.6';
+} from '../ui.js?v=2.0.7';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -427,8 +428,7 @@ async function buildResults(org) {
               '<label class="field"><span class="field-label">감정 성향</span><input type="text" id="pr-emotion"></label>' +
               '<label class="field"><span class="field-label">다음 재검사 권장일</span><input type="date" id="pr-recheck"></label>' +
             '</div>' +
-            '<label class="field"><span class="field-label">항목별 설명 (JSON · 선택)</span>' +
-              '<textarea id="pr-items" rows="3" placeholder=\'{"focus_score":"집중 유지 시간이 늘었습니다","stress_index":"오후 각성도가 높습니다"}\'></textarea></label>' +
+            editorHtml('pr', 'simple', { label: '항목별 설명 (MY BRAIN에 그대로 표시)' }) +
             '<label class="field"><span class="field-label">요약 코멘트</span><textarea id="pr-summary" rows="2"></textarea></label>' +
             '<label class="field"><span class="field-label">결과지 파일 (PDF · 이미지)</span><input type="file" id="pr-file" accept="application/pdf,image/*"></label>' +
             '<button type="button" class="btn btn-primary" id="pr-submit">결과 등록</button>' +
@@ -452,19 +452,11 @@ async function buildResults(org) {
 
       var submit = el.querySelector('#pr-submit');
       if (!submit) return;
+      var itemEditor = bindEditor(el, 'pr', '#pr-type', function (message) { toast(message); });
       submit.addEventListener('click', async function () {
         var userId = el.querySelector('#pr-user').value;
         if (!userId) { toast('회원을 선택해 주세요. (결과 공유 동의 회원만 선택 가능)', 'error'); return; }
-        var itemsRaw = el.querySelector('#pr-items').value.trim();
-        var itemDetails = {};
-        if (itemsRaw) {
-          try {
-            itemDetails = JSON.parse(itemsRaw);
-          } catch (err) {
-            toast('항목별 설명은 JSON 형식으로 입력해 주세요. 예: {"focus_score":"..."}', 'error');
-            return;
-          }
-        }
+        var itemDetails = itemEditor ? itemEditor.items() : {};
         var num = function (selector) {
           var raw = el.querySelector(selector).value;
           if (raw === '') return null;

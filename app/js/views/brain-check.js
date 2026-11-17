@@ -1,8 +1,8 @@
 /* S02. BRAIN CHECK — 뇌파측정 서비스 소개 · 예약 · 결과 */
-import { BRAND, CHECK_TYPES, BOOKING_STATUS, BOOKING_PAYMENT_STATUS } from '../config.js?v=2.0.6';
-import { state, getPrograms, listResults, listBookings, getSignedResultUrl, friendlyError } from '../store.js?v=2.0.6';
-import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, setBusy, loadingBlock } from '../ui.js?v=2.0.6';
-import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.6';
+import { BRAND, CHECK_TYPES, BOOKING_STATUS, BOOKING_PAYMENT_STATUS } from '../config.js?v=2.0.7';
+import { state, getPrograms, listResults, listBookings, getSignedResultUrl, friendlyError } from '../store.js?v=2.0.7';
+import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, setBusy, loadingBlock } from '../ui.js?v=2.0.7';
+import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.7';
 
 var RESULT_ITEMS = {
   simple: [

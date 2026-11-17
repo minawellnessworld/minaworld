@@ -2,7 +2,7 @@
    - 기본 클라이언트: 현재 로그인 세션 유지
    - 보조 클라이언트: 계정 즉시 발급(관리자/기관 관리자) 전용.
      persistSession:false 라서 현재 관리자 세션을 절대 덮어쓰지 않습니다. */
-import { CONFIG, IS_LIVE } from './config.js?v=2.0.6';
+import { CONFIG, IS_LIVE } from './config.js?v=2.0.7';
 
 var client = null;
 var booted = false;
