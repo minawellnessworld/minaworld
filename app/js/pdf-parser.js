@@ -460,17 +460,18 @@ function readOverviewNotes(pages) {
     var lines = buildLines(page.items);
     var isOverview = lines.some(function (line) { return line.norm.indexOf('종합분석') >= 0; });
     if (!isOverview) return;
-    OVERVIEW_CATEGORIES.forEach(function (category) {
-      if (out[category]) return;
+    var targets = OVERVIEW_CATEGORIES.map(function (name) { return { name: name, norm: norm(name) }; });
+    targets.forEach(function (category) {
+      if (out[category.name]) return;
       var idx = -1;
       for (var i = 0; i < lines.length; i++) {
-        if (lines[i].norm === category) { idx = i; break; }
+        if (lines[i].norm === category.norm) { idx = i; break; }
       }
       if (idx < 0) return;
       var startY = lines[idx].y;
       var endY = Infinity;
       for (var j = idx + 1; j < lines.length; j++) {
-        var other = OVERVIEW_CATEGORIES.some(function (name) { return lines[j].norm === name; });
+        var other = targets.some(function (name) { return lines[j].norm === name.norm; });
         if (other) { endY = lines[j].y; break; }
       }
       for (var k = idx + 1; k < lines.length; k++) {
@@ -480,7 +481,8 @@ function readOverviewNotes(pages) {
         var text = String(line.text || '').trim();
         if (!/[가-힣]/.test(text) || text.length < 8) continue;
         if (/^[0-9.%\s]+$/.test(text)) continue;
-        out[category] = text;
+        if (/^(Neuro|Brain)\b/.test(text)) continue;
+        out[category.name] = text;
         break;
       }
     });
