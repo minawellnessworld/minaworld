@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TTMVKBHNZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TTMVKBHNZM');
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      location.replace(location.href.replace('http:', 'https:'));
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>열심히 읽었는데 기억이 안 나는 이유 — 해마의 망각 곡선과 인출 기억 설계 | 하루 한 스푼, 뇌과학 - MINA Wellness World</title>
+  <meta name="description" content="밑줄 긋고 다시 읽는 시간이 오래 남지 않는 이유를 해마(Hippocampus)의 장기기억 공고화와 인출 연습(Retrieval Practice)·간격 반복(Spaced Repetition) 원리로 풀어내고, 수험생과 직장인을 위한 4단계 인출·간격 루틴을 안내합니다." />
+  <meta name="keywords" content="해마, 장기기억, 인출 연습, 간격 반복, 망각 곡선, 공고화, 수험생 공부법, 직장인 암기법, 집중력, 뇌파 코칭, 기업웰니스, 미나월드" />
+  <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="Vi6kKPe24ViYvS4NbUpW02Nco_04PP_qHLX9UmNT3QM" />
+  <meta name="naver-site-verification" content="b397311e6eb26e5eec40f3994740c10e6a243a4a" />
+  <link rel="canonical" href="https://www.minaworld.co.kr/article-2026-11-18-hippocampus-retrieval-memory.html" />
+  <meta property="og:site_name" content="MINA Wellness World" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.minaworld.co.kr/article-2026-11-18-hippocampus-retrieval-memory.html" />
+  <meta property="og:title" content="열심히 읽었는데 기억이 안 나는 이유 — 해마의 망각 곡선과 인출 기억 설계 | 하루 한 스푼, 뇌과학 - MINA Wellness World" />
+  <meta property="og:description" content="밑줄 긋고 다시 읽는 시간이 오래 남지 않는 이유를 해마(Hippocampus)의 장기기억 공고화와 인출 연습(Retrieval Practice)·간격 반복(Spaced Repetition) 원리로 풀어내고, 수험생과 직장인을 위한 4단계 인출·간격 루틴을 안내합니다." />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+    #reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(to right, #22D3EE, #FF7E95, #3CD070);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-white">
+  
+  <!-- 상단 읽기 진행률 바 -->
+  <div id="reading-bar"></div>
+
+  <!-- 헤더 / 내비게이션 바 -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/85 border-b border-white/10 transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="font-serif font-bold text-xl tracking-wider text-white group-hover:text-brand-accent transition">MINA</span>
+        <span class="text-xs uppercase tracking-widest text-brand-accent font-semibold">Wellness World</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="community.html" class="hidden sm:inline-flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          <span>📚 하루 한 스푼 뇌과학 목록</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 text-slate-300 hover:text-brand-accent transition">
+          <span>← 메인 홈으로</span>
+        </a>
+        <a href="contact.html" class="px-4 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white shadow-md shadow-brand-accent/20 transition">
+          상담/제휴 문의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 본문 영역 -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16 w-full">
+    
+    <!-- 빵부스러기 내비게이션 -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8 overflow-x-auto no-scrollbar">
+      <a href="index.html" class="hover:text-white transition">홈</a>
+      <span>/</span>
+      <a href="community.html" class="hover:text-white transition">하루 한 스푼, 뇌과학</a>
+      <span>/</span>
+      <span class="text-cyan-400 font-medium">수요일 · 집중력과 기억력</span>
+    </nav>
+
+    <!-- 아티클 헤더 -->
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-xs">
+        <span class="px-3 py-1 rounded-full font-bold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">수요일 · 집중력과 기억력</span>
+        <span class="text-slate-400">2026.11.18</span>
+        <span class="text-slate-500">·</span>
+        <span class="text-slate-400">5분 완독</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
+        열심히 읽었는데 기억이 안 나는 이유 — 해마의 망각 곡선과 인출 기억 설계
+      </h1>
+      
+      <p class="text-base md:text-xl text-slate-300 font-medium leading-relaxed mb-8">
+        밑줄을 긋고 다시 읽는 시간보다, 책을 덮고 스스로 꺼내보는 3분이 기억을 남깁니다
+      </p>
+
+      <!-- 작성자 정보 -->
+      <div class="flex items-center gap-4 py-4 px-5 rounded-2xl bg-brand-card/70 border border-white/10">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center text-lg font-bold text-white shadow-md">
+          M
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white flex items-center gap-2">
+            이미나 대표
+            <span class="text-[11px] font-normal text-slate-400">| 뇌교육상담사 · MINA Wellness World</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            뇌과학 기반 뉴로웰니스 솔루션과 신체 움직임을 결합하여 건강한 뇌 컨디션을 만듭니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 핵심 요약 콜아웃 박스 -->
+      <div class="mt-8 p-6 rounded-2xl bg-brand-navy border-l-4 border-cyan-400 border-r border-t border-b border-white/10 card-glow">
+        <div class="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider mb-2">
+          <span>💡 30초 핵심 요약 (Executive Summary)</span>
+        </div>
+        <p class="text-sm text-slate-200 leading-relaxed">
+          뇌는 정보를 '몇 번 읽었는지'가 아니라 <strong class="text-white">'몇 번 꺼내 썼는지'</strong>로 기억을 저장합니다. 낮의 경험을 장기기억으로 바꾸는 공고화(Consolidation)는 측두엽 깊은 곳의 <strong class="text-white">해마(Hippocampus)</strong>에서 일어나는데, 인출(Retrieval)과 간격(Spacing)이 있어야 그 흔적이 단단해집니다. 망각 곡선을 완만하게 뒤집는 4단계 인출·간격 반복 루틴을 정리했습니다.
+        </p>
+      </div>
+    </header>
+
+    <!-- 상세 본문 -->
+    <article class="mb-16">
+      <div class="prose prose-invert max-w-none text-slate-300 space-y-8 text-base leading-relaxed">
+        
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-cyan-400">01.</span> 해마 — 기억의 입구이자 편집실
+          </h2>
+          <p>
+            시험 전날 밤을 새워 교재를 세 번 읽고도 시험지 앞에서 머리가 하얘졌던 경험, 회의 자료를 정독했는데 다음 날 핵심 수치가 떠오르지 않던 경험은 흔합니다. 원인은 의지나 머리 나쁨이 아니라 <strong class="text-white">기억이 저장되는 방식</strong>에 있습니다.
+          </p>
+          <p>
+            낮 동안 눈과 귀로 들어온 정보는 우선 측두엽 안쪽의 <strong class="text-white">해마(Hippocampus)</strong>에 임시로 머뭅니다. 해마는 이 조각들을 묶어 하나의 장면으로 만들고, 잠자는 동안 대뇌피질로 다시 보내 오래 남는 형태로 바꾸는 <strong class="text-white">기억 공고화(Consolidation)</strong>의 중심 무대입니다. 문제는 해마가 '읽은 횟수'에는 크게 반응하지 않는다는 점입니다. 같은 문장을 눈으로 훑는 것은 <em>익숙함(Familiarity)</em>만 키울 뿐, 흔적을 새로 만드는 작업은 아닙니다.
+          </p>
+          <p>
+            반대로 책을 덮고 "방금 무엇을 읽었지?" 하고 스스로 꺼내보는 <strong class="text-white">인출(Retrieval)</strong>을 하면, 해마와 전전두엽이 함께 다시 활성화되며 시냅스 연결이 강화됩니다. 이때 뇌는 "이 정보는 다시 쓸 일이 있구나"라고 판단해 저장 우선순위를 올립니다. 같은 시간을 들여도 읽기만 한 사람보다 <strong class="text-white">스스로 시험해 본 사람의 기억이 더 오래 남는 이유</strong>입니다(인출 연습 효과, Retrieval Practice).
+          </p>
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+            <h4 class="text-sm font-bold text-cyan-400 mb-2">🌱 간격을 두고 반복하면 달라지는 것</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>망각 곡선이 완만해집니다:</strong> 학습 직후 급격히 떨어지는 기억이, 1일·3일·7일처럼 간격을 벌려 꺼낼 때마다 하강 속도가 느려집니다.</li>
+              <li><strong>단단한 흔적으로 바뀝니다:</strong> 조금 잊은 상태에서 애써 꺼내는 '어려운 인출'이 오히려 장기 저장에 유리합니다.</li>
+              <li><strong>응용이 쉬워집니다:</strong> 맥락을 바꿔 여러 번 꺼내면 해마에 붙은 단서가 늘어나, 낯선 시험지·회의장에서도 같은 지식이 소환됩니다.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-cyan-400">02.</span> 기억이 새고 있다는 3가지 신호
+          </h2>
+          <p>
+            공부 시간은 충분한데 성과가 남지 않는다면, 아래 신호가 반복되고 있는지 살펴보세요. 해마가 필요로 하는 조건이 빠져 있다는 뜻일 수 있습니다.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">신호 1</span>
+              <h4 class="text-base font-bold text-white mb-2">형광펜 아래만 남는 '아는 느낌'</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                다시 읽을 때 익숙해서 "안다"고 느끼지만, 막상 설명하려면 막힙니다. 재인 착각(유창성 착각)입니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">신호 2</span>
+              <h4 class="text-base font-bold text-white mb-2">몰아서 하는 벼락치기 리듬</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                하루에 3시간 몰아 보는 동안에는 기억나지만, 다음 주에는 남지 않습니다. 간격이 없으면 재저장 신호가 생기지 않습니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">신호 3</span>
+              <h4 class="text-base font-bold text-white mb-2">잠이 부족한 날의 '깜깜이'</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                밤샘 뒤에는 그날 외운 것이 통째로 사라집니다. 해마가 낮의 기억을 피질로 옮기는 밤 시간이 잘려서입니다.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-cyan-400">03.</span> 해마를 깨우는 4단계 인출·간격 반복 루틴
+          </h2>
+          <div class="bg-brand-navy p-6 rounded-2xl border border-white/10 space-y-3">
+            <p class="text-xs text-slate-300">
+              학습량을 늘리는 대신 <strong>꺼내는 횟수와 간격을 설계</strong>하는 것이 핵심입니다. 하루 15분 안쪽으로 끝낼 수 있는 루틴입니다.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-2 list-disc pl-5">
+              <li><strong>1단계 · 책을 덮고 3분 백지 인출:</strong> 한 챕터를 읽은 직후 교재를 덮고, 기억나는 개념·수치·키워드를 빈 종이에 적습니다. 다 쓴 뒤에 교재를 열어 빠진 부분만 다른 색으로 보충합니다. 이 한 번의 인출이 같은 시간의 재독보다 오래 남습니다.</li>
+              <li><strong>2단계 · 1-3-7-14 간격 설계:</strong> 같은 내용을 당일 저녁 5분, 3일 뒤 5분, 7일 뒤 3분, 14일 뒤 3분으로 짧게 다시 꺼냅니다. 3일·7일 뒤에는 일부러 다 잊은 상태에서 애써 꺼내야 해마가 다시 저장합니다.</li>
+              <li><strong>3단계 · 질문으로 바꿔 두기:</strong> 노트 여백에 정답이 아니라 질문을 남깁니다. "이 개념과 반대되는 사례는?"처럼 스스로 묻고 답하는 연습이 시험장·회의장에서의 소환력을 키웁니다.</li>
+              <li><strong>4단계 · 잠들기 전 3분 회상 + 아침 1분 리콜:</strong> 자기 전 오늘 배운 것 3가지를 소리 내어 되짚고, 아침에 1분만 다시 꺼냅니다. 해마가 밤사이 정리한 기억을 깨어난 뒤 한 번 더 고정하는 마무리입니다.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="space-y-4 pt-4 border-t border-white/10">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <span class="text-cyan-400">04.</span> 미나월드의 기억·집중 뇌 컨디션 케어
+          </h2>
+          <p>
+            미나월드의 <strong>1:1 뉴로웰니스 &amp; 뇌파 코칭</strong>과 <strong>수험생·직장인 집중력 워크숍</strong>은 뇌파 리듬과 주의 상태를 점검한 뒤, 개인의 학습·업무 패턴에 맞춘 인출·간격 루틴과 회복 습관을 함께 설계합니다. 기억은 더 오래 앉아 있는 시간이 아니라, 뇌가 저장하기 좋은 리듬에서 남습니다.
+          </p>
+          <div class="mt-4 p-5 rounded-2xl bg-brand-card border border-cyan-500/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">🧠 기억 &amp; 집중 뇌 컨디션 케어</h4>
+              <p class="text-xs text-slate-400">수험생·직장인 집중력 워크숍, 학부모 학습 뇌 클래스, 1:1 뉴로웰니스 코칭</p>
+            </div>
+            <a href="contact.html" class="px-6 py-2.5 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white text-xs font-bold shrink-0 transition">
+              프로그램 문의하기
+            </a>
+          </div>
+        </section>
+
+      </div>
+    </article>
+
+    <!-- 공유 및 하단 내비게이션 -->
+    <div class="py-8 border-t border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">아티클 공유하기:</span>
+        <button onclick="copyCurrentUrl()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-1.5">
+          <span>🔗 링크 복사</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="community.html" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+          목록으로 돌아가기
+        </a>
+        <a href="contact.html" class="px-5 py-2 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white shadow-md transition">
+          1:1 프로그램 상담 신청
+        </a>
+      </div>
+    </div>
+
+    <!-- 다른 요일의 '하루 한 스푼, 뇌과학' 추천 링크 -->
+    <section class="mt-16">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>✨</span> 함께 읽으면 좋은 뇌과학 인사이트
+        </h3>
+        <a href="community.html" class="text-xs text-brand-accent hover:underline">전체보기 →</a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="article-2026-11-17-vagus-nerve-hrv.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-pink-500/40 transition block group">
+          <div class="text-[11px] text-pink-400 font-bold mb-1">스트레스와 감정</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-accent transition mb-1">
+            참는다고 가라앉지 않는 이유 — 미주신경과 HRV로 회복하는 자율신경 브레이크
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">몸에서 뇌로 올라가는 미주신경 신호와 4단계 자율신경 브레이크 루틴</p>
+        </a>
+
+        <a href="article-2026-11-16-prefrontal-burnout.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-purple-400/40 transition block group">
+          <div class="text-[11px] text-purple-400 font-bold mb-1">뇌과학 기초</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-purple-400 transition mb-1">
+            월요일만 되면 머리가 멈추는 이유 — 전두엽 의사결정 피로와 번아웃 리셋
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">사소한 선택이 쌓여 전전두엽 배터리를 고갈시키는 의사결정 피로와 4단계 리셋 루틴</p>
+        </a>
+
+        <a href="article-flow-focus.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-mint/40 transition block group">
+          <div class="text-[11px] text-brand-mint font-bold mb-1">집중력과 기억력</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-mint transition mb-1">
+            산만한 뇌를 초몰입(Flow) 상태로 이끄는 뇌파의 비밀
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">주의 전환 잔여물을 지우고 세타-감마 결합으로 몰입에 들어가는 방법</p>
+        </a>
+
+        <a href="article-glymphatic-sleep.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-blue/40 transition block group">
+          <div class="text-[11px] text-brand-blue font-bold mb-1">수면과 뇌 건강</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-blue transition mb-1">
+            수면 중 뇌 청소 시스템 '글림파틱 시스템'의 비밀
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">기억을 정리하는 밤의 뇌, 깊은 델타파 수면 환경 만들기</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (아임웹 정보 100% 반영) -->
+  <footer class="py-14 border-t border-white/10 text-xs text-slate-400 bg-brand-dark/95">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- 1열: 브랜드 로고 및 저작권 -->
+        <div>
+          <h4 class="text-base font-bold text-white tracking-wider mb-2 font-serif">MINA WORLD</h4>
+          <p class="text-slate-500 text-xs">© 2026 Make.</p>
+        </div>
+
+        <!-- 2열: SITEMAP -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">SITEMAP</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="about.html" class="hover:text-white transition">ABOUT US</a></li>
+            <li><a href="programs.html" class="hover:text-white transition">PROGRAM</a></li>
+            <li><a href="community.html" class="hover:text-white transition">COMMUNITY</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">CONTACT</a></li>
+          </ul>
+        </div>
+
+        <!-- 3열: SERVICE & BANK -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">SERVICE</h4>
+          <p class="text-slate-300 font-medium mb-1">010-5424-0807</p>
+          <p class="text-slate-500 mb-0.5">Mon - Fri AM 09:00 - 18:00</p>
+          <p class="text-slate-500 mb-4">Sat.Sun.Red-Day Off</p>
+
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">BANK</h4>
+          <p class="text-slate-400">KAKAO BANK 3333-37-1190044</p>
+        </div>
+
+        <!-- 4열: INSTAGRAM, NAVER, KAKAO TALK -->
+        <div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">INSTAGRAM</h4>
+            <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://www.instagram.com/wellnessworld.zip</a>
+          </div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">NAVER</h4>
+            <a href="https://naver.me/xhPGBxC0" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://naver.me/xhPGBxC0</a>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">KAKAO TALK</h4>
+            <a href="http://pf.kakao.com/_WxmhEX" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">http://pf.kakao.com/_WxmhEX</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 mb-6">
+        <div>
+          <span>Seoul, Korea</span>
+          <span class="mx-2">|</span>
+          <span>Biz License 893-53-00975</span>
+          <span class="mx-2">|</span>
+          <span>© 2026 MINA WORLD. All rights reserved</span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+          <span class="text-slate-600">|</span>
+          <a href="#" class="hover:text-slate-300 transition">Privacy</a>
+        </div>
+      </div>
+
+      <!-- 맨 하단 한 줄 사업자 상세 정보 -->
+      <div class="text-[11px] text-slate-600 leading-relaxed">
+        상호명: 미나월드 대표자: 이미나 사업장주소: 서울 송파구 오금로46길 41 (가락동) 2층 2567호 연락처: 01054240807 사업자등록번호: 893-53-00975 대표자 이메일: minawellnesslab@gmail.com
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // 읽기 진행률 표시
+    window.addEventListener('scroll', function() {
+      var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      var bar = document.getElementById('reading-bar');
+      if (bar) {
+        bar.style.width = scrolled + '%';
+      }
+    });
+
+    // 현재 URL 클립보드 복사
+    function copyCurrentUrl() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          alert('아티클 링크가 복사되었습니다! 원하는 곳에 공유해보세요.');
+        });
+      } else {
+        alert('주소창의 링크를 복사해주세요: ' + window.location.href);
+      }
+    }
+  </script>
+</body>
+</html>
