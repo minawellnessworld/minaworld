@@ -1,11 +1,19 @@
-/* S08. 회원가입 · 로그인 · 마이페이지 */
+/* S08. 회원가입 · 로그인 · 마이페이지
+   PART 2-1: 개인정보/민감정보/마케팅 동의 → consent_logs 실제 기록
+   계정 관리: 비밀번호 변경 · 회원정보 수정 · 회원 탈퇴(withdraw_my_account) · 기관 소속/결과 공유 토글 */
 import {
   state, signIn, signUp, signOut, updateProfile, listBookings, listPayments,
-  listCoupons, validateCoupon, listNotifications, markNotificationRead, isStaff, friendlyError
+  listCoupons, validateCoupon, listNotifications, markNotificationRead, isStaff, isOrgWorker,
+  friendlyError
 } from '../store.js';
+import { listMyMemberships, setShareBrainResults, requestOrgMembership, listOrganizationsFiltered } from '../store-org.js';
+import { CONSENT_ITEMS, CONSENT_LABELS, ROLES } from '../config.js';
+import {
+  recordConsents, listMyConsents, changeMyPassword, withdrawMyAccount, logAudit
+} from '../store-security.js';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, sectionHead,
-  badge, openSheet, closeSheet, setBusy, go, timeAgo, paymentStatusTone
+  badge, openSheet, closeSheet, setBusy, go, timeAgo, paymentStatusTone, confirmDialog
 } from '../ui.js';
 import { bookingItemHtml, bindBookingActions } from '../booking.js';
 
@@ -16,6 +24,15 @@ var GRADE_DESC = {
   Neuro: '뉴로피드백 루틴 진행 회원',
   Alignment: '정기 관리 · 최상위 정렬 등급'
 };
+
+function consentCheckboxes(prefix) {
+  return CONSENT_ITEMS.map(function (item) {
+    return '<label class="consent-block">' +
+      '<input type="checkbox" id="' + prefix + '-' + item.key + '"' + (item.required ? ' data-required="1"' : '') + '>' +
+      '<span><strong>' + esc(item.label) + '</strong><em>' + esc(item.summary) + '</em></span>' +
+    '</label>';
+  }).join('');
+}
 
 function authView(ctx) {
   return {
@@ -51,7 +68,8 @@ function authView(ctx) {
             '<input type="tel" id="signup-phone" autocomplete="tel" placeholder="010-0000-0000"></label>' +
           '<label class="field"><span class="field-label">비밀번호 (6자 이상)</span>' +
             '<input type="password" id="signup-password" autocomplete="new-password" placeholder="비밀번호" required></label>' +
-          '<label class="consent-row"><input type="checkbox" id="signup-consent"><span>개인정보 수집·이용(이름·연락처·이메일, 서비스 제공 목적)에 동의합니다.</span></label>' +
+          '<div class="consent-group">' + consentCheckboxes('signup') + '</div>' +
+          '<p class="field-hint">필수 동의 항목에 체크해야 가입할 수 있습니다. 동의 이력은 <code>consent_logs</code> 에 기록됩니다.</p>' +
           '<button type="submit" class="btn btn-primary btn-block" id="signup-submit">회원가입</button>' +
         '</form>' +
 
@@ -59,13 +77,15 @@ function authView(ctx) {
         '<button type="button" class="btn btn-kakao btn-block" id="kakao-login">' +
           icon('chat', 18) + '카카오 로그인</button>' +
         '<p class="field-hint center">외부 연동 필요 — 카카오 디벨로퍼스 앱 키 등록 후 활성화 (현재 이메일 로그인 이용)</p>' +
+        '<p class="field-hint center">휴대폰 본인인증은 통신사 인증 연동 전까지 제공되지 않습니다.</p>' +
       '</section>' +
 
       '<section class="section">' +
         noticeBox('가입 시 입력한 정보는 예약·결과·훈련 기록 제공 목적으로만 사용됩니다. 측정 결과는 의료기관의 진단을 대체하지 않는 웰니스 데이터입니다.', 'neutral') +
+        '<a class="btn btn-ghost btn-block btn-sm" href="#/admin-login">관리자 · 제휴 기관 담당자 로그인</a>' +
       '</section>' +
 
-      '<footer class="app-footer"><p class="footer-note">계정 문의 · ' + 'minawellnessworld@gmail.com</p></footer>',
+      '<footer class="app-footer"><p class="footer-note">계정 문의 · minawellnessworld@gmail.com</p></footer>',
     mount: function (el) {
       var tabs = el.querySelectorAll('[data-auth-tab]');
       for (var i = 0; i < tabs.length; i++) {
@@ -102,8 +122,17 @@ function authView(ctx) {
       signupForm.addEventListener('submit', async function (event) {
         event.preventDefault();
         var btn = el.querySelector('#signup-submit');
-        var consent = el.querySelector('#signup-consent').checked;
-        if (!consent) { toast('개인정보 수집·이용 동의가 필요합니다.'); return; }
+        var consentState = {};
+        var missing = [];
+        CONSENT_ITEMS.forEach(function (item) {
+          var input = el.querySelector('#signup-' + item.key);
+          consentState[item.key] = Boolean(input && input.checked);
+          if (item.required && !consentState[item.key]) missing.push(item.label);
+        });
+        if (missing.length) {
+          toast('필수 동의 항목에 체크해 주세요: ' + missing[0], 'error');
+          return;
+        }
         setBusy(btn, true, '가입 중');
         try {
           var result = await signUp({
@@ -113,11 +142,10 @@ function authView(ctx) {
             phone: el.querySelector('#signup-phone').value
           });
           if (result.needsConfirmation) {
-            closeSheet();
             openSheet({
               title: '가입 확인 메일 발송',
               content: '<p class="sheet-help">' + esc(result.message) + '</p>' +
-                noticeBox('메일 인증 후 로그인하면 예약과 기록을 사용할 수 있습니다.', 'neutral'),
+                noticeBox('메일 인증 후 로그인하면 예약과 기록을 사용할 수 있습니다. 동의 이력은 첫 로그인 시 기록됩니다.', 'neutral'),
               footer: '<button type="button" class="btn btn-primary" data-close>확인</button>',
               onMount: function (s) {
                 var c = s.querySelector('[data-close]');
@@ -126,6 +154,15 @@ function authView(ctx) {
             });
             setBusy(btn, false);
             return;
+          }
+          /* 가입 즉시 동의 이력 저장 (privacy/sensitive 필수 + marketing 선택) */
+          try {
+            await recordConsents(CONSENT_ITEMS.map(function (item) {
+              return { type: item.key, agreed: Boolean(consentState[item.key]) };
+            }));
+          } catch (err) {
+            console.warn('[MINA] 동의 이력 저장 실패', err);
+            toast('동의 이력 저장에 실패했습니다. 마이페이지에서 다시 동의해 주세요.', 'error');
           }
           toast('회원가입이 완료되었습니다.', 'success');
           ctx.rerender();
@@ -165,16 +202,27 @@ export async function render(ctx) {
   var payments = [];
   var notifications = [];
   var coupons = [];
+  var memberships = [];
+  var consents = [];
+  var orgs = [];
   var loadError = '';
 
   try {
-    var loaded = await Promise.all([listBookings(), listPayments(), listNotifications(), listCoupons()]);
+    var loaded = await Promise.all([listBookings(), listPayments(), listNotifications(), listCoupons(), listMyMemberships(), listMyConsents()]);
     bookings = loaded[0];
     payments = loaded[1];
     notifications = loaded[2];
     coupons = loaded[3];
+    memberships = loaded[4];
+    consents = loaded[5];
   } catch (err) {
     loadError = friendlyError(err);
+  }
+
+  try {
+    orgs = await listOrganizationsFiltered('active');
+  } catch (err) {
+    orgs = [];
   }
 
   var unread = notifications.filter(function (n) { return !n.is_read; }).length;
@@ -224,6 +272,32 @@ export async function render(ctx) {
       '<span>' + esc(grade) + '</span><small>' + esc(GRADE_DESC[grade]) + '</small></div>';
   }).join('');
 
+  var orgRows = memberships.length
+    ? memberships.map(function (m) {
+        var orgName = (m.organizations && m.organizations.name) || '기관';
+        return '<div class="membership-row">' +
+          '<div class="membership-info"><strong>' + esc(orgName) + '</strong>' +
+            '<span class="muted small">' + badge(m.status === 'approved' ? '소속 승인' : m.status === 'pending' ? '승인 대기' : '거절', m.status === 'approved' ? 'green' : 'neutral') +
+              (m.result_access_requested ? ' ' + badge('기관 열람 요청', 'yellow') : '') + '</span></div>' +
+          '<label class="membership-toggle"><span class="muted small">검사 결과 공유</span>' +
+            '<span class="switch"><input type="checkbox" data-share-toggle="' + esc(m.id) + '"' + (m.share_brain_results ? ' checked' : '') + '><span></span></span></label>' +
+        '</div>';
+      }).join('')
+    : emptyState({
+        icon: 'shield',
+        title: '연결된 제휴 기관이 없습니다',
+        desc: '기관 담당자가 회원님을 기관 소속으로 등록하면 이곳에 표시되고, 결과 공유 여부를 직접 선택할 수 있습니다.'
+      });
+
+  var consentRows = consents.length
+    ? consents.slice(0, 8).map(function (c) {
+        return '<div class="consent-history-row"><span class="muted small">' + fmtDateTime(c.created_at) + '</span>' +
+          '<strong>' + esc(CONSENT_LABELS[c.consent_type] || c.consent_type) + '</strong>' +
+          badge(c.agreed ? '동의' : '철회', c.agreed ? 'green' : 'neutral') +
+          '<span class="muted small">v' + esc(c.version || '') + '</span></div>';
+      }).join('')
+    : '<p class="muted small">아직 저장된 동의 이력이 없습니다.</p>';
+
   var html =
     '<header class="profile-head">' +
       '<div class="profile-avatar">' + esc((profile.full_name || 'M').slice(0, 1)) + '</div>' +
@@ -231,7 +305,7 @@ export async function render(ctx) {
         '<h1>' + esc(profile.full_name || '회원') + ' 님</h1>' +
         '<p class="muted small">' + esc(profile.email || '') + '</p>' +
         '<div class="grade-row">' + badge(profile.member_grade || 'Welcome', 'navy') +
-          (isStaff() ? badge(profile.role === 'admin' ? '총괄 관리자' : '상담사', 'yellow') : badge('일반 회원', 'neutral')) +
+          (isStaff() || isOrgWorker() ? badge(ROLES[profile.role] || '', 'yellow') : badge('일반 회원', 'neutral')) +
         '</div>' +
       '</div>' +
     '</header>' +
@@ -250,6 +324,26 @@ export async function render(ctx) {
     '<section class="section">' +
       sectionHead('회원 등급', '<span class="muted small">현재 ' + esc(profile.member_grade || 'Welcome') + '</span>') +
       '<div class="grade-track">' + gradePips + '</div>' +
+    '</section>' +
+
+    '<section class="section">' +
+      sectionHead('제휴 기관 소속 · 결과 공유', '<span class="muted small">동의 기반</span>') +
+      orgRows +
+      (orgs.length
+        ? '<div class="card form-card">' +
+            '<strong class="danger-title" style="color:var(--navy)">기관 소속 요청</strong>' +
+            '<p class="muted small">다니는 헬스장·필라테스·기업 복지 프로그램 등 제휴 기관을 선택하면 담당자 승인 후 소속이 연결됩니다.</p>' +
+            '<div class="input-inline">' +
+              '<select id="org-request"><option value="">기관 선택</option>' +
+                orgs.map(function (o) {
+                  return '<option value="' + esc(o.id) + '">' + esc(o.name) + '</option>';
+                }).join('') +
+              '</select>' +
+              '<button type="button" class="btn btn-ghost btn-sm" id="org-request-btn">소속 요청</button>' +
+            '</div>' +
+          '</div>'
+        : '') +
+      noticeBox('검사 결과는 <strong>공유에 동의한 경우에만</strong> 기관에 표시됩니다. 언제든 끌 수 있고, 끄면 즉시 조회가 차단됩니다.', 'neutral') +
     '</section>' +
 
     '<section class="section">' +
@@ -288,10 +382,37 @@ export async function render(ctx) {
       '</div>' +
     '</section>' +
 
+    '<section class="section">' +
+      sectionHead('계정 보안', '<span class="muted small">비밀번호 · 탈퇴</span>') +
+      '<div class="card form-card">' +
+        '<label class="field"><span class="field-label">새 비밀번호 (6자 이상)</span><input type="password" id="pw-new" autocomplete="new-password" placeholder="새 비밀번호"></label>' +
+        '<label class="field"><span class="field-label">새 비밀번호 확인</span><input type="password" id="pw-confirm" autocomplete="new-password" placeholder="한 번 더 입력"></label>' +
+        '<button type="button" class="btn btn-ghost btn-block btn-sm" id="pw-save">비밀번호 변경</button>' +
+        '<p class="field-hint">휴대폰 본인인증 · 카카오 로그인은 외부 인증 연동 후 제공됩니다.</p>' +
+      '</div>' +
+      '<div class="card form-card danger-card">' +
+        '<strong class="danger-title">회원 탈퇴</strong>' +
+        '<p class="muted small">탈퇴하면 이름·연락처 등 개인정보가 비식별화되고 기관 결과 공유가 즉시 중단됩니다. 예약·결제 기록은 법정 보존 기준에 따라 보관됩니다.</p>' +
+        '<button type="button" class="btn btn-danger btn-block btn-sm" id="withdraw-btn">회원 탈퇴 진행</button>' +
+      '</div>' +
+    '</section>' +
+
+    '<section class="section">' +
+      sectionHead('동의 이력', '<span class="muted small">consent_logs</span>') +
+      '<div class="consent-history">' + consentRows + '</div>' +
+      '<button type="button" class="btn btn-ghost btn-block btn-sm" id="consent-update">동의 항목 다시 확인</button>' +
+    '</section>' +
+
     (isStaff()
       ? '<section class="section"><a class="admin-banner" href="#/admin">' +
           '<span class="admin-badge">' + icon('shield', 18) + ' ADMIN</span>' +
           '<span><strong>관리자 콘솔</strong><span>회원 · 예약 · 결과 · 매출 관리</span></span>' +
+          icon('chevronRight', 18) + '</a></section>'
+      : '') +
+    (isOrgWorker()
+      ? '<section class="section"><a class="admin-banner" href="#/partner">' +
+          '<span class="admin-badge">' + icon('shield', 18) + ' PARTNER</span>' +
+          '<span><strong>기관 대시보드</strong><span>기관 회원 · 예약 · 정산</span></span>' +
           icon('chevronRight', 18) + '</a></section>'
       : '') +
 
@@ -361,6 +482,119 @@ export async function render(ctx) {
             toast(friendlyError(err), 'error');
             setBusy(saveBtn, false);
           }
+        });
+      }
+
+      /* 제휴 기관 결과 공유 토글 — 동의/철회를 함께 기록 */
+      var shareToggles = el.querySelectorAll('[data-share-toggle]');
+      for (var s = 0; s < shareToggles.length; s++) {
+        shareToggles[s].addEventListener('change', async function () {
+          var id = this.getAttribute('data-share-toggle');
+          var value = this.checked;
+          try {
+            await setShareBrainResults(id, value);
+            await recordConsents([{ type: 'partner_share', agreed: value }]);
+            toast(value ? '검사 결과 공유에 동의했습니다.' : '결과 공유를 중단했습니다.', 'success');
+          } catch (err) {
+            toast(friendlyError(err), 'error');
+            this.checked = !value;
+          }
+        });
+      }
+
+      var orgRequestBtn = el.querySelector('#org-request-btn');
+      if (orgRequestBtn) {
+        orgRequestBtn.addEventListener('click', async function () {
+          var orgId = el.querySelector('#org-request').value;
+          if (!orgId) { toast('기관을 선택해 주세요.'); return; }
+          setBusy(orgRequestBtn, true, '요청 중');
+          try {
+            await requestOrgMembership(orgId);
+            await logAudit({ action: 'membership_requested', target_table: 'org_memberships', target_id: orgId, detail: { requested: true } });
+            toast('소속 요청을 보냈습니다. 기관 담당자 승인 후 연결됩니다.', 'success');
+            ctx.rerender();
+          } catch (err) {
+            toast(friendlyError(err), 'error');
+            setBusy(orgRequestBtn, false);
+          }
+        });
+      }
+
+      var pwSave = el.querySelector('#pw-save');
+      if (pwSave) {
+        pwSave.addEventListener('click', async function () {
+          var pw = el.querySelector('#pw-new').value;
+          var confirmValue = el.querySelector('#pw-confirm').value;
+          if (pw.length < 6) { toast('비밀번호는 6자 이상으로 설정해 주세요.'); return; }
+          if (pw !== confirmValue) { toast('비밀번호 확인이 일치하지 않습니다.'); return; }
+          setBusy(pwSave, true, '변경 중');
+          try {
+            await changeMyPassword(pw);
+            el.querySelector('#pw-new').value = '';
+            el.querySelector('#pw-confirm').value = '';
+            toast('비밀번호가 변경되었습니다.', 'success');
+          } catch (err) {
+            toast(friendlyError(err), 'error');
+          }
+          setBusy(pwSave, false);
+        });
+      }
+
+      var withdrawBtn = el.querySelector('#withdraw-btn');
+      if (withdrawBtn) {
+        withdrawBtn.addEventListener('click', async function () {
+          var ok = await confirmDialog({
+            title: '정말 탈퇴하시겠어요?',
+            message: '탈퇴하면 이름·연락처가 비식별화되고 기관 결과 공유가 중단됩니다. 이 작업은 되돌릴 수 없습니다.',
+            confirmLabel: '탈퇴 진행',
+            cancelLabel: '취소'
+          });
+          if (!ok) return;
+          setBusy(withdrawBtn, true, '처리 중');
+          try {
+            await withdrawMyAccount();
+            toast('탈퇴가 처리되었습니다. 그동안 함께해서 감사했습니다.', 'success');
+            go('/home');
+            ctx.rerender();
+          } catch (err) {
+            toast(friendlyError(err), 'error');
+            setBusy(withdrawBtn, false);
+          }
+        });
+      }
+
+      var consentUpdate = el.querySelector('#consent-update');
+      if (consentUpdate) {
+        consentUpdate.addEventListener('click', function () {
+          openSheet({
+            title: '동의 항목 확인',
+            subtitle: '변경한 내용은 이력으로 새로 기록됩니다',
+            content: '<div class="consent-group">' + consentCheckboxes('reconsent') + '</div>' +
+              noticeBox('필수 항목(개인정보·민감정보)은 서비스 제공에 반드시 필요합니다. 동의를 철회하면 계정 이용이 제한될 수 있습니다.', 'warn'),
+            footer: '<button type="button" class="btn btn-ghost" data-close>닫기</button>' +
+              '<button type="button" class="btn btn-primary" id="reconsent-save">저장</button>',
+            onMount: function (sheet) {
+              var c = sheet.querySelector('[data-close]');
+              if (c) c.addEventListener('click', function () { closeSheet(); });
+              var save = sheet.querySelector('#reconsent-save');
+              save.addEventListener('click', async function () {
+                var entries = CONSENT_ITEMS.map(function (item) {
+                  var input = sheet.querySelector('#reconsent-' + item.key);
+                  return { type: item.key, agreed: Boolean(input && input.checked) };
+                });
+                setBusy(save, true, '저장 중');
+                try {
+                  await recordConsents(entries);
+                  toast('동의 이력이 저장되었습니다.', 'success');
+                  closeSheet();
+                  ctx.rerender();
+                } catch (err) {
+                  toast(friendlyError(err), 'error');
+                  setBusy(save, false);
+                }
+              });
+            }
+          });
         });
       }
 

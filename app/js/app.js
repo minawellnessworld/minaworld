@@ -15,6 +15,8 @@ import * as CommunityView from './views/community.js';
 import * as AccountView from './views/account.js';
 import * as MoreView from './views/more.js';
 import * as AdminView from './views/admin.js';
+import * as AdminLoginView from './views/admin-login.js';
+import * as PartnerView from './views/partner.js';
 
 var ROUTES = {
   home: HomeView,
@@ -26,7 +28,9 @@ var ROUTES = {
   community: CommunityView,
   more: MoreView,
   account: AccountView,
-  admin: AdminView
+  admin: AdminView,
+  'admin-login': AdminLoginView,
+  partner: PartnerView
 };
 
 var TABS = [
@@ -211,8 +215,9 @@ function showDenied() {
       '<div class="empty empty-error">' +
         '<div class="empty-icon">' + icon('lock', 26) + '</div>' +
         '<p class="empty-title">접근 권한이 없습니다</p>' +
-        '<p class="empty-desc">관리자 콘솔은 총괄 관리자(admin)·상담사(counselor) 계정만 이용할 수 있습니다.</p>' +
-        '<div class="empty-action"><a class="btn btn-primary" href="#/home">홈으로 돌아가기</a></div>' +
+        '<p class="empty-desc">관리자 콘솔은 관리자 · 최고 관리자 · 본점 상담사 계정만 이용할 수 있습니다.</p>' +
+        '<div class="empty-action"><a class="btn btn-primary" href="#/admin-login">관리자 포털에서 로그인</a>' +
+          '<a class="btn btn-ghost" href="#/home">홈으로 돌아가기</a></div>' +
       '</div>' +
     '</section>';
 }
@@ -227,13 +232,24 @@ async function renderRoute() {
   closeSheet(true);
 
   var isAdminRoute = root === 'admin';
-  body.classList.toggle('admin-mode', isAdminRoute && isStaff());
+  var isPartnerRoute = root === 'partner';
+  var isPortalRoute = root === 'admin-login';
+  var orgWorker = state.profile && (state.profile.role === 'partner_admin' || state.profile.role === 'staff');
+  var platformStaff = state.profile && (state.profile.role === 'admin' || state.profile.role === 'super_admin' || state.profile.role === 'counselor');
+
+  body.classList.toggle('admin-mode', Boolean(isAdminRoute || isPartnerRoute));
+  body.classList.toggle('portal-mode', Boolean(isPortalRoute));
 
   if (isAdminRoute && !isStaff()) {
     renderHeader();
     renderTabBar('');
     showDenied();
     return;
+  }
+
+  if (isPartnerRoute && !orgWorker && !platformStaff) {
+    /* 비로그인 · 일반 회원: partner 뷰가 안내 화면을 직접 렌더링합니다 */
+    body.classList.remove('admin-mode');
   }
 
   renderTabBar(activeTabFor(root));

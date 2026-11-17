@@ -32,13 +32,41 @@ export function emit() {
   }
 }
 
+/* 본점(플랫폼) 직원: 전체 관리자 · 최고 관리자 · 본점 상담사 */
 export function isStaff() {
   var role = state.profile ? state.profile.role : 'member';
-  return role === 'admin' || role === 'counselor';
+  return role === 'admin' || role === 'super_admin' || role === 'counselor';
 }
 
 export function isAdmin() {
-  return Boolean(state.profile && state.profile.role === 'admin');
+  var role = state.profile ? state.profile.role : '';
+  return role === 'admin' || role === 'super_admin';
+}
+
+export function isSuperAdmin() {
+  return Boolean(state.profile && state.profile.role === 'super_admin');
+}
+
+/* 제휴 기관 근무자: 기관 관리자 · 기관 직원 */
+export function isOrgWorker() {
+  var role = state.profile ? state.profile.role : '';
+  return role === 'partner_admin' || role === 'staff';
+}
+
+export function isOrgAdmin() {
+  return Boolean(state.profile && state.profile.role === 'partner_admin');
+}
+
+export function myOrgId() {
+  return state.profile && state.profile.org_id ? state.profile.org_id : null;
+}
+
+/* 로그인 직후 이동할 기본 화면 */
+export function homeRouteForRole() {
+  var role = state.profile ? state.profile.role : '';
+  if (role === 'admin' || role === 'super_admin' || role === 'counselor') return '/admin';
+  if (role === 'partner_admin' || role === 'staff') return '/partner';
+  return '/home';
 }
 
 export function currentUser() {
@@ -57,6 +85,15 @@ function uid() {
   return 'id-' + Math.random().toString(36).slice(2) + '-' + Date.now().toString(36);
 }
 
+export function nowIso() { return new Date().toISOString(); }
+
+/* 로컬 체험 모드 저장소 접근자 (다른 store 모듈에서 사용) */
+export function localRows(name) { return table(name); }
+export function localInsertRow(name, row) { return localInsert(name, row); }
+export function localUpdateRow(name, id, patch) { return localUpdate(name, id, patch); }
+export function localDeleteRow(name, id) { return localDelete(name, id); }
+export function saveLocalNow() { saveLocal(); }
+
 export function dateKey(date) {
   var d = date || new Date();
   var m = ('0' + (d.getMonth() + 1)).slice(-2);
@@ -67,8 +104,6 @@ export function dateKey(date) {
 export function todayStr() {
   return dateKey(new Date());
 }
-
-function nowIso() { return new Date().toISOString(); }
 
 function clone(value) {
   if (value === null || value === undefined) return value;
@@ -88,12 +123,16 @@ function sortRows(rows, key, desc) {
 export function friendlyError(err) {
   var msg = (err && (err.message || err.error_description || err.hint)) || '';
   var code = err && err.code ? String(err.code) : '';
+  if (/idx_bookings_no_overlap/i.test(msg)) return '이미 예약된 시간대입니다. 다른 시간을 선택해 주세요.';
+  if (code === '23505' && /preferred_date|preferred_time/i.test(msg)) return '이미 예약된 시간대입니다. 다른 시간을 선택해 주세요.';
   if (/Invalid login credentials/i.test(msg)) return '이메일 또는 비밀번호가 올바르지 않습니다.';
   if (/Email not confirmed/i.test(msg)) return '이메일 인증이 필요합니다. 받은 편지함의 인증 메일을 확인해 주세요.';
-  if (/User already registered/i.test(msg)) return '이미 가입된 이메일입니다. 로그인해 주세요.';
+  if (/User already registered|already been registered/i.test(msg)) return '이미 가입된 이메일입니다. 로그인해 주세요.';
   if (/Password should be at least/i.test(msg)) return '비밀번호는 6자 이상이어야 합니다.';
   if (/row-level security|new row violates|permission denied/i.test(msg)) return '이 작업을 수행할 권한이 없습니다. (관리자 권한 또는 정책 확인 필요)';
   if (/duplicate key/i.test(msg) || code === '23505') return '이미 등록된 값입니다.';
+  if (/function .* does not exist|Could not find the function/i.test(msg)) return 'DB v2 마이그레이션(supabase_schema_v2.sql)이 아직 적용되지 않았습니다. 적용 후 다시 시도해 주세요.';
+  if (/relation .* does not exist/i.test(msg)) return 'DB v2 테이블이 아직 생성되지 않았습니다. supabase_schema_v2.sql 적용이 필요합니다.';
   if (/Failed to fetch|NetworkError|Load failed/i.test(msg)) return '네트워크 연결을 확인해 주세요.';
   return msg || '요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.';
 }
@@ -122,8 +161,37 @@ function seedLocal() {
     academy_materials: [],
     consultation_notes: [],
     notification_logs: [],
-    organizations: [],
-    branches: [],
+    organizations: [
+      {
+        id: '11111111-1111-4111-8111-111111111111', name: 'MINA WORLD 본점', org_type: 'wellness',
+        ceo_name: '이미나', contact_name: '이미나 대표', contact_phone: '010-5424-0807',
+        contact_email: 'minawellnessworld@gmail.com', address: '경기도 여주시 · 서울 송파구',
+        status: 'active', commission_rate: 0, business_no: '', contract_start: null, contract_end: null,
+        settlement_bank: '', settlement_account: '', notes: 'MINA Wellness World 직영 본점',
+        created_at: nowIso()
+      }
+    ],
+    branches: [
+      {
+        id: '22222222-2222-4222-8222-222222222222', org_id: '11111111-1111-4111-8111-111111111111',
+        name: 'MINA WORLD 직영 본점', address: '예약 확정 후 상세 위치 안내', phone: '010-5424-0807',
+        status: 'active', created_at: nowIso()
+      }
+    ],
+    org_memberships: [],
+    org_schedules: [1, 2, 3, 4, 5, 6].map(function (d) {
+      return {
+        id: 'sched-' + d,
+        org_id: '11111111-1111-4111-8111-111111111111',
+        branch_id: '22222222-2222-4222-8222-222222222222',
+        counselor_id: null, weekday: d, open_time: '10:00', close_time: '19:00',
+        slot_minutes: 60, is_active: true, created_at: nowIso()
+      };
+    }),
+    settlements: [],
+    consent_logs: [],
+    audit_logs: [],
+    account_pre_assignments: [],
     auth_session: null
   };
   return db;
@@ -280,6 +348,16 @@ export async function signIn(email, password) {
     if (res.error) throw new Error(friendlyError(res.error));
     state.session = res.data.session;
     await refreshProfile();
+    var status = state.profile ? state.profile.status : 'active';
+    if (status === 'suspended' || status === 'withdrawn') {
+      try { await clientSync().auth.signOut(); } catch (err) { console.warn(err); }
+      state.session = null;
+      state.profile = null;
+      emit();
+      throw new Error(status === 'suspended'
+        ? '이용이 정지된 계정입니다. MINA WORLD 대표 메일로 문의해 주세요.'
+        : '탈퇴 처리된 계정입니다. 다시 이용하려면 회원가입이 필요합니다.');
+    }
     return { ok: true };
   }
 
@@ -522,10 +600,11 @@ export async function listBookings(userId) {
 }
 
 export async function createBooking(payload) {
-  var id = requireUid();
+  var id = payload.user_id && (isAdmin() || isOrgWorker()) ? payload.user_id : requireUid();
   var profile = state.profile || {};
   var method = payload.payment_method || 'pg_integration_required';
   var isBank = method === 'bank_transfer';
+  var isOnsite = method === 'onsite';
   var row = {
     user_id: id,
     program_id: payload.program_id,
@@ -539,11 +618,13 @@ export async function createBooking(payload) {
     original_amount: payload.original_amount || 0,
     discount_amount: payload.discount_amount || 0,
     final_amount: payload.final_amount || 0,
-    status: 'pending',
-    payment_status: isBank ? 'bank_transfer' : 'pending_pg',
-    counselor_id: null,
-    org_id: profile.org_id || null,
-    branch_id: profile.branch_id || null
+    status: payload.status || 'pending',
+    payment_status: isBank ? 'bank_transfer' : isOnsite ? 'pending_pg' : 'pending_pg',
+    counselor_id: payload.counselor_id || null,
+    counselor_name: payload.counselor_name || '',
+    branch_name: payload.branch_name || '',
+    org_id: payload.org_id || profile.org_id || null,
+    branch_id: payload.branch_id || null
   };
 
   var booking;
@@ -552,19 +633,30 @@ export async function createBooking(payload) {
     if (res.error) throw new Error(friendlyError(res.error));
     booking = res.data;
   } else {
+    var localRows = table('bookings');
+    for (var q = 0; q < localRows.length; q++) {
+      var b = localRows[q];
+      if (b.preferred_date === row.preferred_date && b.preferred_time === row.preferred_time &&
+        String(b.branch_id || '') === String(row.branch_id || '') &&
+        String(b.counselor_id || '') === String(row.counselor_id || '') &&
+        (b.status === 'pending' || b.status === 'confirmed')) {
+        throw new Error('이미 예약된 시간대입니다. 다른 시간을 선택해 주세요.');
+      }
+    }
     booking = localInsert('bookings', row);
   }
 
   var paymentRow = {
     booking_id: booking.id,
     user_id: id,
+    org_id: booking.org_id || null,
     title: booking.program_title + ' · ' + booking.preferred_date + ' ' + booking.preferred_time,
     amount: booking.final_amount,
     method: method,
     status: isBank ? 'pending_deposit' : 'integration_required',
     receipt_note: isBank
       ? '무통장 입금 대기 · 입금 확인 후 예약 확정'
-      : (method === 'onsite'
+      : (isOnsite
         ? '현장 결제 예정 · 방문 시 결제 확인'
         : '온라인 PG 결제 키 연동 전 · 예약 접수 및 계좌/현장 확인 대기')
   };
@@ -590,6 +682,28 @@ export async function createBooking(payload) {
   }
 
   return booking;
+}
+
+/* 예약 가능 시간대 조회 — 중복 예약 시간대를 비활성화하기 위한 RPC
+   get_booked_slots(date, branch_id, counselor_id) → text[] (시간 문자열만 반환, 타인 정보 없음) */
+export async function getBookedSlots(date, branchId, counselorId) {
+  if (!date) return [];
+  if (state.mode === 'live') {
+    var res = await clientSync().rpc('get_booked_slots', {
+      p_date: date,
+      p_branch_id: branchId || null,
+      p_counselor_id: counselorId || null
+    });
+    if (res.error) throw new Error(friendlyError(res.error));
+    return Array.isArray(res.data) ? res.data : [];
+  }
+  var rows = local().bookings.filter(function (b) {
+    return String(b.preferred_date) === String(date) &&
+      (b.status === 'pending' || b.status === 'confirmed') &&
+      String(b.branch_id || '22222222-2222-4222-8222-222222222222') === String(branchId || '22222222-2222-4222-8222-222222222222') &&
+      String(b.counselor_id || '00000000-0000-0000-0000-000000000000') === String(counselorId || '00000000-0000-0000-0000-000000000000');
+  });
+  return rows.map(function (b) { return b.preferred_time; });
 }
 
 export async function updateBooking(id, patch) {
@@ -704,6 +818,25 @@ export async function adminSaveResult(payload) {
     return res.data;
   }
   return localInsert('brain_results', row);
+}
+
+export async function adminUpdateResult(id, patch) {
+  if (state.mode === 'live') {
+    var res = await clientSync().from('brain_check_results').update(patch).eq('id', id).select().maybeSingle();
+    if (res.error) throw new Error(friendlyError(res.error));
+    return res.data;
+  }
+  return localUpdate('brain_results', id, patch);
+}
+
+export async function adminDeleteResult(id) {
+  if (state.mode === 'live') {
+    var res = await clientSync().from('brain_check_results').delete().eq('id', id);
+    if (res.error) throw new Error(friendlyError(res.error));
+    return true;
+  }
+  localDelete('brain_results', id);
+  return true;
 }
 
 export async function getSignedResultUrl(path) {

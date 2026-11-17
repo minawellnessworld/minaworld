@@ -321,6 +321,32 @@ export function paymentStatusTone(status) {
   return 'neutral';
 }
 
+/* CSV 다운로드 (정산·회원 목록 등) — 화면에서 계산한 실제 값만 내보냅니다 */
+export function downloadCsv(filename, headers, rows) {
+  var escapeCell = function (value) {
+    var text = value === null || value === undefined ? '' : String(value);
+    if (/[",\n]/.test(text)) return '"' + text.replace(/"/g, '""') + '"';
+    return text;
+  };
+  var lines = [];
+  lines.push((headers || []).map(escapeCell).join(','));
+  (rows || []).forEach(function (row) {
+    lines.push(row.map(escapeCell).join(','));
+  });
+  /* BOM: Excel(한글)에서 바로 열리도록 */
+  var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(function () {
+    URL.revokeObjectURL(url);
+    if (link.parentNode) link.parentNode.removeChild(link);
+  }, 400);
+}
+
 /* 차트 공용 옵션 (Chart.js v4) */
 export function chartBaseOptions() {
   return {

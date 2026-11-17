@@ -1,24 +1,32 @@
 /* =====================================================================
-   MINA WORLD App — Service Worker
-   - 앱 셸(HTML/CSS/JS/아이콘) 캐시 → 오프라인에서도 껍데기 실행
+   MINA WORLD App — Service Worker (v2.0.0)
+   - 앱 셸(HTML/CSS/JS/아이콘) 전체 선캐시 → 오프라인에서도 껍데기 실행
+   - 신규 v2 모듈(store-org / store-security / admin-login / partner / admin/*) 포함
    - Supabase · CDN · GA4 요청은 네트워크 패스스루 (캐시하지 않음)
    ===================================================================== */
-const VERSION = 'mina-app-v1.0.1';
-const SHELL_CACHE = VERSION + '-shell';
-const RUNTIME_CACHE = VERSION + '-runtime';
+const VERSION = 'mina-app-v2.0.0';
+const CACHE_NAME = VERSION + '-shell';          // 앱 셸 선캐시
+const RUNTIME_CACHE = VERSION + '-runtime';     // 런타임 보조 캐시
 
-const SHELL_FILES = [
+/* PRECACHE_ASSETS: index.html 이 로드하는 모든 모듈 + 신규 v2 모듈 전체 */
+const PRECACHE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './css/app.css',
+
+  /* core modules */
   './js/app.js',
   './js/config.js',
   './js/catalog.js',
   './js/supabase.js',
   './js/store.js',
+  './js/store-org.js',
+  './js/store-security.js',
   './js/ui.js',
   './js/booking.js',
+
+  /* B2C views */
   './js/views/home.js',
   './js/views/brain-check.js',
   './js/views/neuro.js',
@@ -28,7 +36,22 @@ const SHELL_FILES = [
   './js/views/community.js',
   './js/views/account.js',
   './js/views/more.js',
+
+  /* admin · partner */
   './js/views/admin.js',
+  './js/views/admin-login.js',
+  './js/views/partner.js',
+  './js/views/admin/overview.js',
+  './js/views/admin/bookings.js',
+  './js/views/admin/members.js',
+  './js/views/admin/results.js',
+  './js/views/admin/content.js',
+  './js/views/admin/orgs.js',
+  './js/views/admin/settlements.js',
+  './js/views/admin/audit.js',
+  './js/views/admin/security.js',
+
+  /* icons · assets */
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
@@ -40,10 +63,10 @@ const SHELL_FILES = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(SHELL_CACHE).then((cache) => {
+    caches.open(CACHE_NAME).then((cache) => {
       // 개별 실패가 전체 설치를 막지 않도록 하나씩 캐시
       return Promise.all(
-        SHELL_FILES.map((url) =>
+        PRECACHE_ASSETS.map((url) =>
           cache.add(new Request(url, { cache: 'reload' })).catch((err) => {
             console.warn('[SW] 캐시 실패', url, err && err.message);
           })
@@ -58,7 +81,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) =>
       Promise.all(
         keys
-          .filter((key) => key !== SHELL_CACHE && key !== RUNTIME_CACHE)
+          .filter((key) => key !== CACHE_NAME && key !== RUNTIME_CACHE)
           .map((key) => caches.delete(key))
       )
     ).then(() => self.clients.claim())
@@ -101,7 +124,7 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then((response) => {
           const copy = response.clone();
-          caches.open(SHELL_CACHE).then((cache) => cache.put('./index.html', copy)).catch(() => {});
+          caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', copy)).catch(() => {});
           return response;
         })
         .catch(() =>

@@ -1,6 +1,6 @@
 /* 더보기 — 커뮤니티 · 아카데미 · 마이페이지 · 관리자 · 앱 안내 */
 import { CONFIG, BRAND, MINA_MEANING } from '../config.js';
-import { state, isStaff } from '../store.js';
+import { state, isStaff, isOrgWorker } from '../store.js';
 import { icon, esc, badge, sectionHead, noticeBox, openSheet, closeSheet } from '../ui.js';
 
 var LINKS = [
@@ -8,7 +8,8 @@ var LINKS = [
   { href: '#/academy', ico: 'file', title: 'MINA ACADEMY', sub: '뇌교육상담사 전문가 과정 (40시간 · 5주)' },
   { href: '#/neuro', ico: 'sparkle', title: 'NEURO TRAINING', sub: '뉴로피드백 패키지 · 훈련 기록' },
   { href: '#/account', ico: 'user', title: '마이페이지', sub: '예약 · 결제 · 쿠폰 · 알림함' },
-  { href: '#/brain-check', ico: 'pulse', title: 'BRAIN CHECK', sub: '간편검사 · 종합검사 예약' }
+  { href: '#/brain-check', ico: 'pulse', title: 'BRAIN CHECK', sub: '간편검사 · 종합검사 예약' },
+  { href: '#/admin-login', ico: 'lock', title: '관리자 · 기관 담당자', sub: '전체 관리자 · 제휴 기관 로그인 포털' }
 ];
 
 export async function render(ctx) {
@@ -39,6 +40,13 @@ export async function render(ctx) {
       ? '<section class="section"><a class="admin-banner" href="#/admin">' +
           '<span class="admin-badge">' + icon('shield', 18) + ' ADMIN</span>' +
           '<span><strong>관리자 콘솔</strong><span>회원 · 예약 · 결과 · 매출 · B2B 관리</span></span>' +
+          icon('chevronRight', 18) + '</a></section>'
+      : '') +
+
+    (isOrgWorker()
+      ? '<section class="section"><a class="admin-banner" href="#/partner">' +
+          '<span class="admin-badge">' + icon('shield', 18) + ' PARTNER</span>' +
+          '<span><strong>기관 대시보드</strong><span>기관 회원 · 예약 · 결과 · 정산</span></span>' +
           icon('chevronRight', 18) + '</a></section>'
       : '') +
 
