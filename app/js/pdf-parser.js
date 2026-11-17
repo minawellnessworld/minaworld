@@ -10,26 +10,25 @@
        - 감정 성향 : '정서 성향' 표의 판정 문구 (예: 상당히 명랑함)
        - 항목별 값 : 각 항목 머리글 아래 좌/우 표의 숫자를 **열 순서 그대로** 읽어
                      항목별 한 줄 요약으로 만듭니다.
-       - 핵심 4수치: CORE_MAP 규칙(아래)에 따라서만 채웁니다. 규칙에 없는 값은
+       - 핵심 3수치: CORE_MAP 규칙(아래)에 따라서만 채웁니다. 규칙에 없는 값은
                      비워 두고 사용자가 직접 입력합니다(추측 금지).
    · 그래프 안에 그림(래스터)으로 박힌 수치는 어떤 텍스트 파서도 읽을 수 없습니다.
      그런 항목은 비워 두고 몇 건을 채웠는지만 안내합니다.
    ===================================================================== */
-import { esc } from './ui.js?v=2.0.9';
+import { esc } from './ui.js?v=2.0.10';
 
 var PDFJS_VERSION = '3.11.174';
 var PDFJS_CDN = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + PDFJS_VERSION + '/';
 var CDN_CMAPS = PDFJS_CDN + 'cmaps/';
 var CDN_STANDARD_FONTS = PDFJS_CDN + 'standard_fonts/';
 
-/* 핵심 4수치 매핑 규칙 ------------------------------------------------
-   focus    : 이 리포트에는 '집중' 지표가 없습니다 → null (자동 입력 안 함)
+/* 핵심 3수치 매핑 규칙 ------------------------------------------------
    stress   : '육체적 긴장과 스트레스' 좌/우 중 큰 값
    balance  : '좌우뇌 균형'의 진폭 대칭(%)
    feedback : '자기 피드백 능력'의 평균 점수
+   ※ 실제 결과지에 있는 3개 지표만 자동 입력합니다 (집중 지표는 결과지에 없음).
    ※ 값을 바꾸려면 이 표만 고치면 됩니다. */
 var CORE_MAP = {
-  focus: null,
   stress: 'physicalMax',
   balance: 'amplitudeSymmetry',
   feedback: 'feedbackAverage'
@@ -474,7 +473,7 @@ export async function parseReport(file) {
     checkType: '',
     measuredAt: '',
     emotion: '',
-    core: { focus: null, stress: null, balance: null, feedback: null },
+    core: { stress: null, balance: null, feedback: null },
     items: {},
     filledItems: 0,
     notes: []
@@ -531,7 +530,7 @@ export async function parseReport(file) {
     if (verdict) result.emotion = verdict;
   }
 
-  /* 핵심 4수치 */
+  /* 핵심 3수치 */
   var physical = parsed['육체적 긴장과 스트레스'];
   if (CORE_MAP.stress === 'physicalMax' && physical && physical.rows.length >= 2 && physical.rows[0].nums.length) {
     var leftStress = toNumber(physical.rows[0].nums[0].text);
@@ -548,15 +547,6 @@ export async function parseReport(file) {
   var feedbackData = parsed['자기 피드백 능력'];
   if (CORE_MAP.feedback === 'feedbackAverage' && feedbackData && feedbackData.pairs && feedbackData.pairs['평균']) {
     result.core.feedback = toNumber(feedbackData.pairs['평균']);
-  }
-
-  if (CORE_MAP.focus === 'alphaShare') {
-    var freqData = parsed['주파수 출현빈도 및 평균 진폭'];
-    if (freqData && freqData.rows.length >= 2 && freqData.rows[0].nums.length >= 2) {
-      var a = toNumber(freqData.rows[0].nums[1].text);
-      var b = toNumber(freqData.rows[1].nums[1] ? freqData.rows[1].nums[1].text : '');
-      if (a !== null && b !== null) result.core.focus = Math.round((a + b) / 2 * 10) / 10;
-    }
   }
 
   if (!result.measuredAt) result.notes.push('no-date');
@@ -650,7 +640,6 @@ export function bindPdfAutofill(opts) {
     /* 2) 기본 항목 */
     var fields = opts.fields || {};
     track(setIfEmpty(fields.date, report.measuredAt));
-    if (report.core.focus !== null && report.core.focus !== undefined) track(setIfEmpty(fields.focus, report.core.focus));
     if (report.core.stress !== null && report.core.stress !== undefined) track(setIfEmpty(fields.stress, report.core.stress));
     if (report.core.balance !== null && report.core.balance !== undefined) track(setIfEmpty(fields.balance, report.core.balance));
     if (report.core.feedback !== null && report.core.feedback !== undefined) track(setIfEmpty(fields.feedback, report.core.feedback));
@@ -672,7 +661,7 @@ export function bindPdfAutofill(opts) {
 
     var parts = [];
     if (report.measuredAt) parts.push('측정일');
-    var coreCount = ['focus', 'stress', 'balance', 'feedback'].filter(function (key) {
+    var coreCount = ['stress', 'balance', 'feedback'].filter(function (key) {
       return report.core[key] !== null && report.core[key] !== undefined;
     }).length;
     if (coreCount) parts.push('핵심 수치 ' + coreCount + '종');

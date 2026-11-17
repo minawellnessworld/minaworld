@@ -1,16 +1,16 @@
 /* S04. MY BRAIN — 나의 뇌 관리 대시보드 (PART 2-3)
    실제 측정 데이터만 표시합니다. 값이 없으면 빈 상태이며 임의 수치를 만들지 않습니다. */
-import { BRAND, GOAL_OPTIONS, GRADES, CHECK_TYPES, CHECK_ITEM_LABELS } from '../config.js?v=2.0.9';
+import { BRAND, GOAL_OPTIONS, GRADES, CHECK_TYPES, CHECK_ITEM_LABELS } from '../config.js?v=2.0.10';
 import {
   state, updateProfile, listResults, listPackages, listSessions, listBookings, listWellness,
   getSignedResultUrl, friendlyError, todayStr, deleteWellness
-} from '../store.js?v=2.0.9';
-import { listMyMemberships } from '../store-org.js?v=2.0.9';
+} from '../store.js?v=2.0.10';
+import { listMyMemberships } from '../store-org.js?v=2.0.10';
 import {
   icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, chartBaseOptions,
   loadingBlock, badge, bookingStatusTone, setBusy, confirmDialog, go
-} from '../ui.js?v=2.0.9';
-import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.9';
+} from '../ui.js?v=2.0.10';
+import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.10';
 
 function summaryTile(ico, label, value, sub) {
   return '<div class="summary-tile">' +
@@ -143,8 +143,7 @@ export async function render(ctx) {
     resultFileCard = '<div class="result-preview">' +
       '<div class="list-top"><strong>' + esc(CHECK_TYPES[latestResult.check_type] || '검사 결과지') + '</strong>' +
         badge(fmtDate(latestResult.measured_at), 'neutral') + '</div>' +
-      '<div class="metric-grid">' +
-        '<div class="metric-cell"><span>집중</span><strong>' + metricText(latestResult.focus_score) + '</strong></div>' +
+      '<div class="metric-grid is-three">' +
         '<div class="metric-cell"><span>스트레스</span><strong>' + metricText(latestResult.stress_index) + '</strong></div>' +
         '<div class="metric-cell"><span>좌우 균형</span><strong>' + metricText(latestResult.balance_index) + '</strong></div>' +
         '<div class="metric-cell"><span>자기 피드백</span><strong>' + metricText(latestResult.feedback_score) + '</strong></div>' +
@@ -162,7 +161,6 @@ export async function render(ctx) {
   var compareCard = '';
   if (orderedResults.length >= 2) {
     var rows = [
-      { key: 'focus_score', label: '집중 지수' },
       { key: 'stress_index', label: '스트레스 지수' },
       { key: 'balance_index', label: '좌우 균형' },
       { key: 'feedback_score', label: '자기 피드백' }
@@ -201,7 +199,6 @@ export async function render(ctx) {
         (r.file_path ? '<button type="button" class="btn btn-ghost btn-xs" data-file="' + esc(r.file_path) + '">PDF</button>' : '') +
       '</div>' +
       '<div class="metric-chips">' +
-        '<span class="metric-chip">집중 ' + metricText(r.focus_score) + '</span>' +
         '<span class="metric-chip">스트레스 ' + metricText(r.stress_index) + '</span>' +
         '<span class="metric-chip">균형 ' + metricText(r.balance_index) + '</span>' +
         (r.feedback_score !== null && r.feedback_score !== undefined ? '<span class="metric-chip">피드백 ' + metricText(r.feedback_score) + '</span>' : '') +
@@ -340,7 +337,7 @@ export async function render(ctx) {
       sectionHead('이전 vs 현재', results.length >= 2 ? '<span class="muted small">' + results.length + '건 비교</span>' : '') +
       (results.length >= 2
         ? compareCard + '<div class="chart-card"><div class="chart-wrap"><canvas id="result-chart"></canvas></div>' +
-          '<p class="chart-caption">실제 검사 결과만 표시됩니다 (집중 · 스트레스 지표)</p></div>'
+          '<p class="chart-caption">실제 검사 결과만 표시됩니다 (자기 피드백 · 스트레스 지표)</p></div>'
         : emptyState({
             icon: 'chart',
             title: results.length ? '변화 그래프는 검사 2건 이상부터 표시됩니다' : '아직 검사 결과 데이터가 없습니다',
@@ -473,14 +470,14 @@ export async function render(ctx) {
               labels: orderedResults.map(function (r) { return fmtDate(r.measured_at); }),
               datasets: [
                 {
-                  label: '집중 지표',
-                  data: orderedResults.map(function (r) { return r.focus_score === null || r.focus_score === undefined ? null : Number(r.focus_score); }),
-                  borderColor: '#070D1E', backgroundColor: 'rgba(7,13,30,0.08)', tension: 0.3, spanGaps: true, pointRadius: 3.5, borderWidth: 2
-                },
-                {
                   label: '스트레스 지표',
                   data: orderedResults.map(function (r) { return r.stress_index === null || r.stress_index === undefined ? null : Number(r.stress_index); }),
                   borderColor: '#C9A96E', backgroundColor: 'rgba(201,169,110,0.16)', tension: 0.3, spanGaps: true, pointRadius: 3.5, borderWidth: 2
+                },
+                {
+                  label: '자기 피드백 지표',
+                  data: orderedResults.map(function (r) { return r.feedback_score === null || r.feedback_score === undefined ? null : Number(r.feedback_score); }),
+                  borderColor: '#070D1E', backgroundColor: 'rgba(7,13,30,0.08)', tension: 0.3, spanGaps: true, pointRadius: 3.5, borderWidth: 2
                 }
               ]
             },

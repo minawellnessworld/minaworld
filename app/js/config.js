@@ -43,7 +43,7 @@ export var CONFIG = {
   SUPABASE_SCHEMA: 'public',
   STORAGE_BUCKET: 'brain-results',
   GA_MEASUREMENT_ID: 'G-TTMVKBHNZM',
-  APP_VERSION: '2.0.9',
+  APP_VERSION: '2.0.10',
   SCHEMA_VERSION: 'v2',
   SITE_URL: 'https://www.minaworld.co.kr',
   CONTACT_EMAIL: 'minawellnessworld@gmail.com',
@@ -180,7 +180,6 @@ export var ORG_STATUS = {
 export var CHECK_TYPES = { simple: '간편검사 (결과지 2장)', full: '종합검사 (결과지 11장)' };
 
 export var CHECK_ITEM_LABELS = {
-  focus_score: '집중 지수',
   stress_index: '스트레스 지수',
   balance_index: '좌우 균형',
   feedback_score: '자기 피드백',

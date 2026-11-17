@@ -1,8 +1,8 @@
 /* S02. BRAIN CHECK — 뇌파측정 서비스 소개 · 예약 · 결과 */
-import { BRAND, CHECK_TYPES, BOOKING_STATUS, BOOKING_PAYMENT_STATUS } from '../config.js?v=2.0.9';
-import { state, getPrograms, listResults, listBookings, getSignedResultUrl, friendlyError } from '../store.js?v=2.0.9';
-import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, setBusy, loadingBlock } from '../ui.js?v=2.0.9';
-import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.9';
+import { BRAND, CHECK_TYPES, BOOKING_STATUS, BOOKING_PAYMENT_STATUS } from '../config.js?v=2.0.10';
+import { state, getPrograms, listResults, listBookings, getSignedResultUrl, friendlyError } from '../store.js?v=2.0.10';
+import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, setBusy, loadingBlock } from '../ui.js?v=2.0.10';
+import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.10';
 
 var RESULT_ITEMS = {
   simple: [
@@ -47,18 +47,17 @@ function productCard(program) {
 function resultCard(result) {
   var metrics = '';
   var rows = [
-    { key: 'focus_score', label: '집중' },
     { key: 'stress_index', label: '스트레스' },
     { key: 'balance_index', label: '좌우 균형' },
     { key: 'feedback_score', label: '자기 피드백' }
   ];
-  var hasAny = false;
+  var count = 0;
   var metricHtml = rows.map(function (row) {
     if (result[row.key] === null || result[row.key] === undefined) return '';
-    hasAny = true;
+    count += 1;
     return '<div class="metric"><span>' + row.label + '</span><strong>' + Number(result[row.key]).toFixed(1) + '</strong></div>';
   }).join('');
-  if (hasAny) metrics = '<div class="metric-grid">' + metricHtml + '</div>';
+  if (count) metrics = '<div class="metric-grid' + (count === 3 ? ' is-three' : count === 2 ? ' is-two' : '') + '">' + metricHtml + '</div>';
 
   var recheckDays = null;
   if (result.next_recheck_date) {

@@ -1,8 +1,8 @@
 /* 관리자 → 보안 · 감사 로그(PART 6): 누가 언제 무엇을 조회/변경했는지 */
-import { ROLES } from '../../config.js?v=2.0.9';
-import { friendlyError } from '../../store.js?v=2.0.9';
-import { listAuditLogs, auditActionLabel } from '../../store-security.js?v=2.0.9';
-import { icon, esc, fmtDateTime, badge, noticeBox, emptyState } from '../../ui.js?v=2.0.9';
+import { ROLES } from '../../config.js?v=2.0.10';
+import { friendlyError } from '../../store.js?v=2.0.10';
+import { listAuditLogs, auditActionLabel } from '../../store-security.js?v=2.0.10';
+import { icon, esc, fmtDateTime, badge, noticeBox, emptyState } from '../../ui.js?v=2.0.10';
 
 function table(headers, rows) {
   return '<div class="table-scroll"><table class="data-table"><thead><tr>' +

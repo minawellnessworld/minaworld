@@ -6,8 +6,8 @@
      localStorage(유형별)에 보관되어 다음 등록 화면부터 기본값이 됩니다.
    - "초기 기본값 복원" 은 저장값을 지우고 코드 기본값으로 되돌립니다.
    ===================================================================== */
-import { CHECK_ITEM_TEMPLATES } from './config.js?v=2.0.9';
-import { esc } from './ui.js?v=2.0.9';
+import { CHECK_ITEM_TEMPLATES } from './config.js?v=2.0.10';
+import { esc } from './ui.js?v=2.0.10';
 
 var STORAGE_PREFIX = 'mina.check-items.v1.';
 
@@ -83,7 +83,7 @@ export function rowsHtml(items) {
   var list = items && items.length ? items : [{ name: '', hint: '' }];
   return list.map(function (item) {
     return '<div class="kv-row">' +
-      '<input type="text" class="kv-key" placeholder="항목 (예: 집중 지수)" value="' + esc(item.name || '') + '">' +
+      '<input type="text" class="kv-key" placeholder="항목 (예: 좌우뇌 균형)" value="' + esc(item.name || '') + '">' +
       '<input type="text" class="kv-value" placeholder="' + esc(item.hint || '설명') + '" value="">' +
       '<button type="button" class="btn btn-ghost btn-xs" data-kv-remove>−</button>' +
     '</div>';

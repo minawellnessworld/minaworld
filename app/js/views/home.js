@@ -1,19 +1,19 @@
 /* S01. 홈 — 개인 회원 메인 대시보드(PART 2-2) + 오늘의 뇌 컨디션 체크인 */
-import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.9';
+import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.10';
 import {
   state, listWellness, addWellness, listBookings, listPosts, listResults, listPackages,
   listSessions, getPrograms, isStaff, isOrgWorker,
   friendlyError, dateKey, todayStr
-} from '../store.js?v=2.0.9';
+} from '../store.js?v=2.0.10';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listMyMemberships, setShareBrainResults
-} from '../store-org.js?v=2.0.9';
-import { recordConsents, logAudit } from '../store-security.js?v=2.0.9';
+} from '../store-org.js?v=2.0.10';
+import { recordConsents, logAudit } from '../store-security.js?v=2.0.10';
 import {
   icon, esc, fmtKRW, fmtDate, todayLabel, toast, emptyState, setBusy, sectionHead, go, track, noticeBox
-} from '../ui.js?v=2.0.9';
-import { requireLoginSheet } from '../booking.js?v=2.0.9';
-import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.9';
+} from '../ui.js?v=2.0.10';
+import { requireLoginSheet } from '../booking.js?v=2.0.10';
+import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.10';
 
 var MENU = [
   { key: 'brain_check', title: 'BRAIN CHECK', sub: '뇌파측정 · 뇌기능검사 예약', ico: 'pulse', href: '#/brain-check', tone: 'navy' },

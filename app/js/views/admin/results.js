@@ -1,16 +1,16 @@
 /* 관리자 → 검사 결과: 등록 · 수정 · is_public 공개 토글 · 항목별 설명(item_details) · 결과지 업로드 */
-import { CHECK_TYPES } from '../../config.js?v=2.0.9';
-import { editorHtml, bindEditor, fillItems } from '../../check-items.js?v=2.0.9';
-import { bindPdfAutofill } from '../../pdf-parser.js?v=2.0.9';
+import { CHECK_TYPES } from '../../config.js?v=2.0.10';
+import { editorHtml, bindEditor, fillItems } from '../../check-items.js?v=2.0.10';
+import { bindPdfAutofill } from '../../pdf-parser.js?v=2.0.10';
 import {
   state, listProfiles, listResults, adminSaveResult, adminUpdateResult, adminDeleteResult,
   uploadResultFile, listOrganizations, friendlyError, todayStr
-} from '../../store.js?v=2.0.9';
-import { logAudit } from '../../store-security.js?v=2.0.9';
+} from '../../store.js?v=2.0.10';
+import { logAudit } from '../../store-security.js?v=2.0.10';
 import {
   icon, esc, fmtDate, toast, badge, openSheet, closeSheet, confirmDialog, setBusy,
   noticeBox, emptyState
-} from '../../ui.js?v=2.0.9';
+} from '../../ui.js?v=2.0.10';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -41,7 +41,7 @@ function itemRowsHtml(items) {
   if (!entries.length) entries.push(['', '']);
   return entries.map(function (pair) {
     return '<div class="kv-row">' +
-      '<input type="text" class="kv-key" placeholder="항목 (예: 집중 지수)" value="' + esc(pair[0]) + '">' +
+      '<input type="text" class="kv-key" placeholder="항목 (예: 좌우뇌 균형)" value="' + esc(pair[0]) + '">' +
       '<input type="text" class="kv-value" placeholder="설명" value="' + esc(pair[1]) + '">' +
       '<button type="button" class="btn btn-ghost btn-xs" data-kv-remove>−</button>' +
     '</div>';
@@ -86,7 +86,7 @@ export async function build(ctx) {
       '<td>' + fmtDate(r.measured_at) + '</td>' +
       '<td class="muted small">' + esc(memberName(profiles, r.user_id)) + '</td>' +
       '<td>' + esc(CHECK_TYPES[r.check_type] || r.check_type) + '</td>' +
-      '<td class="muted small">' + [r.focus_score, r.stress_index, r.balance_index, r.feedback_score].map(function (v) {
+      '<td class="muted small">' + [r.stress_index, r.balance_index, r.feedback_score].map(function (v) {
         return v === null || v === undefined ? '-' : Number(v).toFixed(1);
       }).join(' / ') + '</td>' +
       '<td>' + (r.file_path ? badge('업로드됨', 'green') : badge('미등록', 'neutral')) + '</td>' +
@@ -112,8 +112,7 @@ export async function build(ctx) {
           '<label class="field field-inline"><span class="field-label">회원에게 공개</span>' +
             '<label class="switch"><input type="checkbox" id="res-public" checked><span></span></label></label>' +
         '</div>' +
-        '<div class="form-grid form-grid-4">' +
-          '<label class="field"><span class="field-label">집중</span><input type="number" step="0.1" id="res-focus" placeholder="0.0"></label>' +
+        '<div class="form-grid form-grid-3">' +
           '<label class="field"><span class="field-label">스트레스</span><input type="number" step="0.1" id="res-stress" placeholder="0.0"></label>' +
           '<label class="field"><span class="field-label">좌우 균형</span><input type="number" step="0.1" id="res-balance" placeholder="0.0"></label>' +
           '<label class="field"><span class="field-label">자기 피드백</span><input type="number" step="0.1" id="res-feedback" placeholder="0.0"></label>' +
@@ -133,7 +132,7 @@ export async function build(ctx) {
     '</section>' +
     '<section class="admin-section">' +
       '<h2 class="admin-h2">등록된 검사 결과 (' + results.length + ')</h2>' +
-      table(['측정일', '회원', '유형', '집중/스트레스/균형/피드백', '결과지', '항목 설명', '공개', '재검사', ''], rows || emptyRow(9, '등록된 결과가 없습니다.')) +
+      table(['측정일', '회원', '유형', '스트레스/균형/피드백', '결과지', '항목 설명', '공개', '재검사', ''], rows || emptyRow(9, '등록된 결과가 없습니다.')) +
       noticeBox('공개를 끄면 회원 MY BRAIN에서 해당 결과가 보이지 않습니다(DB RLS도 <code>is_public = true</code>만 허용).', 'neutral') +
     '</section>';
 
@@ -149,7 +148,6 @@ export async function build(ctx) {
         typeEl: el.querySelector('#res-type'),
         fields: {
           date: el.querySelector('#res-date'),
-          focus: el.querySelector('#res-focus'),
           stress: el.querySelector('#res-stress'),
           balance: el.querySelector('#res-balance'),
           feedback: el.querySelector('#res-feedback'),
@@ -184,7 +182,7 @@ export async function build(ctx) {
             booking_id: null,
             check_type: el.querySelector('#res-type').value,
             measured_at: date,
-            focus_score: num('#res-focus'),
+            focus_score: null,
             stress_index: num('#res-stress'),
             balance_index: num('#res-balance'),
             feedback_score: num('#res-feedback'),
@@ -271,8 +269,7 @@ function openEditSheet(result, orgs, profiles, onSaved) {
         '<label class="field"><span class="field-label">검사 유형</span><select id="er-type">' + opt('simple', CHECK_TYPES.simple, result.check_type) + opt('full', CHECK_TYPES.full, result.check_type) + '</select></label>' +
         '<label class="field"><span class="field-label">측정일</span><input type="date" id="er-date" value="' + esc(result.measured_at) + '"></label>' +
       '</div>' +
-      '<div class="form-grid form-grid-4">' +
-        '<label class="field"><span class="field-label">집중</span><input type="number" step="0.1" id="er-focus" value="' + (result.focus_score === null || result.focus_score === undefined ? '' : result.focus_score) + '"></label>' +
+      '<div class="form-grid form-grid-3">' +
         '<label class="field"><span class="field-label">스트레스</span><input type="number" step="0.1" id="er-stress" value="' + (result.stress_index === null || result.stress_index === undefined ? '' : result.stress_index) + '"></label>' +
         '<label class="field"><span class="field-label">좌우 균형</span><input type="number" step="0.1" id="er-balance" value="' + (result.balance_index === null || result.balance_index === undefined ? '' : result.balance_index) + '"></label>' +
         '<label class="field"><span class="field-label">자기 피드백</span><input type="number" step="0.1" id="er-feedback" value="' + (result.feedback_score === null || result.feedback_score === undefined ? '' : result.feedback_score) + '"></label>' +
@@ -325,7 +322,7 @@ function openEditSheet(result, orgs, profiles, onSaved) {
           await adminUpdateResult(result.id, {
             check_type: el.querySelector('#er-type').value,
             measured_at: el.querySelector('#er-date').value,
-            focus_score: num('#er-focus'),
+            focus_score: result.focus_score === undefined ? null : result.focus_score,
             stress_index: num('#er-stress'),
             balance_index: num('#er-balance'),
             feedback_score: num('#er-feedback'),

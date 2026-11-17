@@ -1399,9 +1399,8 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
 /* 그리드 자식의 min-width:auto 때문에 iOS 에서 날짜 입력칸이 카드 밖으로 삐져나오던 문제 */
 .form-grid > * { min-width: 0; }
 .form-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; margin-top: 12px; }
-.form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+.form-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .form-grid-4 { grid-template-columns: 1fr 1fr; }
-.form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
 .span-2 { grid-column: span 2; }
 .form-grid .field + .field { margin-top: 0; }
 .form-row { margin-top: 12px; }
@@ -2022,6 +2021,8 @@ body.admin-mode #app-header { display: none; }
 
 /* ------------------------------------------------------- MY BRAIN v2 */
 .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin: 10px 0; }
+.metric-grid.is-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.metric-grid.is-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .metric-cell { padding: 9px 8px; border-radius: 12px; background: var(--gold-soft); border: 1px solid #EFE4CC; display: flex; flex-direction: column; gap: 1px; }
 .metric-cell span { font-size: 9.5px; color: #7A5F2C; font-weight: 600; }
 .metric-cell strong { font-size: 15px; letter-spacing: -0.02em; }

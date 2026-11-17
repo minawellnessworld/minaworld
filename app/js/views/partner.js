@@ -6,14 +6,14 @@ import {
   ORG_TYPES, BOOKING_STATUS, SETTLEMENT_STATUS, MEMBERSHIP_STATUS,
   STAFF_PERMISSIONS, STAFF_ROLE_OPTIONS, CHECK_TYPES, ROLES, WEEKDAYS,
   hasPermission, staffPermissionLabels
-} from '../config.js?v=2.0.9';
-import { editorHtml, bindEditor, fillItems } from '../check-items.js?v=2.0.9';
-import { bindPdfAutofill } from '../pdf-parser.js?v=2.0.9';
+} from '../config.js?v=2.0.10';
+import { editorHtml, bindEditor, fillItems } from '../check-items.js?v=2.0.10';
+import { bindPdfAutofill } from '../pdf-parser.js?v=2.0.10';
 import {
   state, isAdmin, isOrgAdmin, myOrgId, friendlyError, todayStr,
   listProfiles, listBookings, adminSetBookingStatus, listResults, adminSaveResult, uploadResultFile,
   adminUpdateProfile
-} from '../store.js?v=2.0.9';
+} from '../store.js?v=2.0.10';
 import {
   getPartnerMetrics, listOrgMemberships, updateMembership, requestResultAccess,
   issueStaffAccount, issueOrgMemberAccount, listPreAssignments, deletePreAssignment,
@@ -22,13 +22,13 @@ import {
   listOrgPayments, settlementTotals, listSettlements, createSettlement, markSettlementPaid,
   listOrgResults, listOrgBookings,
   getOrganization
-} from '../store-org.js?v=2.0.9';
-import { logAudit } from '../store-security.js?v=2.0.9';
-import { openAdminBookingModal } from '../booking.js?v=2.0.9';
+} from '../store-org.js?v=2.0.10';
+import { logAudit } from '../store-security.js?v=2.0.10';
+import { openAdminBookingModal } from '../booking.js?v=2.0.10';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, confirmDialog, setBusy, downloadCsv, loadingBlock
-} from '../ui.js?v=2.0.9';
+} from '../ui.js?v=2.0.10';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -312,8 +312,9 @@ async function openMemberResults(org, userId, profiles) {
           mine.map(function (r) {
             return '<div class="list-card">' +
               '<div class="list-top"><strong>' + esc(CHECK_TYPES[r.check_type] || r.check_type) + '</strong>' + badge(fmtDate(r.measured_at), 'neutral') + '</div>' +
-              '<div class="list-meta"><span>' + icon('chart', 15) + '집중 ' + (r.focus_score === null || r.focus_score === undefined ? '-' : Number(r.focus_score).toFixed(1)) +
-                ' · 스트레스 ' + (r.stress_index === null || r.stress_index === undefined ? '-' : Number(r.stress_index).toFixed(1)) + '</span></div>' +
+              '<div class="list-meta"><span>' + icon('chart', 15) + '스트레스 ' + (r.stress_index === null || r.stress_index === undefined ? '-' : Number(r.stress_index).toFixed(1)) +
+                ' · 균형 ' + (r.balance_index === null || r.balance_index === undefined ? '-' : Number(r.balance_index).toFixed(1)) +
+                ' · 피드백 ' + (r.feedback_score === null || r.feedback_score === undefined ? '-' : Number(r.feedback_score).toFixed(1)) + '</span></div>' +
               (r.summary_note ? '<p class="list-note">' + esc(r.summary_note) + '</p>' : '') +
             '</div>';
           }).join('');
@@ -385,7 +386,7 @@ async function buildResults(org) {
     return '<tr><td>' + fmtDate(r.measured_at) + '</td>' +
       '<td class="muted small">' + esc(memberName(profiles, r.user_id)) + '</td>' +
       '<td>' + esc(CHECK_TYPES[r.check_type] || r.check_type) + '</td>' +
-      '<td class="muted small">' + [r.focus_score, r.stress_index, r.balance_index, r.feedback_score].map(function (v) {
+      '<td class="muted small">' + [r.stress_index, r.balance_index, r.feedback_score].map(function (v) {
         return v === null || v === undefined ? '-' : Number(v).toFixed(1);
       }).join(' / ') + '</td>' +
       '<td>' + (r.file_path ? badge('결과지 등록', 'green') : badge('파일 없음', 'neutral')) + '</td></tr>';
@@ -419,8 +420,7 @@ async function buildResults(org) {
               '<label class="field"><span class="field-label">검사 유형</span><select id="pr-type">' + opt('simple', CHECK_TYPES.simple) + opt('full', CHECK_TYPES.full) + '</select></label>' +
               '<label class="field"><span class="field-label">측정일</span><input type="date" id="pr-date" value="' + todayStr() + '"></label>' +
             '</div>' +
-            '<div class="form-grid form-grid-4">' +
-              '<label class="field"><span class="field-label">집중</span><input type="number" step="0.1" id="pr-focus"></label>' +
+            '<div class="form-grid form-grid-3">' +
               '<label class="field"><span class="field-label">스트레스</span><input type="number" step="0.1" id="pr-stress"></label>' +
               '<label class="field"><span class="field-label">좌우 균형</span><input type="number" step="0.1" id="pr-balance"></label>' +
               '<label class="field"><span class="field-label">자기 피드백</span><input type="number" step="0.1" id="pr-feedback"></label>' +
@@ -440,7 +440,7 @@ async function buildResults(org) {
       : '') +
     '<section class="admin-section">' +
       '<h2 class="admin-h2">기관 검사 결과 (' + orgResults.length + ')</h2>' +
-      table(['측정일', '회원', '유형', '집중/스트레스/균형/피드백', '결과지'], rows || emptyRow(5, '등록된 기관 검사 결과가 없습니다.')) +
+      table(['측정일', '회원', '유형', '스트레스/균형/피드백', '결과지'], rows || emptyRow(5, '등록된 기관 검사 결과가 없습니다.')) +
     '</section>';
 
   return {
@@ -463,7 +463,6 @@ async function buildResults(org) {
         typeEl: el.querySelector('#pr-type'),
         fields: {
           date: el.querySelector('#pr-date'),
-          focus: el.querySelector('#pr-focus'),
           stress: el.querySelector('#pr-stress'),
           balance: el.querySelector('#pr-balance'),
           feedback: el.querySelector('#pr-feedback'),
@@ -495,7 +494,7 @@ async function buildResults(org) {
             booking_id: null,
             check_type: el.querySelector('#pr-type').value,
             measured_at: el.querySelector('#pr-date').value,
-            focus_score: num('#pr-focus'),
+            focus_score: null,
             stress_index: num('#pr-stress'),
             balance_index: num('#pr-balance'),
             feedback_score: num('#pr-feedback'),
