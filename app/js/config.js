@@ -440,8 +440,7 @@ function policyEsc(value) {
 export function privacyPolicyHtml() {
   var out = '';
   out += '<div class="policy-block">' +
-    '<p class="policy-meta">시행일 ' + policyEsc(PRIVACY_POLICY.effective) + ' · 버전 ' + policyEsc(PRIVACY_POLICY.version) + '</p>' +
-    '<p>「개인정보 보호법」에 따라 ' + policyEsc(PRIVACY_POLICY.controller.company) + '가 이용자의 개인정보와 민감정보를 어떻게 수집·이용·보관·파기하는지 안내합니다.</p>' +
+    '<p>「개인정보 보호법」에 따라 ' + policyEsc(PRIVACY_POLICY.controller.company) + '가 이용자의 개인정보와 민감정보를 어떻게 수집·이용·보관·파기하는지 안내합니다. (시행일 ' + policyEsc(PRIVACY_POLICY.effective) + ' · 버전 ' + policyEsc(PRIVACY_POLICY.version) + ')</p>' +
     '</div>';
   (PRIVACY_POLICY.sections || []).forEach(function (section) {
     var items = (section.body || []).map(function (line) {
