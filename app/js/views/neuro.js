@@ -1,7 +1,7 @@
 /* S03. NEURO TRAINING — 뉴로피드백 패키지 · 훈련 기록 */
-import { state, getPrograms, listPackages, listSessions, listBookings, friendlyError } from '../store.js?v=2.0.16';
-import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, chartBaseOptions } from '../ui.js?v=2.0.16';
-import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.16';
+import { state, getPrograms, listPackages, listSessions, listBookings, friendlyError } from '../store.js?v=2.0.17';
+import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, chartBaseOptions } from '../ui.js?v=2.0.17';
+import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.17';
 
 function packageCard(program) {
   var isSingle = program.id === 'neuro_1';
@@ -151,7 +151,7 @@ export async function render(ctx) {
     '<section class="section" id="package-section">' +
       sectionHead('이용권 · 패키지', '<span class="muted small">가격 미확정 상품은 상담 확정</span>') +
       '<div class="package-grid">' + programs.map(packageCard).join('') + '</div>' +
-      noticeBox('10·20·30회 패키지 금액과 유효기간은 상담에서 확정되며, 관리자 설정가가 앱에 그대로 표시됩니다.', 'neutral') +
+      noticeBox('10·20·30회 패키지 금액은 표시된 할인가로 예약되며, 이용 기간과 일정은 상담에서 안내합니다.', 'neutral') +
     '</section>' +
 
     bookingBlock +
