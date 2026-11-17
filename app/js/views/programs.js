@@ -1,8 +1,8 @@
 /* S05. NEURO TRAINING · MIND CARE · BRAIN WELLNESS — 뉴로피드백 4종 + 10종 프로그램 */
-import { BRAND } from '../config.js?v=2.0.12';
-import { getPrograms, friendlyError } from '../store.js?v=2.0.12';
-import { icon, esc, fmtKRW, emptyState, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.12';
-import { openBookingFlow } from '../booking.js?v=2.0.12';
+import { BRAND } from '../config.js?v=2.0.13';
+import { getPrograms, friendlyError } from '../store.js?v=2.0.13';
+import { icon, esc, fmtKRW, emptyState, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.13';
+import { openBookingFlow } from '../booking.js?v=2.0.13';
 
 var FILTERS = [
   { id: 'all', label: '전체' },
@@ -29,7 +29,7 @@ function programCard(program) {
     '<p class="program-sub">' + esc(program.subtitle || '') + '</p>' +
     '<div class="program-meta">' +
       '<span>' + icon('clock', 14) + esc(program.duration_text || '상담 후 확정') + '</span>' +
-      '<span>' + icon('wallet', 14) + esc(program.price_krw ? fmtKRW(program.price_krw) : (program.price_label || '상담 확정')) + '</span>' +
+      '<span>' + icon('wallet', 14) + esc(program.price_label || (program.price_krw ? fmtKRW(program.price_krw) : '상담 확정')) + '</span>' +
     '</div>' +
     '<button type="button" class="program-link" data-detail="' + esc(program.id) + '">자세히 보기' + icon('chevronRight', 15) + '</button>' +
   '</article>';
@@ -46,7 +46,7 @@ function detailContent(program) {
     '<div class="detail-block"><h4>진행 방식</h4><p>' + esc(program.format_method || '상담에서 안내드립니다.') + '</p></div>' +
     '<div class="detail-grid">' +
       '<div class="detail-cell"><span>소요 시간</span><strong>' + esc(program.duration_text || '상담 후 확정') + '</strong></div>' +
-      '<div class="detail-cell"><span>가격</span><strong>' + esc(program.price_krw ? fmtKRW(program.price_krw) : (program.price_label || '상담 확정')) + '</strong></div>' +
+      '<div class="detail-cell"><span>가격</span><strong>' + esc(program.price_label || (program.price_krw ? fmtKRW(program.price_krw) : '상담 확정')) + '</strong></div>' +
     '</div>' +
     noticeBox('본 프로그램은 의료기관의 진단·치료를 대체하지 않는 웰니스 프로그램입니다.', 'warn');
 }

@@ -1,16 +1,16 @@
 /* S04. MY BRAIN — 나의 뇌 관리 대시보드 (PART 2-3)
    실제 측정 데이터만 표시합니다. 값이 없으면 빈 상태이며 임의 수치를 만들지 않습니다. */
-import { BRAND, GOAL_OPTIONS, GRADES, CHECK_TYPES, CHECK_ITEM_LABELS } from '../config.js?v=2.0.12';
+import { BRAND, GOAL_OPTIONS, GRADES, CHECK_TYPES, CHECK_ITEM_LABELS } from '../config.js?v=2.0.13';
 import {
   state, updateProfile, listResults, listPackages, listSessions, listBookings, listWellness,
   getSignedResultUrl, friendlyError, todayStr, deleteWellness
-} from '../store.js?v=2.0.12';
-import { listMyMemberships } from '../store-org.js?v=2.0.12';
+} from '../store.js?v=2.0.13';
+import { listMyMemberships } from '../store-org.js?v=2.0.13';
 import {
   icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead,
   loadingBlock, badge, bookingStatusTone, setBusy, confirmDialog, go
-} from '../ui.js?v=2.0.12';
-import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.12';
+} from '../ui.js?v=2.0.13';
+import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.13';
 
 function summaryTile(ico, label, value, sub) {
   return '<div class="summary-tile">' +
@@ -114,8 +114,13 @@ export async function render(ctx) {
   var goals = Array.isArray(profile.goals) ? profile.goals : [];
   var todayStrValue = todayStr();
 
+  /* 측정일 오름차순 → 같은 날짜면 등록 시각(created_at) 오름차순으로 안정 정렬.
+     같은 날 두 번 등록해도 이전/현재가 뒤바뀌지 않습니다. */
   var orderedResults = results.slice().sort(function (a, b) {
-    return String(a.measured_at).localeCompare(String(b.measured_at));
+    var am = String(a.measured_at || '');
+    var bm = String(b.measured_at || '');
+    if (am !== bm) return am.localeCompare(bm);
+    return String(a.created_at || '').localeCompare(String(b.created_at || ''));
   });
   var latestResult = orderedResults[orderedResults.length - 1] || null;
   var prevResult = orderedResults.length >= 2 ? orderedResults[orderedResults.length - 2] : null;
@@ -178,10 +183,23 @@ export async function render(ctx) {
       itemKeys.map(function (key) {
         var before = prevItems[key];
         var now = nowItems[key];
-        var changed = before !== undefined && now !== undefined && String(before) !== String(now);
-        return '<tr><td>' + esc(key) + '</td><td>' + cellText(before) + '</td><td><strong>' + cellText(now) + '</strong>' +
+        var both = before !== undefined && now !== undefined && String(before) !== '' && String(now) !== '';
+        var changed = both && String(before) !== String(now);
+        return '<tr' + (changed ? ' class="is-changed"' : '') + '><td>' + esc(key) + '</td><td>' + cellText(before) + '</td><td><strong>' + cellText(now) + '</strong>' +
           (changed ? ' <span class="delta">변화</span>' : '') + '</td></tr>';
       }).join('');
+
+    var sameCount = itemKeys.filter(function (key) {
+      var before = prevItems[key];
+      var now = nowItems[key];
+      return before !== undefined && now !== undefined && String(before) !== '' && String(before) === String(now);
+    }).length;
+
+    var sameFile = prevResult.file_path && latestResult.file_path &&
+      String(prevResult.file_path) === String(latestResult.file_path);
+    var sameDate = String(prevResult.measured_at) === String(latestResult.measured_at);
+    var rangeLabel = fmtDate(prevResult.measured_at) + (sameDate ? ' ' + kstClock(prevResult.created_at) : '') +
+      ' → ' + fmtDate(latestResult.measured_at) + (sameDate ? ' ' + kstClock(latestResult.created_at) : '');
 
     var noteRow = function (label, result) {
       return '<div class="compare-note"><span>' + esc(label) + '</span><p>' +
@@ -190,8 +208,14 @@ export async function render(ctx) {
 
     compareCard = '<div class="compare-card">' +
       '<div class="list-top"><strong>이전 vs 현재</strong>' +
-        badge(fmtDate(prevResult.measured_at) + ' → ' + fmtDate(latestResult.measured_at), 'navy') + '</div>' +
+        badge(rangeLabel, 'navy') + '</div>' +
+      (sameFile
+        ? noticeBox('두 기록에 <strong>같은 결과지 파일</strong>이 등록되어 있습니다. 한 번의 결과지를 두 번 등록한 경우에는 비교할 변화가 없습니다.', 'warn')
+        : '') +
       '<table class="compare-table"><thead><tr><th>항목</th><th>이전</th><th>현재</th></tr></thead><tbody>' + compareRows + '</tbody></table>' +
+      (sameCount
+        ? '<p class="chart-caption">값이 같은 항목 ' + sameCount + '개 · 다른 항목 ' + (itemKeys.length - sameCount) + '개</p>'
+        : '') +
       '<div class="compare-notes">' +
         noteRow(fmtDate(prevResult.measured_at), prevResult) +
         noteRow(fmtDate(latestResult.measured_at), latestResult) +

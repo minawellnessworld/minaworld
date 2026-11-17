@@ -6,14 +6,14 @@ import {
   ORG_TYPES, BOOKING_STATUS, SETTLEMENT_STATUS, MEMBERSHIP_STATUS,
   STAFF_PERMISSIONS, STAFF_ROLE_OPTIONS, CHECK_TYPES, ROLES, WEEKDAYS,
   hasPermission, staffPermissionLabels
-} from '../config.js?v=2.0.12';
-import { editorHtml, bindEditor, fillItems } from '../check-items.js?v=2.0.12';
-import { bindPdfAutofill } from '../pdf-parser.js?v=2.0.12';
+} from '../config.js?v=2.0.13';
+import { editorHtml, bindEditor, fillItemsDetailed } from '../check-items.js?v=2.0.13';
+import { bindPdfAutofill } from '../pdf-parser.js?v=2.0.13';
 import {
   state, isAdmin, isOrgAdmin, myOrgId, friendlyError, todayStr,
   listProfiles, listBookings, adminSetBookingStatus, listResults, adminSaveResult, uploadResultFile,
   adminUpdateProfile
-} from '../store.js?v=2.0.12';
+} from '../store.js?v=2.0.13';
 import {
   getPartnerMetrics, listOrgMemberships, updateMembership, requestResultAccess,
   issueStaffAccount, issueOrgMemberAccount, listPreAssignments, deletePreAssignment,
@@ -22,13 +22,13 @@ import {
   listOrgPayments, settlementTotals, listSettlements, createSettlement, markSettlementPaid,
   listOrgResults, listOrgBookings,
   getOrganization
-} from '../store-org.js?v=2.0.12';
-import { logAudit } from '../store-security.js?v=2.0.12';
-import { openAdminBookingModal } from '../booking.js?v=2.0.12';
+} from '../store-org.js?v=2.0.13';
+import { logAudit } from '../store-security.js?v=2.0.13';
+import { openAdminBookingModal } from '../booking.js?v=2.0.13';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, confirmDialog, setBusy, downloadCsv, loadingBlock
-} from '../ui.js?v=2.0.12';
+} from '../ui.js?v=2.0.13';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -451,7 +451,7 @@ async function buildResults(org) {
       if (!submit) return;
       var itemEditor = bindEditor(el, 'pr', '#pr-type', function (message) { toast(message); });
 
-      bindPdfAutofill({
+      var pdfAutofill = bindPdfAutofill({
         fileInput: el.querySelector('#pr-file'),
         statusEl: el.querySelector('#pr-pdf-status'),
         typeEl: el.querySelector('#pr-type'),
@@ -460,10 +460,31 @@ async function buildResults(org) {
           emotion: el.querySelector('#pr-emotion'),
           summary: el.querySelector('#pr-summary')
         },
-        fillItems: function (map) {
-          return fillItems(el.querySelector('#pr-items'), map);
+        fillItems: function (map, options) {
+          return fillItemsDetailed(el.querySelector('#pr-items'), map, options);
         }
       });
+
+      /* 등록 완료 뒤 폼을 처음 상태로 돌려, 앞선 결과지 값이 다음 등록으로 넘어가지 않게 합니다. */
+      function resetResultForm() {
+        var typeEl = el.querySelector('#pr-type');
+        if (typeEl) typeEl.value = 'simple';
+        var dateEl = el.querySelector('#pr-date');
+        if (dateEl) dateEl.value = todayStr();
+        var emotionEl = el.querySelector('#pr-emotion');
+        if (emotionEl) emotionEl.value = '';
+        var summaryEl = el.querySelector('#pr-summary');
+        if (summaryEl) summaryEl.value = '';
+        var recheckEl = el.querySelector('#pr-recheck');
+        if (recheckEl) recheckEl.value = '';
+        var fileEl = el.querySelector('#pr-file');
+        if (fileEl) { try { fileEl.value = ''; } catch (err) { /* noop */ } }
+        var statusEl = el.querySelector('#pr-pdf-status');
+        if (statusEl) { statusEl.hidden = true; statusEl.innerHTML = ''; }
+        if (itemEditor) itemEditor.refresh();
+        if (itemEditor) itemEditor.apply();
+        if (pdfAutofill && pdfAutofill.reset) pdfAutofill.reset();
+      }
       submit.addEventListener('click', async function () {
         var userId = el.querySelector('#pr-user').value;
         if (!userId) { toast('회원을 선택해 주세요. (결과 공유 동의 회원만 선택 가능)', 'error'); return; }
@@ -494,6 +515,7 @@ async function buildResults(org) {
           });
           await logAudit({ action: 'result_created', target_table: 'brain_check_results', target_id: saved ? saved.id : '', detail: { user_id: userId, org_id: org.id } });
           toast('검사 결과가 등록되었습니다.', 'success');
+          resetResultForm();
           window.location.hash = '#/partner/results?r=' + Date.now();
         } catch (err) {
           toast(friendlyError(err), 'error');

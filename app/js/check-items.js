@@ -6,8 +6,8 @@
      localStorage(유형별)에 보관되어 다음 등록 화면부터 기본값이 됩니다.
    - "초기 기본값 복원" 은 저장값을 지우고 코드 기본값으로 되돌립니다.
    ===================================================================== */
-import { CHECK_ITEM_TEMPLATES } from './config.js?v=2.0.12';
-import { esc } from './ui.js?v=2.0.12';
+import { CHECK_ITEM_TEMPLATES } from './config.js?v=2.0.13';
+import { esc } from './ui.js?v=2.0.13';
 
 var STORAGE_PREFIX = 'mina.check-items.v1.';
 
@@ -152,32 +152,62 @@ function matchItemName(key, candidates) {
 }
 
 /* PDF 파서가 넘긴 {항목명: 값} 을 .kv-value 칸에 채웁니다.
-   이미 사용자가 입력한 칸은 덮어쓰지 않습니다(overwrite: true 면 덮어씀).
-   채운 항목 개수를 돌려줍니다. */
-export function fillItems(scope, map, options) {
-  if (!scope || !map) return 0;
+   · 기본은 이미 값이 있는 칸을 건너뜁니다(overwrite: true 면 새 PDF 기준으로 교체).
+   · options.previous 에는 "직전 PDF가 채워 둔 값"({항목명: 값})을 넘깁니다.
+     overwrite 모드에서 칸의 현재 값이 직전 PDF 값과 같으면(그 PDF가 채운 값)
+     새 값으로 교체하고, 사용자가 직접 고친 값이면 그대로 둡니다.
+   · 새 PDF에 없는 항목인데 현재 값이 직전 PDF가 채운 값이면 잔재이므로 비웁니다.
+   자세한 결과(filled/kept/cleared/written)가 필요하면 fillItemsDetailed 를 쓰세요. */
+export function fillItemsDetailed(scope, map, options) {
+  var out = { filled: 0, kept: 0, cleared: 0, written: {} };
+  if (!scope || !map) return out;
   var opts = options || {};
   var candidates = Object.keys(map).filter(function (name) {
     return String(map[name] || '').trim() !== '';
   }).map(function (name) {
     return { name: name, norm: normKey(name), value: map[name] };
   });
-  if (!candidates.length) return 0;
+  var previous = {};
+  Object.keys(opts.previous || {}).forEach(function (name) {
+    previous[normKey(name)] = String(opts.previous[name] === null || opts.previous[name] === undefined ? '' : opts.previous[name]);
+  });
 
-  var filled = 0;
   var rows = scope.querySelectorAll('.kv-row');
   for (var i = 0; i < rows.length; i++) {
     var keyEl = rows[i].querySelector('.kv-key');
     var valEl = rows[i].querySelector('.kv-value');
     if (!keyEl || !valEl) continue;
-    if (!opts.overwrite && String(valEl.value || '').trim() !== '') continue;
-    var hit = matchItemName(normKey(keyEl.value), candidates);
-    if (!hit) continue;
-    valEl.value = hit.value;
-    valEl.dispatchEvent(new Event('input', { bubbles: true }));
-    filled += 1;
+    var label = normKey(keyEl.value);
+    var current = String(valEl.value || '').trim();
+    var prevVal = previous[label];
+    var fromPdf = prevVal !== undefined && prevVal !== '' && current === prevVal.trim();
+    var hit = candidates.length ? matchItemName(label, candidates) : null;
+
+    if (hit) {
+      if (!opts.overwrite && current !== '') { out.kept += 1; continue; }
+      if (opts.overwrite && current !== '' && !fromPdf) { out.kept += 1; continue; }
+      if (current === hit.value) { out.written[label] = hit.value; continue; }
+      valEl.value = hit.value;
+      valEl.dispatchEvent(new Event('input', { bubbles: true }));
+      out.written[label] = hit.value;
+      out.filled += 1;
+      continue;
+    }
+
+    /* 새 PDF에 없는 항목: 직전 PDF가 채운 값이면 잔재이므로 비웁니다 */
+    if (opts.overwrite && fromPdf) {
+      valEl.value = '';
+      valEl.dispatchEvent(new Event('input', { bubbles: true }));
+      out.cleared += 1;
+    } else if (current !== '') {
+      out.kept += 1;
+    }
   }
-  return filled;
+  return out;
+}
+
+export function fillItems(scope, map, options) {
+  return fillItemsDetailed(scope, map, options).filled;
 }
 
 export function editorHtml(prefix, type, options) {

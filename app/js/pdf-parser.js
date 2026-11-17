@@ -15,7 +15,7 @@
    · 그래프 안에 그림(래스터)으로 박힌 수치는 어떤 텍스트 파서도 읽을 수 없습니다.
      그런 항목은 비워 두고 몇 건을 채웠는지만 안내합니다.
    ===================================================================== */
-import { esc } from './ui.js?v=2.0.12';
+import { esc } from './ui.js?v=2.0.13';
 
 var PDFJS_VERSION = '3.11.174';
 var PDFJS_CDN = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + PDFJS_VERSION + '/';
@@ -370,10 +370,12 @@ var SECTIONS = [
       if (!data.pairs) return '';
       var avg = data.pairs['평균'];
       var dev = data.pairs['최대편차'];
+      var sd = data.pairs['표준편차'];
       var total = data.pairs['합계'];
       var parts = [];
       if (avg) parts.push('평균 ' + fmtNum(avg) + '점');
       if (dev) parts.push('최대편차 ' + fmtNum(dev));
+      if (sd) parts.push('표준편차 ' + fmtNum(sd));
       if (total) parts.push('합계 ' + fmtNum(total));
       if (!parts.length) return '';
       return parts.join(' · ') + ' (항목 25점 이상·최대편차 5 이하가 이상적)';
@@ -398,6 +400,9 @@ function readPairs(lines, lo, hi, labels) {
 }
 
 /* ------------------------------------------------------------ 측정일 추출 */
+/* 생년월일 표기(D.O.B · 생년월일)는 측정일이 아니므로 후보에서 제외합니다. */
+var DOB_LINE_RE = /D\.?\s*O\.?\s*B|생년월일|생\s*년\s*월\s*일|DATE\s*OF\s*BIRTH/i;
+
 function readMeasuredAt(pages) {
   var compact = /^(20\d{2})(\d{2})(\d{2})$/;
   var dashed = /^(20\d{2})[.\-/](\d{1,2})[.\-/](\d{1,2})$/;
@@ -421,6 +426,7 @@ function readMeasuredAt(pages) {
       }
       /* 라벨과 값이 다른 줄에 있는 경우: 바로 다음 줄까지 확인 */
       for (var j = i + 1; j < Math.min(i + 3, lines.length); j++) {
+        if (DOB_LINE_RE.test(lines[j].norm)) continue;
         for (var n = 0; n < lines[j].items.length; n++) {
           var m2 = compact.exec(lines[j].items[n].text.trim()) || dashed.exec(lines[j].items[n].text.trim());
           if (m2) return make(m2);
@@ -428,10 +434,12 @@ function readMeasuredAt(pages) {
       }
     }
   }
-  /* 2순위: 리포트 첫 두 쪽에서 발견되는 첫 날짜(측정일 표기가 없는 양식) */
+  /* 2순위: 리포트 첫 두 쪽에서 발견되는 첫 날짜(측정일 표기가 없는 양식)
+     — 생년월일 줄(D.O.B · 생년월일)에 적힌 날짜는 측정일이 아니므로 건너뜁니다. */
   for (var q = 0; q < Math.min(2, pages.length); q++) {
     var lines2 = buildLines(pages[q].items);
     for (var r = 0; r < lines2.length; r++) {
+      if (DOB_LINE_RE.test(lines2[r].norm)) continue;
       for (var s = 0; s < lines2[r].items.length; s++) {
         var m3 = compact.exec(lines2[r].items[s].text.trim()) || dashed.exec(lines2[r].items[s].text.trim());
         if (m3) return make(m3);
@@ -439,6 +447,45 @@ function readMeasuredAt(pages) {
     }
   }
   return '';
+}
+
+/* ------------------------------------------------- '뇌파 종합 분석 보고서' 평가 */
+/* 12쪽 요약 페이지처럼 항목별 '평가' 문장이 있는 양식에서 뇌 산만도 평가를 읽습니다.
+   (Θ/SMR 수치는 그래프 그림으로만 표시되어 텍스트로 읽을 수 없습니다.) */
+var OVERVIEW_CATEGORIES = ['뇌 산만도', '뇌 활용 능력', '뇌파의 안정성'];
+
+function readOverviewNotes(pages) {
+  var out = {};
+  pages.forEach(function (page) {
+    var lines = buildLines(page.items);
+    var isOverview = lines.some(function (line) { return line.norm.indexOf('종합분석') >= 0; });
+    if (!isOverview) return;
+    OVERVIEW_CATEGORIES.forEach(function (category) {
+      if (out[category]) return;
+      var idx = -1;
+      for (var i = 0; i < lines.length; i++) {
+        if (lines[i].norm === category) { idx = i; break; }
+      }
+      if (idx < 0) return;
+      var startY = lines[idx].y;
+      var endY = Infinity;
+      for (var j = idx + 1; j < lines.length; j++) {
+        var other = OVERVIEW_CATEGORIES.some(function (name) { return lines[j].norm === name; });
+        if (other) { endY = lines[j].y; break; }
+      }
+      for (var k = idx + 1; k < lines.length; k++) {
+        var line = lines[k];
+        if (line.y >= endY) break;
+        if (line.y - startY < 8 || line.y - startY > 140) continue;
+        var text = String(line.text || '').trim();
+        if (!/[가-힣]/.test(text) || text.length < 8) continue;
+        if (/^[0-9.%\s]+$/.test(text)) continue;
+        out[category] = text;
+        break;
+      }
+    });
+  });
+  return out;
 }
 
 /* --------------------------------------------------------------- 공개 API */
@@ -510,6 +557,16 @@ export async function parseReport(file) {
     }
   });
 
+  /* 뇌 산만도: 수치는 그래프 그림이라 읽을 수 없고, 요약 페이지의 평가 문장만 옮깁니다 */
+  if (!result.items['뇌 산만비율(Θ/SMR)']) {
+    var overview = readOverviewNotes(pages);
+    if (overview['뇌 산만도']) {
+      result.items['뇌 산만비율(Θ/SMR)'] = '평가 · ' + overview['뇌 산만도'] +
+        ' (Θ/-β · δ/-β 수치는 결과지 그래프 참고)';
+      result.filledItems += 1;
+    }
+  }
+
   /* 감정 성향 */
   var emotionData = parsed['정서 성향'];
   if (emotionData) {
@@ -547,19 +604,86 @@ function setStatus(node, tone, message) {
   node.innerHTML = message;
 }
 
-function setIfEmpty(node, value) {
-  if (!node || value === null || value === undefined || value === '') return false;
-  if (String(node.value || '').trim() !== '') return false;
-  node.value = String(value);
-  return true;
+function nodeValue(node) {
+  return node ? String(node.value || '').trim() : '';
 }
 
-/* check-items 의 fillItems 로 항목별 설명을 채웁니다 (동적 import 회피용 콜백 주입) */
+/* PDF가 채운 값과 사용자가 직접 고친 값을 구분해, 새 PDF를 첨부하면
+   이전 PDF의 잔재는 새 값으로 깨끗이 교체하고 사람이 고친 칸만 남깁니다. */
+function createFieldState(fields) {
+  var state = { values: { date: '', emotion: '', summary: '' }, manual: {} };
+
+  Object.keys(fields || {}).forEach(function (key) {
+    var node = fields[key];
+    if (!node || !node.addEventListener) return;
+    node.addEventListener('input', function () {
+      var current = nodeValue(node);
+      if (!current || current === String(state.values[key] || '')) state.manual[key] = false;
+      else state.manual[key] = true;
+    });
+    node.addEventListener('change', function () {
+      var current = nodeValue(node);
+      if (!current || current === String(state.values[key] || '')) state.manual[key] = false;
+      else state.manual[key] = true;
+    });
+  });
+
+  return {
+    manual: state.manual,
+    value: function (key) { return state.values[key]; },
+    reset: function () {
+      state.values = { date: '', emotion: '', summary: '' };
+      state.manual = {};
+    },
+    /* 새 PDF 값 반영 · 결과: 'filled' | 'kept' | 'cleared' | 'same' */
+    apply: function (key, value) {
+      var node = fields[key];
+      if (!node) return 'none';
+      var next = value === null || value === undefined ? '' : String(value).trim();
+      var current = nodeValue(node);
+
+      if (state.manual[key]) {
+        if (current && current !== String(state.values[key] || '')) return 'kept';
+        state.manual[key] = false;
+      }
+      if (!next) {
+        /* 새 PDF에 값이 없으면 : 이전 PDF가 넣은 값만 되돌립니다 */
+        if (current && state.values[key] && current === String(state.values[key])) {
+          node.value = '';
+          state.values[key] = '';
+          return 'cleared';
+        }
+        return 'none';
+      }
+      state.values[key] = next;
+      if (current === next) return 'same';
+      node.value = next;
+      return 'filled';
+    },
+    set: function (key, value) {
+      state.values[key] = value === null || value === undefined ? '' : String(value);
+      state.manual[key] = false;
+    }
+  };
+}
+
+/* check-items 의 fillItems 로 항목별 설명을 채웁니다 (동적 import 회피용 콜백 주입).
+   fillItems 콜백은 (map, options) 를 받아 채운 개수를 돌려주거나
+   {filled, kept, cleared, written} 상세를 돌려줄 수 있습니다. */
 export function bindPdfAutofill(opts) {
   var input = opts.fileInput;
   var status = opts.statusEl;
-  if (!input) return;
+  if (!input) return null;
   var filling = false;
+  var fields = opts.fields || {};
+  var fieldState = createFieldState(fields);
+  var prevItems = {};
+
+  function reset() {
+    fieldState.reset();
+    prevItems = {};
+    setStatus(status, '', '');
+  }
 
   input.addEventListener('change', async function () {
     var file = input.files && input.files[0] ? input.files[0] : null;
@@ -591,11 +715,8 @@ export function bindPdfAutofill(opts) {
       return;
     }
 
-    var filled = 0;
-    var skipped = 0;
-    function track(ok) { if (ok) filled += 1; else skipped += 1; }
-
-    /* 1) 검사 유형 — 항목 템플릿이 함께 바뀌도록 change 이벤트 발생 */
+    /* 1) 검사 유형 — 항목 템플릿이 함께 바뀌도록 change 이벤트 발생.
+       항목칸은 지금 바로 새 PDF 기준으로 다시 채우므로 유형 변경은 먼저 처리합니다. */
     if (opts.typeEl && report.checkType && opts.typeEl.value !== report.checkType) {
       opts.typeEl.value = report.checkType;
       try {
@@ -605,43 +726,70 @@ export function bindPdfAutofill(opts) {
       }
     }
 
-    /* 2) 기본 항목 */
-    var fields = opts.fields || {};
-    track(setIfEmpty(fields.date, report.measuredAt));
-    if (report.emotion) track(setIfEmpty(fields.emotion, report.emotion));
-    if (fields.summary && !String(fields.summary.value || '').trim()) {
+    /* 2) 측정일 · 감정 성향 · 요약 — 폼 기본값(오늘 날짜)이나 이전 PDF 값이
+       새 PDF 값을 막지 않습니다. 사용자가 직접 고친 칸만 남깁니다. */
+    var counts = { filled: 0, kept: 0, cleared: 0 };
+    function count(result) {
+      if (result === 'filled') counts.filled += 1;
+      else if (result === 'kept') counts.kept += 1;
+      else if (result === 'cleared') counts.cleared += 1;
+    }
+    count(fieldState.apply('date', report.measuredAt));
+    count(fieldState.apply('emotion', report.emotion));
+    if (fields.summary) {
       var auto = summaryText(report);
-      if (auto) { fields.summary.value = auto; filled += 1; }
+      count(fieldState.apply('summary', auto));
     }
 
-    /* 3) 항목별 설명 */
+    /* 3) 항목별 설명 — 이전 PDF가 채운 값은 새 값으로 교체하고, 새 PDF에 없는
+       항목은 이전 PDF 잔재를 비웁니다. */
     var itemFilled = 0;
+    var itemKept = 0;
+    var itemCleared = 0;
+    var written = null;
     if (typeof opts.fillItems === 'function') {
       try {
-        itemFilled = opts.fillItems(report.items) || 0;
+        var itemResult = opts.fillItems(report.items, { overwrite: true, previous: prevItems }) || 0;
+        if (typeof itemResult === 'object') {
+          itemFilled = Number(itemResult.filled || 0);
+          itemKept = Number(itemResult.kept || 0);
+          itemCleared = Number(itemResult.cleared || 0);
+          written = itemResult.written || null;
+        } else {
+          itemFilled = Number(itemResult || 0);
+        }
       } catch (err) {
         console.warn('[pdf-parser] 항목 입력 실패', err);
       }
     }
+    prevItems = written || report.items || {};
 
     var parts = [];
     if (report.measuredAt) parts.push('측정일');
     if (report.emotion) parts.push('감정 성향');
     if (itemFilled) parts.push('항목 설명 ' + itemFilled + '건');
 
-    if (!parts.length) {
+    if (!parts.length && !counts.filled) {
       setStatus(status, 'warn', '이 파일에서는 수치를 자동으로 읽지 못했습니다. 파일은 그대로 첨부되며 수치는 직접 입력해 주세요.');
       return;
     }
     var message = 'PDF에서 ' + parts.join(' · ') + '을 자동으로 불러왔습니다. 확인 후 결과 등록을 눌러 주세요.';
+    if (!parts.length) message = 'PDF를 읽었지만 새로 채울 값이 없었습니다. 내용을 확인해 주세요.';
     if (report.checkType) {
       message += ' <small>(검사 유형: ' + (report.checkType === 'full' ? '종합검사' : '간편검사') + ' · 결과지 ' + report.pageCount + '쪽)</small>';
     }
-    if (skipped) message += ' <small>이미 입력된 칸 ' + skipped + '개는 덮어쓰지 않았습니다.</small>';
+    if (counts.kept || itemKept) {
+      message += ' <small>직접 입력해 둔 칸 ' + (counts.kept + itemKept) + '개는 그대로 두었습니다.</small>';
+    }
+    if (counts.cleared || itemCleared) {
+      message += ' <small>이전 PDF에서 넘어온 값 ' + (counts.cleared + itemCleared) + '개는 비웠습니다.</small>';
+    }
     var expected = report.checkType === 'full' ? 10 : 8;
     if (itemFilled && itemFilled < expected) {
       message += ' <small>그래프 안 그림으로 된 수치는 자동 인식되지 않아 해당 항목은 비워 두었습니다.</small>';
     }
     setStatus(status, 'success', message);
   });
+
+  return { reset: reset };
 }

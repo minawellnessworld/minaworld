@@ -1,16 +1,16 @@
 /* 관리자 → 검사 결과: 등록 · 수정 · is_public 공개 토글 · 항목별 설명(item_details) · 결과지 업로드 */
-import { CHECK_TYPES } from '../../config.js?v=2.0.12';
-import { editorHtml, bindEditor, fillItems } from '../../check-items.js?v=2.0.12';
-import { bindPdfAutofill } from '../../pdf-parser.js?v=2.0.12';
+import { CHECK_TYPES } from '../../config.js?v=2.0.13';
+import { editorHtml, bindEditor, fillItemsDetailed } from '../../check-items.js?v=2.0.13';
+import { bindPdfAutofill } from '../../pdf-parser.js?v=2.0.13';
 import {
   state, listProfiles, listResults, adminSaveResult, adminUpdateResult, adminDeleteResult,
   uploadResultFile, listOrganizations, friendlyError, todayStr
-} from '../../store.js?v=2.0.12';
-import { logAudit } from '../../store-security.js?v=2.0.12';
+} from '../../store.js?v=2.0.13';
+import { logAudit } from '../../store-security.js?v=2.0.13';
 import {
   icon, esc, fmtDate, toast, badge, openSheet, closeSheet, confirmDialog, setBusy,
   noticeBox, emptyState
-} from '../../ui.js?v=2.0.12';
+} from '../../ui.js?v=2.0.13';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -135,7 +135,7 @@ export async function build(ctx) {
       var itemEditor = bindEditor(el, 'res', '#res-type', function (message) { toast(message); });
 
       /* 결과지 PDF를 첨부하면 측정일·감정 성향·항목별 설명을 자동으로 채웁니다 */
-      bindPdfAutofill({
+      var pdfAutofill = bindPdfAutofill({
         fileInput: el.querySelector('#res-file'),
         statusEl: el.querySelector('#res-pdf-status'),
         typeEl: el.querySelector('#res-type'),
@@ -144,10 +144,31 @@ export async function build(ctx) {
           emotion: el.querySelector('#res-emotion'),
           summary: el.querySelector('#res-summary')
         },
-        fillItems: function (map) {
-          return fillItems(el.querySelector('#res-items'), map);
+        fillItems: function (map, options) {
+          return fillItemsDetailed(el.querySelector('#res-items'), map, options);
         }
       });
+
+      /* 등록 완료 뒤 폼을 처음 상태로 돌려, 앞선 결과지 값이 다음 등록으로 넘어가지 않게 합니다. */
+      function resetResultForm() {
+        var typeEl = el.querySelector('#res-type');
+        if (typeEl) typeEl.value = 'simple';
+        var dateEl = el.querySelector('#res-date');
+        if (dateEl) dateEl.value = todayStr();
+        var emotionEl = el.querySelector('#res-emotion');
+        if (emotionEl) emotionEl.value = '';
+        var summaryEl = el.querySelector('#res-summary');
+        if (summaryEl) summaryEl.value = '';
+        var recheckEl = el.querySelector('#res-recheck');
+        if (recheckEl) recheckEl.value = '';
+        var fileEl = el.querySelector('#res-file');
+        if (fileEl) { try { fileEl.value = ''; } catch (err) { /* noop */ } }
+        var statusEl = el.querySelector('#res-pdf-status');
+        if (statusEl) { statusEl.hidden = true; statusEl.innerHTML = ''; }
+        if (itemEditor) itemEditor.refresh();
+        if (itemEditor) itemEditor.apply();
+        if (pdfAutofill && pdfAutofill.reset) pdfAutofill.reset();
+      }
 
       var submit = el.querySelector('#res-submit');
       submit.addEventListener('click', async function () {
@@ -181,6 +202,7 @@ export async function build(ctx) {
           });
           await logAudit({ action: 'result_created', target_table: 'brain_check_results', target_id: saved ? saved.id : '', detail: { user_id: userId } });
           toast('검사 결과가 등록되었습니다.', 'success');
+          resetResultForm();
           window.location.hash = '#/admin/results?r=' + Date.now();
         } catch (err) {
           toast(friendlyError(err), 'error');

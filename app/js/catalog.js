@@ -38,29 +38,29 @@ export var FALLBACK_PROGRAMS = [
   },
   {
     id: 'neuro_10', category: 'neuro_training', sub_category: '패키지',
-    title: '뉴로피드백 10회 패키지', subtitle: '주 1~2회 집중 루틴 (회차별 변화 추적)',
+    title: '뉴로피드백 10회 패키지', subtitle: '기본 집중 관리 코스 · 주 1~2회 집중 루틴',
     description: '10회 연속 훈련으로 회차별 변화 그래프와 담당 상담사 피드백을 누적 관리합니다.',
     target_audience: '기초 자기조절력·스트레스 회복 탄력성을 세우고 싶은 분',
     format_method: '10회 맞춤 훈련 + 회차별 비교 리포트', duration_text: '회당 40분 · 총 10회',
-    price_krw: null, price_label: '상담 확정 · 관리자 설정가', badge: '10회', session_count: 10,
+    price_krw: 450000, price_label: '450,000원 (정가 500,000원 · 5만원 할인)', badge: '10회', session_count: 10,
     includes_neurofeedback: true, active: true, sort_order: 31
   },
   {
     id: 'neuro_20', category: 'neuro_training', sub_category: '패키지',
-    title: '뉴로피드백 20회 패키지', subtitle: '체계적 뇌 균형 루틴 (2~3개월)',
+    title: '뉴로피드백 20회 패키지', subtitle: '지속적인 뇌 컨디션 관리 코스 · 2~3개월',
     description: '수면·집중·감정 균형을 안정적으로 다지는 20회 정규 패키지입니다.',
     target_audience: '수험생, 만성 번아웃 직장인, 집중력 관리 회원',
     format_method: '20회 맞춤 훈련 + 중간·최종 비교 상담', duration_text: '회당 40분 · 총 20회',
-    price_krw: null, price_label: '상담 확정 · 관리자 설정가', badge: '20회', session_count: 20,
+    price_krw: 850000, price_label: '850,000원 (정가 1,000,000원 · 15만원 할인)', badge: '20회', session_count: 20,
     includes_neurofeedback: true, active: true, sort_order: 32
   },
   {
     id: 'neuro_30', category: 'neuro_training', sub_category: '패키지',
-    title: '뉴로피드백 30회 패키지', subtitle: '장기 브레인 트레이닝 마스터 과정',
+    title: '뉴로피드백 30회 패키지', subtitle: '장기 집중 훈련 코스 · 마스터 과정',
     description: '장기적인 인지·정서 밸런스 관리를 위한 30회 집중 패키지입니다.',
     target_audience: '장기 관리가 필요한 아동·청소년, 성인, 시니어',
     format_method: '30회 맞춤 훈련 + 전담 상담사 누적 관리', duration_text: '회당 40분 · 총 30회',
-    price_krw: null, price_label: '상담 확정 · 관리자 설정가', badge: '30회', session_count: 30,
+    price_krw: 1200000, price_label: '1,200,000원 (정가 1,500,000원 · 30만원 할인)', badge: '30회', session_count: 30,
     includes_neurofeedback: true, active: true, sort_order: 33
   },
   {
