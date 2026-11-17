@@ -10,29 +10,17 @@
        - 감정 성향 : '정서 성향' 표의 판정 문구 (예: 상당히 명랑함)
        - 항목별 값 : 각 항목 머리글 아래 좌/우 표의 숫자를 **열 순서 그대로** 읽어
                      항목별 한 줄 요약으로 만듭니다.
-       - 핵심 3수치: CORE_MAP 규칙(아래)에 따라서만 채웁니다. 규칙에 없는 값은
-                     비워 두고 사용자가 직접 입력합니다(추측 금지).
+       - 숫자 수치는 DB에만 남기고 화면 입력칸은 두지 않습니다. 세부 수치는
+                     항목별 설명(한 줄 요약)으로 전달합니다(추측 금지).
    · 그래프 안에 그림(래스터)으로 박힌 수치는 어떤 텍스트 파서도 읽을 수 없습니다.
      그런 항목은 비워 두고 몇 건을 채웠는지만 안내합니다.
    ===================================================================== */
-import { esc } from './ui.js?v=2.0.10';
+import { esc } from './ui.js?v=2.0.11';
 
 var PDFJS_VERSION = '3.11.174';
 var PDFJS_CDN = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@' + PDFJS_VERSION + '/';
 var CDN_CMAPS = PDFJS_CDN + 'cmaps/';
 var CDN_STANDARD_FONTS = PDFJS_CDN + 'standard_fonts/';
-
-/* 핵심 3수치 매핑 규칙 ------------------------------------------------
-   stress   : '육체적 긴장과 스트레스' 좌/우 중 큰 값
-   balance  : '좌우뇌 균형'의 진폭 대칭(%)
-   feedback : '자기 피드백 능력'의 평균 점수
-   ※ 실제 결과지에 있는 3개 지표만 자동 입력합니다 (집중 지표는 결과지에 없음).
-   ※ 값을 바꾸려면 이 표만 고치면 됩니다. */
-var CORE_MAP = {
-  stress: 'physicalMax',
-  balance: 'amplitudeSymmetry',
-  feedback: 'feedbackAverage'
-};
 
 var NUM_RE = /^-?\d+(?:\.\d+)?%?$/;
 var ROW_LEFT = ['좌', '좌뇌'];
@@ -473,7 +461,6 @@ export async function parseReport(file) {
     checkType: '',
     measuredAt: '',
     emotion: '',
-    core: { stress: null, balance: null, feedback: null },
     items: {},
     filledItems: 0,
     notes: []
@@ -530,25 +517,6 @@ export async function parseReport(file) {
     if (verdict) result.emotion = verdict;
   }
 
-  /* 핵심 3수치 */
-  var physical = parsed['육체적 긴장과 스트레스'];
-  if (CORE_MAP.stress === 'physicalMax' && physical && physical.rows.length >= 2 && physical.rows[0].nums.length) {
-    var leftStress = toNumber(physical.rows[0].nums[0].text);
-    var rightStress = toNumber(physical.rows[1].nums[0] ? physical.rows[1].nums[0].text : '');
-    var stress = Math.max(leftStress === null ? -Infinity : leftStress, rightStress === null ? -Infinity : rightStress);
-    if (isFinite(stress)) result.core.stress = stress;
-  }
-
-  var balanceData = parsed['좌우뇌 균형'];
-  if (CORE_MAP.balance === 'amplitudeSymmetry' && balanceData && balanceData.shared.length && balanceData.shared[0].nums.length) {
-    result.core.balance = toNumber(balanceData.shared[0].nums[0].text);
-  }
-
-  var feedbackData = parsed['자기 피드백 능력'];
-  if (CORE_MAP.feedback === 'feedbackAverage' && feedbackData && feedbackData.pairs && feedbackData.pairs['평균']) {
-    result.core.feedback = toNumber(feedbackData.pairs['평균']);
-  }
-
   if (!result.measuredAt) result.notes.push('no-date');
   if (!result.filledItems) result.notes.push('no-items');
   return result;
@@ -558,12 +526,12 @@ export async function parseReport(file) {
 export function summaryText(report) {
   if (!report || !report.ok) return '';
   var parts = [];
-  if (report.core.balance !== null && report.core.balance !== undefined) parts.push('좌우 균형(진폭 대칭) ' + report.core.balance + '%');
-  if (report.core.stress !== null && report.core.stress !== undefined) parts.push('육체적 스트레스 ' + report.core.stress);
-  if (report.core.feedback !== null && report.core.feedback !== undefined) parts.push('자기 피드백 평균 ' + report.core.feedback + '점');
-  if (report.emotion) parts.push('정서 성향 ' + report.emotion);
+  if (report.emotion) parts.push('감정 성향 ' + report.emotion);
+  var itemCount = report.items ? Object.keys(report.items).length : 0;
+  if (itemCount) parts.push('항목별 설명 ' + itemCount + '건');
   if (!parts.length) return '';
-  return '결과지에서 자동 정리한 핵심 지표입니다. ' + parts.join(' · ') + '. 세부 수치는 첨부한 결과지를 참고해 주세요.';
+  return '결과지에서 자동 정리한 요약입니다. ' + parts.join(' · ') +
+    '. 세부 수치는 아래 항목별 설명과 첨부한 결과지를 참고해 주세요.';
 }
 
 /* --------------------------------------------------------- 폼 자동 입력 연결 */
@@ -640,9 +608,6 @@ export function bindPdfAutofill(opts) {
     /* 2) 기본 항목 */
     var fields = opts.fields || {};
     track(setIfEmpty(fields.date, report.measuredAt));
-    if (report.core.stress !== null && report.core.stress !== undefined) track(setIfEmpty(fields.stress, report.core.stress));
-    if (report.core.balance !== null && report.core.balance !== undefined) track(setIfEmpty(fields.balance, report.core.balance));
-    if (report.core.feedback !== null && report.core.feedback !== undefined) track(setIfEmpty(fields.feedback, report.core.feedback));
     if (report.emotion) track(setIfEmpty(fields.emotion, report.emotion));
     if (fields.summary && !String(fields.summary.value || '').trim()) {
       var auto = summaryText(report);
@@ -661,10 +626,6 @@ export function bindPdfAutofill(opts) {
 
     var parts = [];
     if (report.measuredAt) parts.push('측정일');
-    var coreCount = ['stress', 'balance', 'feedback'].filter(function (key) {
-      return report.core[key] !== null && report.core[key] !== undefined;
-    }).length;
-    if (coreCount) parts.push('핵심 수치 ' + coreCount + '종');
     if (report.emotion) parts.push('감정 성향');
     if (itemFilled) parts.push('항목 설명 ' + itemFilled + '건');
 
@@ -672,7 +633,7 @@ export function bindPdfAutofill(opts) {
       setStatus(status, 'warn', '이 파일에서는 수치를 자동으로 읽지 못했습니다. 파일은 그대로 첨부되며 수치는 직접 입력해 주세요.');
       return;
     }
-    var message = 'PDF에서 ' + parts.join(' · ') + '을(를) 자동으로 불러왔습니다. 확인 후 결과 등록을 눌러 주세요.';
+    var message = 'PDF에서 ' + parts.join(' · ') + '을 자동으로 불러왔습니다. 확인 후 결과 등록을 눌러 주세요.';
     if (report.checkType) {
       message += ' <small>(검사 유형: ' + (report.checkType === 'full' ? '종합검사' : '간편검사') + ' · 결과지 ' + report.pageCount + '쪽)</small>';
     }

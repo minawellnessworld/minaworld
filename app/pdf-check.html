@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>PDF 자동 입력 점검 · MINA WORLD</title>
-  <link rel="stylesheet" href="./css/app.css?v=2.0.10">
+  <link rel="stylesheet" href="./css/app.css?v=2.0.11">
   <style>
     .pdf-check-wrap { max-width: 430px; margin: 0 auto; padding: 16px 16px 60px; }
     .pdf-check-wrap h1 { font-size: 18px; margin: 8px 0 4px; }
@@ -24,16 +24,14 @@
         </label>
         <label class="field"><span class="field-label">측정일</span><input type="date" id="res-date"></label>
       </div>
-      <div class="form-grid form-grid-3">
-        <label class="field"><span class="field-label">스트레스</span><input type="number" step="0.1" id="res-stress"></label>
-        <label class="field"><span class="field-label">좌우 균형</span><input type="number" step="0.1" id="res-balance"></label>
-        <label class="field"><span class="field-label">자기 피드백</span><input type="number" step="0.1" id="res-feedback"></label>
+      <div class="form-grid">
+        <label class="field"><span class="field-label">감정 성향</span><input type="text" id="res-emotion"></label>
+        <label class="field"><span class="field-label">다음 재검사 권장일</span><input type="date" id="res-recheck"></label>
       </div>
-      <label class="field"><span class="field-label">감정 성향</span><input type="text" id="res-emotion"></label>
       <div class="field"><span class="field-label">항목별 설명</span><div id="res-items" class="kv-list"></div></div>
       <label class="field"><span class="field-label">요약 코멘트</span><textarea id="res-summary" rows="2"></textarea></label>
       <label class="field"><span class="field-label">결과지 파일 (PDF · 이미지)</span><input type="file" id="res-file" accept="application/pdf,image/*"></label>
-      <p class="field-hint">PDF를 첨부하면 측정일 · 핵심 수치 · 항목별 설명이 자동으로 입력됩니다.</p>
+      <p class="field-hint">PDF를 첨부하면 측정일 · 감정 성향 · 항목별 설명이 자동으로 입력됩니다.</p>
       <div id="res-pdf-status" class="pdf-status" hidden></div>
     </div>
 
@@ -42,8 +40,8 @@
   </div>
 
   <script type="module">
-    import { editorHtml, bindEditor, fillItems } from './js/check-items.js?v=2.0.10';
-    import { bindPdfAutofill, parseReport } from './js/pdf-parser.js?v=2.0.10';
+    import { editorHtml, bindEditor, fillItems } from './js/check-items.js?v=2.0.11';
+    import { bindPdfAutofill, parseReport } from './js/pdf-parser.js?v=2.0.11';
 
     var itemsHost = document.getElementById('res-items');
     var template = document.createElement('div');
@@ -63,9 +61,6 @@
       typeEl: typeSelect,
       fields: {
         date: document.getElementById('res-date'),
-        stress: document.getElementById('res-stress'),
-        balance: document.getElementById('res-balance'),
-        feedback: document.getElementById('res-feedback'),
         emotion: document.getElementById('res-emotion'),
         summary: document.getElementById('res-summary')
       },

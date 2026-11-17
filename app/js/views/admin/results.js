@@ -1,16 +1,16 @@
 /* 관리자 → 검사 결과: 등록 · 수정 · is_public 공개 토글 · 항목별 설명(item_details) · 결과지 업로드 */
-import { CHECK_TYPES } from '../../config.js?v=2.0.10';
-import { editorHtml, bindEditor, fillItems } from '../../check-items.js?v=2.0.10';
-import { bindPdfAutofill } from '../../pdf-parser.js?v=2.0.10';
+import { CHECK_TYPES } from '../../config.js?v=2.0.11';
+import { editorHtml, bindEditor, fillItems } from '../../check-items.js?v=2.0.11';
+import { bindPdfAutofill } from '../../pdf-parser.js?v=2.0.11';
 import {
   state, listProfiles, listResults, adminSaveResult, adminUpdateResult, adminDeleteResult,
   uploadResultFile, listOrganizations, friendlyError, todayStr
-} from '../../store.js?v=2.0.10';
-import { logAudit } from '../../store-security.js?v=2.0.10';
+} from '../../store.js?v=2.0.11';
+import { logAudit } from '../../store-security.js?v=2.0.11';
 import {
   icon, esc, fmtDate, toast, badge, openSheet, closeSheet, confirmDialog, setBusy,
   noticeBox, emptyState
-} from '../../ui.js?v=2.0.10';
+} from '../../ui.js?v=2.0.11';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -86,9 +86,7 @@ export async function build(ctx) {
       '<td>' + fmtDate(r.measured_at) + '</td>' +
       '<td class="muted small">' + esc(memberName(profiles, r.user_id)) + '</td>' +
       '<td>' + esc(CHECK_TYPES[r.check_type] || r.check_type) + '</td>' +
-      '<td class="muted small">' + [r.stress_index, r.balance_index, r.feedback_score].map(function (v) {
-        return v === null || v === undefined ? '-' : Number(v).toFixed(1);
-      }).join(' / ') + '</td>' +
+      '<td class="muted small">' + (r.emotion_type ? esc(r.emotion_type) : '-') + '</td>' +
       '<td>' + (r.file_path ? badge('업로드됨', 'green') : badge('미등록', 'neutral')) + '</td>' +
       '<td>' + (r.item_details && Object.keys(r.item_details).length ? badge(Object.keys(r.item_details).length + '항목', 'navy') : '-') + '</td>' +
       '<td><label class="switch"><input type="checkbox" data-public="' + esc(r.id) + '"' + (r.is_public === false ? '' : ' checked') + '><span></span></label></td>' +
@@ -112,11 +110,6 @@ export async function build(ctx) {
           '<label class="field field-inline"><span class="field-label">회원에게 공개</span>' +
             '<label class="switch"><input type="checkbox" id="res-public" checked><span></span></label></label>' +
         '</div>' +
-        '<div class="form-grid form-grid-3">' +
-          '<label class="field"><span class="field-label">스트레스</span><input type="number" step="0.1" id="res-stress" placeholder="0.0"></label>' +
-          '<label class="field"><span class="field-label">좌우 균형</span><input type="number" step="0.1" id="res-balance" placeholder="0.0"></label>' +
-          '<label class="field"><span class="field-label">자기 피드백</span><input type="number" step="0.1" id="res-feedback" placeholder="0.0"></label>' +
-        '</div>' +
         '<div class="form-grid">' +
           '<label class="field"><span class="field-label">감정 성향</span><input type="text" id="res-emotion" placeholder="예: 안정 균형형"></label>' +
           '<label class="field"><span class="field-label">다음 재검사 권장일</span><input type="date" id="res-recheck"></label>' +
@@ -124,7 +117,7 @@ export async function build(ctx) {
         editorHtml('res', 'simple', { label: '항목별 설명 (MY BRAIN에 그대로 표시)' }) +
         '<label class="field"><span class="field-label">요약 코멘트</span><textarea id="res-summary" rows="2" placeholder="결과 요약 · 웰니스 안내"></textarea></label>' +
         '<label class="field"><span class="field-label">결과지 파일 (PDF · 이미지)</span><input type="file" id="res-file" accept="application/pdf,image/*"></label>' +
-        '<p class="field-hint">PDF를 첨부하면 측정일 · 핵심 수치 · 항목별 설명이 자동으로 입력됩니다. 등록 전 내용을 꼭 확인해 주세요.</p>' +
+        '<p class="field-hint">PDF를 첨부하면 측정일 · 감정 성향 · 항목별 설명이 자동으로 입력됩니다. 등록 전 내용을 꼭 확인해 주세요.</p>' +
         '<div id="res-pdf-status" class="pdf-status" hidden></div>' +
         '<p class="field-hint">비공개 Storage 버킷 <code>brain-results/{user_id}/…</code> 에 업로드되며, 회원은 Signed URL로만 열람합니다.</p>' +
         '<button type="button" class="btn btn-primary" id="res-submit">결과 등록</button>' +
@@ -132,7 +125,7 @@ export async function build(ctx) {
     '</section>' +
     '<section class="admin-section">' +
       '<h2 class="admin-h2">등록된 검사 결과 (' + results.length + ')</h2>' +
-      table(['측정일', '회원', '유형', '스트레스/균형/피드백', '결과지', '항목 설명', '공개', '재검사', ''], rows || emptyRow(9, '등록된 결과가 없습니다.')) +
+      table(['측정일', '회원', '유형', '감정 성향', '결과지', '항목 설명', '공개', '재검사', ''], rows || emptyRow(9, '등록된 결과가 없습니다.')) +
       noticeBox('공개를 끄면 회원 MY BRAIN에서 해당 결과가 보이지 않습니다(DB RLS도 <code>is_public = true</code>만 허용).', 'neutral') +
     '</section>';
 
@@ -141,16 +134,13 @@ export async function build(ctx) {
     bind: function (el) {
       var itemEditor = bindEditor(el, 'res', '#res-type', function (message) { toast(message); });
 
-      /* 결과지 PDF를 첨부하면 측정일·핵심 수치·항목별 설명을 자동으로 채웁니다 */
+      /* 결과지 PDF를 첨부하면 측정일·감정 성향·항목별 설명을 자동으로 채웁니다 */
       bindPdfAutofill({
         fileInput: el.querySelector('#res-file'),
         statusEl: el.querySelector('#res-pdf-status'),
         typeEl: el.querySelector('#res-type'),
         fields: {
           date: el.querySelector('#res-date'),
-          stress: el.querySelector('#res-stress'),
-          balance: el.querySelector('#res-balance'),
-          feedback: el.querySelector('#res-feedback'),
           emotion: el.querySelector('#res-emotion'),
           summary: el.querySelector('#res-summary')
         },
@@ -165,12 +155,6 @@ export async function build(ctx) {
         if (!userId) { toast('회원을 선택해 주세요.'); return; }
         var date = el.querySelector('#res-date').value;
         if (!date) { toast('측정일을 입력해 주세요.'); return; }
-        var num = function (selector) {
-          var raw = el.querySelector(selector).value;
-          if (raw === '') return null;
-          var value = Number(raw);
-          return isFinite(value) ? value : null;
-        };
         setBusy(submit, true, '등록 중');
         try {
           var fileInput = el.querySelector('#res-file');
@@ -183,9 +167,9 @@ export async function build(ctx) {
             check_type: el.querySelector('#res-type').value,
             measured_at: date,
             focus_score: null,
-            stress_index: num('#res-stress'),
-            balance_index: num('#res-balance'),
-            feedback_score: num('#res-feedback'),
+            stress_index: null,
+            balance_index: null,
+            feedback_score: null,
             emotion_type: el.querySelector('#res-emotion').value.trim(),
             summary_note: el.querySelector('#res-summary').value.trim(),
             item_details: itemEditor ? itemEditor.items() : {},
@@ -269,11 +253,6 @@ function openEditSheet(result, orgs, profiles, onSaved) {
         '<label class="field"><span class="field-label">검사 유형</span><select id="er-type">' + opt('simple', CHECK_TYPES.simple, result.check_type) + opt('full', CHECK_TYPES.full, result.check_type) + '</select></label>' +
         '<label class="field"><span class="field-label">측정일</span><input type="date" id="er-date" value="' + esc(result.measured_at) + '"></label>' +
       '</div>' +
-      '<div class="form-grid form-grid-3">' +
-        '<label class="field"><span class="field-label">스트레스</span><input type="number" step="0.1" id="er-stress" value="' + (result.stress_index === null || result.stress_index === undefined ? '' : result.stress_index) + '"></label>' +
-        '<label class="field"><span class="field-label">좌우 균형</span><input type="number" step="0.1" id="er-balance" value="' + (result.balance_index === null || result.balance_index === undefined ? '' : result.balance_index) + '"></label>' +
-        '<label class="field"><span class="field-label">자기 피드백</span><input type="number" step="0.1" id="er-feedback" value="' + (result.feedback_score === null || result.feedback_score === undefined ? '' : result.feedback_score) + '"></label>' +
-      '</div>' +
       '<div class="form-grid">' +
         '<label class="field"><span class="field-label">소속 기관</span><select id="er-org">' + orgOptions + '</select></label>' +
         '<label class="field field-inline"><span class="field-label">회원에게 공개</span>' +
@@ -311,21 +290,15 @@ function openEditSheet(result, orgs, profiles, onSaved) {
 
       var save = el.querySelector('#er-save');
       save.addEventListener('click', async function () {
-        var num = function (selector) {
-          var raw = el.querySelector(selector).value;
-          if (raw === '') return null;
-          var value = Number(raw);
-          return isFinite(value) ? value : null;
-        };
         setBusy(save, true, '저장 중');
         try {
           await adminUpdateResult(result.id, {
             check_type: el.querySelector('#er-type').value,
             measured_at: el.querySelector('#er-date').value,
             focus_score: result.focus_score === undefined ? null : result.focus_score,
-            stress_index: num('#er-stress'),
-            balance_index: num('#er-balance'),
-            feedback_score: num('#er-feedback'),
+            stress_index: result.stress_index === undefined ? null : result.stress_index,
+            balance_index: result.balance_index === undefined ? null : result.balance_index,
+            feedback_score: result.feedback_score === undefined ? null : result.feedback_score,
             emotion_type: el.querySelector('#er-emotion').value.trim(),
             summary_note: el.querySelector('#er-summary').value.trim(),
             item_details: collectItems(itemsEl),

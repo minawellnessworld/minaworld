@@ -1,8 +1,8 @@
 /* S02. BRAIN CHECK — 뇌파측정 서비스 소개 · 예약 · 결과 */
-import { BRAND, CHECK_TYPES, BOOKING_STATUS, BOOKING_PAYMENT_STATUS } from '../config.js?v=2.0.10';
-import { state, getPrograms, listResults, listBookings, getSignedResultUrl, friendlyError } from '../store.js?v=2.0.10';
-import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, setBusy, loadingBlock } from '../ui.js?v=2.0.10';
-import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.10';
+import { BRAND, CHECK_TYPES, BOOKING_STATUS, BOOKING_PAYMENT_STATUS } from '../config.js?v=2.0.11';
+import { state, getPrograms, listResults, listBookings, getSignedResultUrl, friendlyError } from '../store.js?v=2.0.11';
+import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, setBusy, loadingBlock } from '../ui.js?v=2.0.11';
+import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.11';
 
 var RESULT_ITEMS = {
   simple: [
@@ -45,20 +45,6 @@ function productCard(program) {
 }
 
 function resultCard(result) {
-  var metrics = '';
-  var rows = [
-    { key: 'stress_index', label: '스트레스' },
-    { key: 'balance_index', label: '좌우 균형' },
-    { key: 'feedback_score', label: '자기 피드백' }
-  ];
-  var count = 0;
-  var metricHtml = rows.map(function (row) {
-    if (result[row.key] === null || result[row.key] === undefined) return '';
-    count += 1;
-    return '<div class="metric"><span>' + row.label + '</span><strong>' + Number(result[row.key]).toFixed(1) + '</strong></div>';
-  }).join('');
-  if (count) metrics = '<div class="metric-grid' + (count === 3 ? ' is-three' : count === 2 ? ' is-two' : '') + '">' + metricHtml + '</div>';
-
   var recheckDays = null;
   if (result.next_recheck_date) {
     var diff = Math.round((new Date(result.next_recheck_date).getTime() - new Date().getTime()) / 86400000);
@@ -70,9 +56,8 @@ function resultCard(result) {
       '<strong>' + esc(CHECK_TYPES[result.check_type] || result.check_type) + '</strong>' +
       '<span class="badge badge-neutral">' + fmtDate(result.measured_at) + ' 측정</span>' +
     '</div>' +
+    (result.emotion_type ? '<p class="emotion-line">' + icon('sparkle', 14) + '<span>감정 성향 · <strong>' + esc(result.emotion_type) + '</strong></span></p>' : '') +
     (result.summary_note ? '<p class="list-note">' + esc(result.summary_note) + '</p>' : '') +
-    (result.emotion_type ? '<p class="muted small">감정 성향 · ' + esc(result.emotion_type) + '</p>' : '') +
-    metrics +
     (result.next_recheck_date
       ? '<div class="recheck-row' + (recheckDays !== null && recheckDays <= 30 ? ' is-soon' : '') + '">' +
           icon('calendar', 16) +

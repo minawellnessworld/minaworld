@@ -2021,8 +2021,6 @@ body.admin-mode #app-header { display: none; }
 
 /* ------------------------------------------------------- MY BRAIN v2 */
 .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin: 10px 0; }
-.metric-grid.is-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.metric-grid.is-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .metric-cell { padding: 9px 8px; border-radius: 12px; background: var(--gold-soft); border: 1px solid #EFE4CC; display: flex; flex-direction: column; gap: 1px; }
 .metric-cell span { font-size: 9.5px; color: #7A5F2C; font-weight: 600; }
 .metric-cell strong { font-size: 15px; letter-spacing: -0.02em; }
@@ -2034,6 +2032,14 @@ body.admin-mode #app-header { display: none; }
 .compare-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-top: 8px; }
 .compare-table th { text-align: left; font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-2); padding: 6px 4px; border-bottom: 1px solid var(--line); }
 .compare-table td { padding: 7px 4px; border-bottom: 1px solid #F4EFE6; color: var(--muted); }
+.emotion-line { display: flex; align-items: center; gap: 6px; margin-top: 9px; padding: 8px 11px; border-radius: 11px; background: var(--gold-soft); border: 1px solid #EFE4CC; font-size: 11.5px; color: #7A5F2C; }
+.emotion-line strong { color: var(--navy); }
+.item-more { margin-top: 5px; font-size: 10.5px; color: var(--muted-2); }
+.item-more a { color: var(--navy); text-decoration: underline; }
+.compare-notes { margin-top: 10px; display: flex; flex-direction: column; gap: 7px; }
+.compare-note { padding: 9px 11px; border-radius: 10px; background: var(--box); font-size: 11px; color: var(--muted); }
+.compare-note span { display: block; margin-bottom: 3px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; color: var(--muted-2); }
+.compare-note p { margin: 0; line-height: 1.55; white-space: pre-line; }
 .compare-table td strong { color: var(--navy); }
 .delta { font-size: 10px; font-weight: 700; color: var(--muted-2); }
 .delta.is-up { color: var(--green); }
