@@ -6,8 +6,8 @@
      localStorage(유형별)에 보관되어 다음 등록 화면부터 기본값이 됩니다.
    - "초기 기본값 복원" 은 저장값을 지우고 코드 기본값으로 되돌립니다.
    ===================================================================== */
-import { CHECK_ITEM_TEMPLATES } from './config.js?v=2.0.8';
-import { esc } from './ui.js?v=2.0.8';
+import { CHECK_ITEM_TEMPLATES } from './config.js?v=2.0.9';
+import { esc } from './ui.js?v=2.0.9';
 
 var STORAGE_PREFIX = 'mina.check-items.v1.';
 
@@ -106,6 +106,78 @@ export function collectItems(scope) {
     if (key && value) out[key] = value;
   }
   return out;
+}
+
+/* ---------------------------------------------- PDF 자동 입력용 값 채우기 */
+/* 항목 이름을 정규화합니다 (공백·괄호·가운뎃점·슬래시 등 표기 차이 흡수) */
+function normKey(text) {
+  return String(text || '')
+    .replace(/[\s·ㆍ\-\/\\()\[\]{}.,:;'"“”‘’]/g, '')
+    .toLowerCase();
+}
+
+function bigrams(text) {
+  var out = {};
+  for (var i = 0; i < text.length - 1; i++) out[text.slice(i, i + 2)] = true;
+  return out;
+}
+
+/* 이름이 비슷한 항목을 찾습니다: 완전 일치 → 포함 관계 → 글자 2-gram 유사도 */
+function matchItemName(key, candidates) {
+  if (!key) return null;
+  for (var i = 0; i < candidates.length; i++) {
+    if (candidates[i].norm === key) return candidates[i];
+  }
+  var best = null;
+  for (var j = 0; j < candidates.length; j++) {
+    var other = candidates[j].norm;
+    if (!other) continue;
+    if (other.indexOf(key) >= 0 || key.indexOf(other) >= 0) {
+      if (!best || other.length > best.norm.length) best = candidates[j];
+    }
+  }
+  if (best) return best;
+  var keyGrams = bigrams(key);
+  var keySize = Object.keys(keyGrams).length;
+  if (!keySize) return null;
+  var scored = null;
+  for (var k = 0; k < candidates.length; k++) {
+    var grams = bigrams(candidates[k].norm);
+    var shared = 0;
+    Object.keys(keyGrams).forEach(function (g) { if (grams[g]) shared += 1; });
+    var score = shared / keySize;
+    if (score >= 0.6 && (!scored || score > scored.score)) scored = { item: candidates[k], score: score };
+  }
+  return scored ? scored.item : null;
+}
+
+/* PDF 파서가 넘긴 {항목명: 값} 을 .kv-value 칸에 채웁니다.
+   이미 사용자가 입력한 칸은 덮어쓰지 않습니다(overwrite: true 면 덮어씀).
+   채운 항목 개수를 돌려줍니다. */
+export function fillItems(scope, map, options) {
+  if (!scope || !map) return 0;
+  var opts = options || {};
+  var candidates = Object.keys(map).filter(function (name) {
+    return String(map[name] || '').trim() !== '';
+  }).map(function (name) {
+    return { name: name, norm: normKey(name), value: map[name] };
+  });
+  if (!candidates.length) return 0;
+
+  var filled = 0;
+  var rows = scope.querySelectorAll('.kv-row');
+  for (var i = 0; i < rows.length; i++) {
+    var keyEl = rows[i].querySelector('.kv-key');
+    var valEl = rows[i].querySelector('.kv-value');
+    if (!keyEl || !valEl) continue;
+    if (!opts.overwrite && String(valEl.value || '').trim() !== '') continue;
+    var hit = matchItemName(normKey(keyEl.value), candidates);
+    if (!hit) continue;
+    valEl.value = hit.value;
+    valEl.dispatchEvent(new Event('input', { bubbles: true }));
+    filled += 1;
+  }
+  return filled;
 }
 
 export function editorHtml(prefix, type, options) {

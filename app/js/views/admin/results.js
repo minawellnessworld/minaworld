@@ -1,15 +1,16 @@
 /* 관리자 → 검사 결과: 등록 · 수정 · is_public 공개 토글 · 항목별 설명(item_details) · 결과지 업로드 */
-import { CHECK_TYPES } from '../../config.js?v=2.0.8';
-import { editorHtml, bindEditor } from '../../check-items.js?v=2.0.8';
+import { CHECK_TYPES } from '../../config.js?v=2.0.9';
+import { editorHtml, bindEditor, fillItems } from '../../check-items.js?v=2.0.9';
+import { bindPdfAutofill } from '../../pdf-parser.js?v=2.0.9';
 import {
   state, listProfiles, listResults, adminSaveResult, adminUpdateResult, adminDeleteResult,
   uploadResultFile, listOrganizations, friendlyError, todayStr
-} from '../../store.js?v=2.0.8';
-import { logAudit } from '../../store-security.js?v=2.0.8';
+} from '../../store.js?v=2.0.9';
+import { logAudit } from '../../store-security.js?v=2.0.9';
 import {
   icon, esc, fmtDate, toast, badge, openSheet, closeSheet, confirmDialog, setBusy,
   noticeBox, emptyState
-} from '../../ui.js?v=2.0.8';
+} from '../../ui.js?v=2.0.9';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -124,6 +125,8 @@ export async function build(ctx) {
         editorHtml('res', 'simple', { label: '항목별 설명 (MY BRAIN에 그대로 표시)' }) +
         '<label class="field"><span class="field-label">요약 코멘트</span><textarea id="res-summary" rows="2" placeholder="결과 요약 · 웰니스 안내"></textarea></label>' +
         '<label class="field"><span class="field-label">결과지 파일 (PDF · 이미지)</span><input type="file" id="res-file" accept="application/pdf,image/*"></label>' +
+        '<p class="field-hint">PDF를 첨부하면 측정일 · 핵심 수치 · 항목별 설명이 자동으로 입력됩니다. 등록 전 내용을 꼭 확인해 주세요.</p>' +
+        '<div id="res-pdf-status" class="pdf-status" hidden></div>' +
         '<p class="field-hint">비공개 Storage 버킷 <code>brain-results/{user_id}/…</code> 에 업로드되며, 회원은 Signed URL로만 열람합니다.</p>' +
         '<button type="button" class="btn btn-primary" id="res-submit">결과 등록</button>' +
       '</div>' +
@@ -138,6 +141,25 @@ export async function build(ctx) {
     html: html,
     bind: function (el) {
       var itemEditor = bindEditor(el, 'res', '#res-type', function (message) { toast(message); });
+
+      /* 결과지 PDF를 첨부하면 측정일·핵심 수치·항목별 설명을 자동으로 채웁니다 */
+      bindPdfAutofill({
+        fileInput: el.querySelector('#res-file'),
+        statusEl: el.querySelector('#res-pdf-status'),
+        typeEl: el.querySelector('#res-type'),
+        fields: {
+          date: el.querySelector('#res-date'),
+          focus: el.querySelector('#res-focus'),
+          stress: el.querySelector('#res-stress'),
+          balance: el.querySelector('#res-balance'),
+          feedback: el.querySelector('#res-feedback'),
+          emotion: el.querySelector('#res-emotion'),
+          summary: el.querySelector('#res-summary')
+        },
+        fillItems: function (map) {
+          return fillItems(el.querySelector('#res-items'), map);
+        }
+      });
 
       var submit = el.querySelector('#res-submit');
       submit.addEventListener('click', async function () {

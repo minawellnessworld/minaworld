@@ -1,16 +1,16 @@
 /* S04. MY BRAIN — 나의 뇌 관리 대시보드 (PART 2-3)
    실제 측정 데이터만 표시합니다. 값이 없으면 빈 상태이며 임의 수치를 만들지 않습니다. */
-import { BRAND, GOAL_OPTIONS, GRADES, CHECK_TYPES, CHECK_ITEM_LABELS } from '../config.js?v=2.0.8';
+import { BRAND, GOAL_OPTIONS, GRADES, CHECK_TYPES, CHECK_ITEM_LABELS } from '../config.js?v=2.0.9';
 import {
   state, updateProfile, listResults, listPackages, listSessions, listBookings, listWellness,
-  getSignedResultUrl, friendlyError, todayStr
-} from '../store.js?v=2.0.8';
-import { listMyMemberships } from '../store-org.js?v=2.0.8';
+  getSignedResultUrl, friendlyError, todayStr, deleteWellness
+} from '../store.js?v=2.0.9';
+import { listMyMemberships } from '../store-org.js?v=2.0.9';
 import {
   icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, chartBaseOptions,
-  loadingBlock, badge, bookingStatusTone, setBusy
-} from '../ui.js?v=2.0.8';
-import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.8';
+  loadingBlock, badge, bookingStatusTone, setBusy, confirmDialog, go
+} from '../ui.js?v=2.0.9';
+import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.9';
 
 function summaryTile(ico, label, value, sub) {
   return '<div class="summary-tile">' +
@@ -25,6 +25,21 @@ function metricText(value) {
   if (value === null || value === undefined || value === '') return '-';
   var num = Number(value);
   return isFinite(num) ? num.toFixed(1) : String(value);
+}
+
+/* 등록 시각(한국 시간 HH:MM) — 같은 날 중복 기록을 구분하기 위해 표시 */
+function kstClock(iso) {
+  if (!iso) return '';
+  var date = new Date(iso);
+  if (isNaN(date.getTime())) return '';
+  try {
+    return new Intl.DateTimeFormat('ko-KR', {
+      hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Seoul'
+    }).format(date);
+  } catch (err) {
+    var shifted = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+    return ('0' + shifted.getUTCHours()).slice(-2) + ':' + ('0' + shifted.getUTCMinutes()).slice(-2);
+  }
 }
 
 function itemDetailsHtml(items) {
@@ -256,11 +271,14 @@ export async function render(ctx) {
         if (log.focus_level) values.push('집중 ' + log.focus_level);
         if (log.stress_level) values.push('스트레스 ' + log.stress_level);
         if (log.sleep_level) values.push('수면 ' + log.sleep_level);
+        var clock = kstClock(log.created_at);
         return '<div class="wellness-row">' +
-          '<div class="wellness-date">' + fmtDate(log.logged_at) + '</div>' +
+          '<div class="wellness-date">' + fmtDate(log.logged_at) +
+            (clock ? '<em class="wellness-clock">' + esc(clock) + '</em>' : '') + '</div>' +
           '<div class="wellness-body"><div class="metric-chips">' +
             values.map(function (v) { return '<span class="metric-chip">' + esc(v) + '</span>'; }).join('') +
           '</div>' + (log.memo ? '<p class="list-note">' + esc(log.memo) + '</p>' : '') + '</div>' +
+          '<button type="button" class="btn btn-ghost btn-xs wellness-del" data-del-wellness="' + esc(log.id) + '">삭제</button>' +
         '</div>';
       }).join('')
     : emptyState({
@@ -399,6 +417,30 @@ export async function render(ctx) {
             toast(friendlyError(err), 'error');
           }
           setBusy(this, false);
+        });
+      }
+
+      /* 웰니스 체크 기록 삭제 — 같은 날 중복 등록 정리 */
+      var delWellness = el.querySelectorAll('[data-del-wellness]');
+      for (var w = 0; w < delWellness.length; w++) {
+        delWellness[w].addEventListener('click', async function () {
+          var id = this.getAttribute('data-del-wellness');
+          if (!id) return;
+          var ok = await confirmDialog({
+            title: '웰니스 기록 삭제',
+            message: '이 웰니스 체크 기록을 삭제할까요? 삭제한 기록은 되돌릴 수 없습니다.',
+            confirmLabel: '삭제'
+          });
+          if (!ok) return;
+          setBusy(this, true, '삭제 중');
+          try {
+            await deleteWellness(id);
+            toast('웰니스 체크 기록을 삭제했습니다.', 'success');
+            go('/my-brain?tab=wellness');
+          } catch (err) {
+            toast(friendlyError(err), 'error');
+            setBusy(this, false);
+          }
         });
       }
 

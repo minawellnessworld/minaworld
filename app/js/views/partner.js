@@ -6,13 +6,14 @@ import {
   ORG_TYPES, BOOKING_STATUS, SETTLEMENT_STATUS, MEMBERSHIP_STATUS,
   STAFF_PERMISSIONS, STAFF_ROLE_OPTIONS, CHECK_TYPES, ROLES, WEEKDAYS,
   hasPermission, staffPermissionLabels
-} from '../config.js?v=2.0.8';
-import { editorHtml, bindEditor } from '../check-items.js?v=2.0.8';
+} from '../config.js?v=2.0.9';
+import { editorHtml, bindEditor, fillItems } from '../check-items.js?v=2.0.9';
+import { bindPdfAutofill } from '../pdf-parser.js?v=2.0.9';
 import {
   state, isAdmin, isOrgAdmin, myOrgId, friendlyError, todayStr,
   listProfiles, listBookings, adminSetBookingStatus, listResults, adminSaveResult, uploadResultFile,
   adminUpdateProfile
-} from '../store.js?v=2.0.8';
+} from '../store.js?v=2.0.9';
 import {
   getPartnerMetrics, listOrgMemberships, updateMembership, requestResultAccess,
   issueStaffAccount, issueOrgMemberAccount, listPreAssignments, deletePreAssignment,
@@ -21,13 +22,13 @@ import {
   listOrgPayments, settlementTotals, listSettlements, createSettlement, markSettlementPaid,
   listOrgResults, listOrgBookings,
   getOrganization
-} from '../store-org.js?v=2.0.8';
-import { logAudit } from '../store-security.js?v=2.0.8';
-import { openAdminBookingModal } from '../booking.js?v=2.0.8';
+} from '../store-org.js?v=2.0.9';
+import { logAudit } from '../store-security.js?v=2.0.9';
+import { openAdminBookingModal } from '../booking.js?v=2.0.9';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, confirmDialog, setBusy, downloadCsv, loadingBlock
-} from '../ui.js?v=2.0.8';
+} from '../ui.js?v=2.0.9';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -431,6 +432,8 @@ async function buildResults(org) {
             editorHtml('pr', 'simple', { label: '항목별 설명 (MY BRAIN에 그대로 표시)' }) +
             '<label class="field"><span class="field-label">요약 코멘트</span><textarea id="pr-summary" rows="2"></textarea></label>' +
             '<label class="field"><span class="field-label">결과지 파일 (PDF · 이미지)</span><input type="file" id="pr-file" accept="application/pdf,image/*"></label>' +
+            '<p class="field-hint">PDF를 첨부하면 측정일 · 핵심 수치 · 항목별 설명이 자동으로 입력됩니다. 등록 전 내용을 꼭 확인해 주세요.</p>' +
+            '<div id="pr-pdf-status" class="pdf-status" hidden></div>' +
             '<button type="button" class="btn btn-primary" id="pr-submit">결과 등록</button>' +
           '</div>' +
         '</section>'
@@ -453,6 +456,24 @@ async function buildResults(org) {
       var submit = el.querySelector('#pr-submit');
       if (!submit) return;
       var itemEditor = bindEditor(el, 'pr', '#pr-type', function (message) { toast(message); });
+
+      bindPdfAutofill({
+        fileInput: el.querySelector('#pr-file'),
+        statusEl: el.querySelector('#pr-pdf-status'),
+        typeEl: el.querySelector('#pr-type'),
+        fields: {
+          date: el.querySelector('#pr-date'),
+          focus: el.querySelector('#pr-focus'),
+          stress: el.querySelector('#pr-stress'),
+          balance: el.querySelector('#pr-balance'),
+          feedback: el.querySelector('#pr-feedback'),
+          emotion: el.querySelector('#pr-emotion'),
+          summary: el.querySelector('#pr-summary')
+        },
+        fillItems: function (map) {
+          return fillItems(el.querySelector('#pr-items'), map);
+        }
+      });
       submit.addEventListener('click', async function () {
         var userId = el.querySelector('#pr-user').value;
         if (!userId) { toast('회원을 선택해 주세요. (결과 공유 동의 회원만 선택 가능)', 'error'); return; }

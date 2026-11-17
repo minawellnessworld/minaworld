@@ -1,19 +1,19 @@
 /* S01. 홈 — 개인 회원 메인 대시보드(PART 2-2) + 오늘의 뇌 컨디션 체크인 */
-import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.8';
+import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.9';
 import {
   state, listWellness, addWellness, listBookings, listPosts, listResults, listPackages,
   listSessions, getPrograms, isStaff, isOrgWorker,
   friendlyError, dateKey, todayStr
-} from '../store.js?v=2.0.8';
+} from '../store.js?v=2.0.9';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listMyMemberships, setShareBrainResults
-} from '../store-org.js?v=2.0.8';
-import { recordConsents, logAudit } from '../store-security.js?v=2.0.8';
+} from '../store-org.js?v=2.0.9';
+import { recordConsents, logAudit } from '../store-security.js?v=2.0.9';
 import {
   icon, esc, fmtKRW, fmtDate, todayLabel, toast, emptyState, setBusy, sectionHead, go, track, noticeBox
-} from '../ui.js?v=2.0.8';
-import { requireLoginSheet } from '../booking.js?v=2.0.8';
-import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.8';
+} from '../ui.js?v=2.0.9';
+import { requireLoginSheet } from '../booking.js?v=2.0.9';
+import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.9';
 
 var MENU = [
   { key: 'brain_check', title: 'BRAIN CHECK', sub: '뇌파측정 · 뇌기능검사 예약', ico: 'pulse', href: '#/brain-check', tone: 'navy' },
@@ -382,12 +382,15 @@ export async function render(ctx) {
 
       var saveBtn = el.querySelector('#checkin-save');
       if (saveBtn) {
+        var saving = false; /* 연타로 중복 INSERT 되지 않도록 방지 */
         saveBtn.addEventListener('click', async function () {
+          if (saving) return;
           if (!selected.focus_level || !selected.stress_level || !selected.sleep_level) {
             toast('집중 · 스트레스 · 수면을 모두 선택해 주세요.');
             return;
           }
           var memoEl = el.querySelector('#checkin-memo');
+          saving = true;
           setBusy(saveBtn, true, '저장 중');
           try {
             await addWellness({
@@ -407,6 +410,7 @@ export async function render(ctx) {
             if (typeof ctx.rerender === 'function') await ctx.rerender();
           } catch (err) {
             toast(friendlyError(err), 'error');
+            saving = false;
             setBusy(saveBtn, false);
           }
         });

@@ -6,9 +6,9 @@
      · 프로그램·기수·쿠폰·기본 게시글만 시드로 보관
      · 개인 측정 데이터는 절대 임의 생성하지 않음 (빈 상태 표시)
    ===================================================================== */
-import { CONFIG } from './config.js?v=2.0.8';
-import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.8';
-import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.8';
+import { CONFIG } from './config.js?v=2.0.9';
+import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.9';
+import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.9';
 
 export var state = {
   mode: 'local',
@@ -975,6 +975,25 @@ export async function addWellness(payload) {
     return res.data;
   }
   return localInsert('wellness_logs', row);
+}
+
+/* 웰니스 체크 기록 삭제 (본인 기록 · 관리자) — 같은 날 중복 기록 정리용 */
+export async function deleteWellness(id) {
+  if (!id) throw new Error('삭제할 기록을 찾지 못했습니다.');
+  if (state.mode === 'live') {
+    var res = await clientSync().from('wellness_logs').delete().eq('id', id);
+    if (res.error) throw new Error(friendlyError(res.error));
+    return true;
+  }
+  var rows = table('wellness_logs');
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i].id) === String(id)) {
+      rows.splice(i, 1);
+      saveLocal();
+      return true;
+    }
+  }
+  throw new Error('삭제할 기록을 찾지 못했습니다.');
 }
 
 /* ------------------------------------------------------------ community */
