@@ -13,7 +13,7 @@ const PRECACHE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './css/app.css',
+  './css/app.css?v=2.0.5',
 
   /* core modules */
   './js/app.js?v=2.0.5',
