@@ -7,12 +7,12 @@
    - supabase.auth.mfa TOTP 등록/검증/해제
    - withdraw_my_account() RPC
    ===================================================================== */
-import { CONSENT_VERSION } from './config.js?v=2.0.7';
+import { CONSENT_VERSION } from './config.js?v=2.0.8';
 import {
   state, myOrgId, friendlyError, nowIso, todayStr,
-  localRows, localInsertRow, refreshProfile, signOut
-} from './store.js?v=2.0.7';
-import { clientSync, listTotpFactors, assuranceLevel } from './supabase.js?v=2.0.7';
+  localRows, localInsertRow, refreshProfile, signOut, passwordIssue
+} from './store.js?v=2.0.8';
+import { clientSync, listTotpFactors, assuranceLevel } from './supabase.js?v=2.0.8';
 
 function live() { return state.mode === 'live'; }
 
@@ -244,9 +244,8 @@ export function monthlyRevenue(source, months) {
 
 /* ------------------------------------------------------- 계정 · 보안 */
 export async function changeMyPassword(newPassword) {
-  if (!newPassword || String(newPassword).length < 6) {
-    throw new Error('비밀번호는 6자 이상으로 설정해 주세요.');
-  }
+  var issue = passwordIssue(newPassword);
+  if (issue) throw new Error(issue);
   if (!live()) throw new Error('로컬 체험 모드에서는 비밀번호를 변경할 수 없습니다. 실서버 연결 후 이용해 주세요.');
   var res = await clientSync().auth.updateUser({ password: String(newPassword) });
   if (res.error) throw new Error(friendlyError(res.error));

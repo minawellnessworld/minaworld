@@ -4,18 +4,18 @@
 import {
   state, signIn, signUp, signOut, updateProfile, listBookings, listPayments,
   listCoupons, validateCoupon, listNotifications, markNotificationRead, isStaff, isOrgWorker,
-  friendlyError
-} from '../store.js?v=2.0.7';
-import { listMyMemberships, setShareBrainResults, requestOrgMembership, listOrganizationsFiltered } from '../store-org.js?v=2.0.7';
-import { CONSENT_ITEMS, CONSENT_LABELS, ROLES } from '../config.js?v=2.0.7';
+  friendlyError, passwordIssue
+} from '../store.js?v=2.0.8';
+import { listMyMemberships, setShareBrainResults, requestOrgMembership, listOrganizationsFiltered } from '../store-org.js?v=2.0.8';
+import { CONSENT_ITEMS, CONSENT_LABELS, ROLES, PRIVACY_POLICY, privacyPolicyHtml } from '../config.js?v=2.0.8';
 import {
   recordConsents, listMyConsents, changeMyPassword, withdrawMyAccount, logAudit
-} from '../store-security.js?v=2.0.7';
+} from '../store-security.js?v=2.0.8';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, sectionHead,
   badge, openSheet, closeSheet, setBusy, go, timeAgo, paymentStatusTone, confirmDialog
-} from '../ui.js?v=2.0.7';
-import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.7';
+} from '../ui.js?v=2.0.8';
+import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.8';
 
 var GRADE_ORDER = ['Welcome', 'Mind', 'Neuro', 'Alignment'];
 var GRADE_DESC = {
@@ -32,6 +32,21 @@ function consentCheckboxes(prefix) {
       '<span><strong>' + esc(item.label) + '</strong><em>' + esc(item.summary) + '</em></span>' +
     '</label>';
   }).join('');
+}
+
+/* 개인정보 처리방침 · 민감정보 처리 안내 전문 시트 */
+function openPrivacySheet() {
+  openSheet({
+    title: '개인정보 처리방침',
+    subtitle: '시행 ' + PRIVACY_POLICY.effective + ' · 버전 ' + PRIVACY_POLICY.version,
+    wide: true,
+    content: privacyPolicyHtml(),
+    footer: '<button type="button" class="btn btn-primary" data-close>확인</button>',
+    onMount: function (sheet) {
+      var c = sheet.querySelector('[data-close]');
+      if (c) c.addEventListener('click', function () { closeSheet(); });
+    }
+  });
 }
 
 function authView(ctx) {
@@ -66,9 +81,10 @@ function authView(ctx) {
             '<input type="email" id="signup-email" autocomplete="email" placeholder="you@example.com" required></label>' +
           '<label class="field"><span class="field-label">연락처</span>' +
             '<input type="tel" id="signup-phone" autocomplete="tel" placeholder="010-0000-0000"></label>' +
-          '<label class="field"><span class="field-label">비밀번호 (6자 이상)</span>' +
-            '<input type="password" id="signup-password" autocomplete="new-password" placeholder="비밀번호" required></label>' +
+          '<label class="field"><span class="field-label">비밀번호 (8자 이상 · 영문+숫자 포함)</span>' +
+            '<input type="password" id="signup-password" autocomplete="new-password" placeholder="영문+숫자 조합 8자 이상" required></label>' +
           '<div class="consent-group">' + consentCheckboxes('signup') + '</div>' +
+          '<button type="button" class="btn btn-ghost btn-block btn-sm" id="signup-privacy">개인정보 처리방침 전문 보기</button>' +
           '<p class="field-hint">필수 동의 항목에 체크해야 가입할 수 있습니다. 동의 이력은 <code>consent_logs</code> 에 기록됩니다.</p>' +
           '<button type="submit" class="btn btn-primary btn-block" id="signup-submit">회원가입</button>' +
         '</form>' +
@@ -133,6 +149,12 @@ function authView(ctx) {
           toast('필수 동의 항목에 체크해 주세요: ' + missing[0], 'error');
           return;
         }
+        var signupPassword = el.querySelector('#signup-password').value;
+        var signupPwIssue = passwordIssue(signupPassword);
+        if (signupPwIssue) {
+          toast(signupPwIssue, 'error');
+          return;
+        }
         setBusy(btn, true, '가입 중');
         try {
           var result = await signUp({
@@ -173,8 +195,7 @@ function authView(ctx) {
       });
 
       var kakao = el.querySelector('#kakao-login');
-      kakao.addEventListener('click', function () {
-        openSheet({
+      kakao.addEventListener('click', function () {        openSheet({
           title: '카카오 로그인',
           content:
             noticeBox('<strong>외부 연동 필요</strong> — 카카오 디벨로퍼스 앱 키 · Redirect URI 등록 후 활성화됩니다. 현재는 <strong>이메일 로그인</strong>을 이용해 주세요.', 'warn') +
@@ -190,6 +211,10 @@ function authView(ctx) {
           }
         });
       });
+
+      /* 회원가입 동의 아래 — 개인정보 처리방침 전문 시트 */
+      var privacyBtn = el.querySelector('#signup-privacy');
+      if (privacyBtn) privacyBtn.addEventListener('click', openPrivacySheet);
     }
   };
 }
@@ -386,7 +411,7 @@ export async function render(ctx) {
     '<section class="section">' +
       sectionHead('계정 보안', '<span class="muted small">비밀번호 · 탈퇴</span>') +
       '<div class="card form-card">' +
-        '<label class="field"><span class="field-label">새 비밀번호 (6자 이상)</span><input type="password" id="pw-new" autocomplete="new-password" placeholder="새 비밀번호"></label>' +
+        '<label class="field"><span class="field-label">새 비밀번호 (8자 이상 · 영문+숫자 포함)</span><input type="password" id="pw-new" autocomplete="new-password" placeholder="영문+숫자 조합 8자 이상"></label>' +
         '<label class="field"><span class="field-label">새 비밀번호 확인</span><input type="password" id="pw-confirm" autocomplete="new-password" placeholder="한 번 더 입력"></label>' +
         '<button type="button" class="btn btn-ghost btn-block btn-sm" id="pw-save">비밀번호 변경</button>' +
         '<p class="field-hint">휴대폰 본인인증 · 카카오 로그인은 외부 인증 연동 후 제공됩니다.</p>' +
@@ -526,7 +551,8 @@ export async function render(ctx) {
         pwSave.addEventListener('click', async function () {
           var pw = el.querySelector('#pw-new').value;
           var confirmValue = el.querySelector('#pw-confirm').value;
-          if (pw.length < 6) { toast('비밀번호는 6자 이상으로 설정해 주세요.'); return; }
+          var pwIssue = passwordIssue(pw);
+          if (pwIssue) { toast(pwIssue); return; }
           if (pw !== confirmValue) { toast('비밀번호 확인이 일치하지 않습니다.'); return; }
           setBusy(pwSave, true, '변경 중');
           try {

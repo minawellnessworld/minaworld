@@ -6,8 +6,8 @@
      localStorage(유형별)에 보관되어 다음 등록 화면부터 기본값이 됩니다.
    - "초기 기본값 복원" 은 저장값을 지우고 코드 기본값으로 되돌립니다.
    ===================================================================== */
-import { CHECK_ITEM_TEMPLATES } from './config.js?v=2.0.7';
-import { esc } from './ui.js?v=2.0.7';
+import { CHECK_ITEM_TEMPLATES } from './config.js?v=2.0.8';
+import { esc } from './ui.js?v=2.0.8';
 
 var STORAGE_PREFIX = 'mina.check-items.v1.';
 

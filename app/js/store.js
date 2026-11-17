@@ -6,9 +6,9 @@
      · 프로그램·기수·쿠폰·기본 게시글만 시드로 보관
      · 개인 측정 데이터는 절대 임의 생성하지 않음 (빈 상태 표시)
    ===================================================================== */
-import { CONFIG } from './config.js?v=2.0.7';
-import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.7';
-import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.7';
+import { CONFIG } from './config.js?v=2.0.8';
+import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.8';
+import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.8';
 
 export var state = {
   mode: 'local',
@@ -79,6 +79,19 @@ export function requireUid() {
   return user.id;
 }
 
+/* ------------------------------------------------------- 비밀번호 정책 (v2.0.8)
+   Supabase Auth 설정(password_min_length 8, 영문+숫자)과 동일한 기준을
+   화면에서 먼저 검사해 서버 오류 없이 안내합니다. */
+export var PASSWORD_MIN_LENGTH = 8;
+
+export function passwordIssue(password) {
+  var pw = String(password || '');
+  if (!pw) return '비밀번호를 입력해 주세요.';
+  if (pw.length < PASSWORD_MIN_LENGTH) return '비밀번호는 8자 이상으로 설정해 주세요.';
+  if (!/[A-Za-z]/.test(pw) || !/[0-9]/.test(pw)) return '비밀번호에 영문과 숫자를 모두 포함해 주세요.';
+  return '';
+}
+
 /* ---------------------------------------------------------------- utils */
 function uid() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
@@ -128,7 +141,8 @@ export function friendlyError(err) {
   if (/Invalid login credentials/i.test(msg)) return '이메일 또는 비밀번호가 올바르지 않습니다.';
   if (/Email not confirmed/i.test(msg)) return '이메일 인증이 필요합니다. 받은 편지함의 인증 메일을 확인해 주세요.';
   if (/User already registered|already been registered/i.test(msg)) return '이미 가입된 이메일입니다. 로그인해 주세요.';
-  if (/Password should be at least/i.test(msg)) return '비밀번호는 6자 이상이어야 합니다.';
+  if (/Password should be at least|password.*at least .* characters/i.test(msg)) return '비밀번호는 8자 이상이어야 합니다.';
+  if (/Password should contain|password.*characters of each/i.test(msg)) return '비밀번호에 영문과 숫자를 모두 포함해 주세요.';
   if (/row-level security|new row violates|permission denied/i.test(msg)) return '이 작업을 수행할 권한이 없습니다. (관리자 권한 또는 정책 확인 필요)';
   if (/duplicate key/i.test(msg) || code === '23505') return '이미 등록된 값입니다.';
   if (/function .* does not exist|Could not find the function/i.test(msg)) return 'DB v2 마이그레이션(supabase_schema_v2.sql)이 아직 적용되지 않았습니다. 적용 후 다시 시도해 주세요.';
@@ -383,7 +397,8 @@ export async function signUp(payload) {
   var fullName = String(payload.fullName || '').trim();
   var phone = String(payload.phone || '').trim();
   if (!mail || !password) throw new Error('이메일과 비밀번호를 입력해 주세요.');
-  if (password.length < 6) throw new Error('비밀번호는 6자 이상으로 설정해 주세요.');
+  var pwIssue = passwordIssue(password);
+  if (pwIssue) throw new Error(pwIssue);
   if (!fullName) throw new Error('이름을 입력해 주세요.');
 
   if (state.mode === 'live') {
@@ -1228,8 +1243,52 @@ export async function adminCreateNote(userId, memo) {
 }
 
 /* -------------------------------------------------------------- B2B 기관 */
+/* 공개 기관 디렉터리 — 비로그인·일반회원은 organizations/branches 테이블을
+   직접 읽지 않고 이 RPC 결과(기관명·유형·지점명·지점주소)만 사용합니다. */
+var _publicDirectory = { at: 0, rows: null };
+
+export async function listPublicDirectory(force) {
+  if (!force && _publicDirectory.rows && (Date.now() - _publicDirectory.at) < 30000) {
+    return _publicDirectory.rows;
+  }
+  var res = await clientSync().rpc('get_public_directory');
+  if (res.error) throw new Error(friendlyError(res.error));
+  _publicDirectory = { at: Date.now(), rows: res.data || [] };
+  return _publicDirectory.rows;
+}
+
+/* RPC 행(평평한 목록) → 기관 { id, name, org_type, branches[] } 로 묶기 */
+export function shapePublicDirectory(rows) {
+  var orgs = [];
+  var index = {};
+  (rows || []).forEach(function (row) {
+    if (!row || !row.org_id) return;
+    var org = index[row.org_id];
+    if (!org) {
+      org = { id: row.org_id, name: row.org_name, org_type: row.org_type, status: 'active', branches: [] };
+      index[row.org_id] = org;
+      orgs.push(org);
+    }
+    if (row.branch_id) {
+      org.branches.push({
+        id: row.branch_id,
+        name: row.branch_name,
+        address: row.branch_address || '',
+        org_id: row.org_id,
+        status: 'active'
+      });
+    }
+  });
+  return orgs;
+}
+
 export async function listOrganizations() {
   if (state.mode === 'live') {
+    /* 총괄 관리자·제휴 기관 근무자는 전체 필드를 읽고,
+       그 외(비로그인·일반회원)는 최소 필드 공개 디렉터리만 받습니다. */
+    if (!isAdmin() && !isOrgWorker()) {
+      return shapePublicDirectory(await listPublicDirectory());
+    }
     var res = await clientSync().from('organizations').select('*').order('created_at', { ascending: false });
     if (res.error) throw new Error(friendlyError(res.error));
     return res.data || [];
@@ -1256,13 +1315,26 @@ export async function adminUpdateOrganization(id, patch) {
   return localUpdate('organizations', id, patch);
 }
 
-export async function listBranches() {
+export async function listBranches(orgId) {
   if (state.mode === 'live') {
-    var res = await clientSync().from('branches').select('*').order('created_at', { ascending: false });
+    if (!isAdmin() && !isOrgWorker()) {
+      var orgs = shapePublicDirectory(await listPublicDirectory());
+      var rowsOut = [];
+      orgs.forEach(function (org) {
+        if (orgId && String(org.id) !== String(orgId)) return;
+        org.branches.forEach(function (branch) { rowsOut.push(branch); });
+      });
+      return rowsOut;
+    }
+    var q = clientSync().from('branches').select('*').order('created_at', { ascending: false });
+    if (orgId) q = q.eq('org_id', orgId);
+    var res = await q;
     if (res.error) throw new Error(friendlyError(res.error));
     return res.data || [];
   }
-  return sortRows(clone(local().branches), 'created_at', true);
+  var localRowsOut = clone(local().branches);
+  if (orgId) localRowsOut = localRowsOut.filter(function (b) { return String(b.org_id) === String(orgId); });
+  return sortRows(localRowsOut, 'created_at', true);
 }
 
 export async function adminCreateBranch(payload) {

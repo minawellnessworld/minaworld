@@ -9,10 +9,11 @@
    ===================================================================== */
 import {
   state, isAdmin, isOrgWorker, myOrgId, friendlyError, nowIso, todayStr,
-  localRows, localInsertRow, localUpdateRow, localDeleteRow, saveLocalNow, currentUser
-} from './store.js?v=2.0.7';
-import { clientSync, createSecondaryClient } from './supabase.js?v=2.0.7';
-import { CONFIG } from './config.js?v=2.0.7';
+  localRows, localInsertRow, localUpdateRow, localDeleteRow, saveLocalNow, currentUser,
+  listPublicDirectory, shapePublicDirectory, passwordIssue
+} from './store.js?v=2.0.8';
+import { clientSync, createSecondaryClient } from './supabase.js?v=2.0.8';
+import { CONFIG } from './config.js?v=2.0.8';
 
 function uid() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
@@ -35,8 +36,21 @@ function orgScope() {
 }
 
 /* --------------------------------------------------------- 기관 · 지점 */
+export { listPublicDirectory };
+
+/* 지금 사용자가 기관 테이블 전체를 볼 수 있는가?
+   총괄 관리자 · 제휴 기관 근무자만 true. 비로그인·일반회원은 공개 디렉터리만. */
+function canReadOrgTable() {
+  return isAdmin() || isOrgWorker();
+}
+
 export async function listOrganizationsFiltered(status) {
   if (live()) {
+    if (!canReadOrgTable()) {
+      var directory = shapePublicDirectory(await listPublicDirectory());
+      if (status) directory = directory.filter(function (o) { return o.status === status; });
+      return directory;
+    }
     var q = clientSync().from('organizations').select('*').order('created_at', { ascending: false });
     if (status) q = q.eq('status', status);
     var res = await q;
@@ -95,6 +109,15 @@ export async function saveOrganization(payload, id) {
 
 export async function listBranchesForOrg(orgId) {
   if (live()) {
+    if (!canReadOrgTable()) {
+      var orgs = shapePublicDirectory(await listPublicDirectory());
+      var out = [];
+      orgs.forEach(function (org) {
+        if (orgId && String(org.id) !== String(orgId)) return;
+        org.branches.forEach(function (branch) { out.push(branch); });
+      });
+      return out;
+    }
     var q = clientSync().from('branches').select('*').order('created_at', { ascending: true });
     if (orgId) q = q.eq('org_id', orgId);
     var res = await q;
@@ -221,6 +244,33 @@ export function isOpenOn(schedules, weekday, branchId, counselorId) {
 }
 
 /* ---------------------------------------------------- 기관 소속(멤버십) */
+/* organizations 테이블이 관리자·기관 근무자에게만 열려 있으므로,
+   일반 회원의 소속 행에는 기관명이 비어 내려옵니다. 그 빈 칸만
+   공개 디렉터리의 기관명·유형으로 채워 화면 표시를 유지합니다. */
+async function attachOrgDirectory(rows) {
+  var list = rows || [];
+  var missing = false;
+  for (var i = 0; i < list.length; i++) {
+    if (!list[i].organizations && list[i].org_id) { missing = true; break; }
+  }
+  if (!missing) return list;
+  var map = {};
+  try {
+    var directory = shapePublicDirectory(await listPublicDirectory());
+    directory.forEach(function (org) { map[org.id] = org; });
+  } catch (err) {
+    console.warn('[MINA] 기관 디렉터리 조회 실패', err);
+    return list;
+  }
+  return list.map(function (row) {
+    if (row.organizations || !row.org_id || !map[row.org_id]) return row;
+    var org = map[row.org_id];
+    return Object.assign({}, row, {
+      organizations: { id: org.id, name: org.name, org_type: org.org_type, status: org.status }
+    });
+  });
+}
+
 export async function listMyMemberships() {
   if (!state.session) return [];
   var uidValue = state.session.user.id;
@@ -230,7 +280,7 @@ export async function listMyMemberships() {
       .select('*, organizations(id,name,org_type,status)')
       .eq('user_id', uidValue);
     if (res.error) throw new Error(friendlyError(res.error));
-    return res.data || [];
+    return attachOrgDirectory(res.data || []);
   }
   var rows = localRows('org_memberships').filter(function (m) { return String(m.user_id) === String(uidValue); });
   var orgs = localRows('organizations');
@@ -273,7 +323,7 @@ export async function listMembershipsForUser(userId) {
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
     if (res.error) throw new Error(friendlyError(res.error));
-    return res.data || [];
+    return attachOrgDirectory(res.data || []);
   }
   var orgs = localRows('organizations');
   return localRows('org_memberships')
@@ -359,10 +409,15 @@ export async function deletePreAssignment(email) {
   return true;
 }
 
+/* 임시 비밀번호: 앱 비밀번호 정책(8자 이상 · 영문+숫자)을 반드시 통과해야 합니다.
+   헷갈리는 글자(0/O, 1/l/I)는 제외하고 영문·숫자를 각각 최소 1자씩 넣습니다. */
 function makePassword() {
-  var alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-  var out = '';
-  for (var i = 0; i < 10; i++) {
+  var letters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  var digits = '23456789';
+  var alphabet = letters + digits;
+  var out = letters.charAt(Math.floor(Math.random() * letters.length)) +
+            digits.charAt(Math.floor(Math.random() * digits.length));
+  while (out.length < 10) {
     out += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
   }
   return out + '!';
@@ -375,7 +430,12 @@ function makePassword() {
 export async function issueAccount(payload) {
   var email = String(payload.email || '').trim().toLowerCase();
   if (!email || email.indexOf('@') < 0) throw new Error('올바른 이메일을 입력해 주세요.');
-  var password = payload.password && String(payload.password).length >= 6 ? String(payload.password) : makePassword();
+  var password = makePassword();
+  if (payload.password && String(payload.password).length) {
+    var issuedIssue = passwordIssue(payload.password);
+    if (issuedIssue) throw new Error(issuedIssue);
+    password = String(payload.password);
+  }
   var role = payload.role || 'member';
   var orgId = payload.org_id || orgScope() || null;
   var perms = payload.staff_permissions || {};

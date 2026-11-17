@@ -2419,3 +2419,23 @@ body.portal-mode .mode-banner { display: none; }
 }
 .spoon-reader .notice { margin-top: 16px; }
 .spoon-actions { display: flex; flex-direction: column; gap: 8px; margin: 18px 0 10px; }
+
+/* ===== 개인정보 처리방침 · 민감정보 안내 시트 ===== */
+.policy-block + .policy-block { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.policy-block h3 { word-break: keep-all; font-size: 13px; font-weight: 800; color: var(--navy); letter-spacing: -0.01em; }
+.policy-block p { margin-top: 6px; word-break: keep-all; font-size: 12px; line-height: 1.75; color: var(--muted); }
+.policy-meta { margin-top: 0; font-size: 11px; font-weight: 700; color: var(--gold-dark); }
+.policy-block ul { margin-top: 7px; display: flex; flex-direction: column; gap: 4px; }
+.policy-block li { position: relative; word-break: keep-all; padding-left: 11px; font-size: 11.5px; line-height: 1.72; color: var(--muted); }
+.policy-block li::before {
+  content: ''; position: absolute; left: 0; top: 7px;
+  width: 4px; height: 4px; border-radius: 50%; background: var(--line-strong);
+}
+.policy-table { margin-top: 9px; display: flex; flex-direction: column; gap: 6px; }
+.policy-table-row {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 9px 11px; border-radius: 10px; background: var(--box);
+}
+.policy-table-row strong { font-size: 11.5px; font-weight: 800; color: var(--navy); }
+.policy-table-row span { font-size: 11px; line-height: 1.6; color: var(--muted); }
+.policy-table-row em { font-style: normal; font-size: 10.5px; color: var(--muted-2); }

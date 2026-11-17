@@ -1,7 +1,7 @@
 /* 더보기 — 커뮤니티 · 아카데미 · 마이페이지 · 관리자 · 앱 안내 */
-import { CONFIG, BRAND, MINA_MEANING } from '../config.js?v=2.0.7';
-import { state, isStaff, isOrgWorker } from '../store.js?v=2.0.7';
-import { icon, esc, badge, sectionHead, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.7';
+import { CONFIG, BRAND, MINA_MEANING, PRIVACY_POLICY, privacyPolicyHtml } from '../config.js?v=2.0.8';
+import { state, isStaff, isOrgWorker } from '../store.js?v=2.0.8';
+import { icon, esc, badge, sectionHead, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.8';
 
 var LINKS = [
   { href: '#/community', ico: 'chat', title: 'MINA COMMUNITY', sub: '공지 · 뇌과학 정보 · 후기 · Q&A' },
@@ -70,6 +70,16 @@ export async function render(ctx) {
     '</section>' +
 
     '<section class="section">' +
+      sectionHead('보안 · 정책', '<span class="muted small">v' + esc(CONFIG.APP_VERSION) + '</span>') +
+      '<div class="info-rows">' +
+        '<div class="info-row">' + icon('shield', 17) + '<span><strong>개인정보 처리방침</strong> 수집 항목 · 보유 기간 · 위탁사 · 이용자 권리 전문</span></div>' +
+        '<div class="info-row">' + icon('lock', 17) + '<span><strong>민감정보 안내</strong> 뇌파 측정 · 상담 기록은 별도 동의 기반 웰니스 데이터입니다.</span></div>' +
+        '<div class="info-row">' + icon('user', 17) + '<span><strong>개인정보 보호책임자</strong> 대표 이미나 · ' + esc(CONFIG.CONTACT_EMAIL) + '</span></div>' +
+      '</div>' +
+      '<button type="button" class="btn btn-ghost btn-block btn-sm" id="privacy-policy">' + icon('shield', 16) + '개인정보 처리방침 · 보안 안내 전문 보기</button>' +
+    '</section>' +
+
+    '<section class="section">' +
       noticeBox('<strong>비의료 웰니스 고지</strong><br>' + esc(BRAND.nonMedical), 'warn') +
       noticeBox('결제(PG) · 카카오 알림톡 · 앱 푸시는 외부 키 연동 전까지 <strong>연동 대기</strong> 상태로 표시됩니다.', 'neutral') +
     '</section>' +
@@ -84,6 +94,23 @@ export async function render(ctx) {
     title: '더보기',
     html: html,
     mount: function (el) {
+      var privacyBtn = el.querySelector('#privacy-policy');
+      if (privacyBtn) {
+        privacyBtn.addEventListener('click', function () {
+          openSheet({
+            title: '개인정보 처리방침 · 보안 안내',
+            subtitle: '시행 ' + PRIVACY_POLICY.effective + ' · 버전 ' + PRIVACY_POLICY.version,
+            wide: true,
+            content: privacyPolicyHtml(),
+            footer: '<button type="button" class="btn btn-primary" data-close>확인</button>',
+            onMount: function (sheet) {
+              var c = sheet.querySelector('[data-close]');
+              if (c) c.addEventListener('click', function () { closeSheet(); });
+            }
+          });
+        });
+      }
+
       var btn = el.querySelector('#pwa-guide');
       if (btn) {
         btn.addEventListener('click', function () {
