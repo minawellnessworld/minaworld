@@ -1,22 +1,22 @@
 /* =====================================================================
    MINA WORLD App — 부트스트랩 & 해시 라우터
    ===================================================================== */
-import { state, boot, subscribe, isStaff, listNotifications, markNotificationRead } from './store.js?v=2.0.18';
-import { icon, go, openSheet, closeSheet, loadingBlock, esc, timeAgo, toast } from './ui.js?v=2.0.18';
-import { requireLoginSheet } from './booking.js?v=2.0.18';
+import { state, boot, subscribe, isStaff, listNotifications, markNotificationRead } from './store.js?v=2.0.19';
+import { icon, go, openSheet, closeSheet, loadingBlock, esc, timeAgo, toast } from './ui.js?v=2.0.19';
+import { requireLoginSheet } from './booking.js?v=2.0.19';
 
-import * as HomeView from './views/home.js?v=2.0.18';
-import * as BrainCheckView from './views/brain-check.js?v=2.0.18';
-import * as NeuroView from './views/neuro.js?v=2.0.18';
-import * as MyBrainView from './views/my-brain.js?v=2.0.18';
-import * as ProgramsView from './views/programs.js?v=2.0.18';
-import * as AcademyView from './views/academy.js?v=2.0.18';
-import * as CommunityView from './views/community.js?v=2.0.18';
-import * as AccountView from './views/account.js?v=2.0.18';
-import * as MoreView from './views/more.js?v=2.0.18';
-import * as AdminView from './views/admin.js?v=2.0.18';
-import * as AdminLoginView from './views/admin-login.js?v=2.0.18';
-import * as PartnerView from './views/partner.js?v=2.0.18';
+import * as HomeView from './views/home.js?v=2.0.19';
+import * as BrainCheckView from './views/brain-check.js?v=2.0.19';
+import * as NeuroView from './views/neuro.js?v=2.0.19';
+import * as MyBrainView from './views/my-brain.js?v=2.0.19';
+import * as ProgramsView from './views/programs.js?v=2.0.19';
+import * as AcademyView from './views/academy.js?v=2.0.19';
+import * as CommunityView from './views/community.js?v=2.0.19';
+import * as AccountView from './views/account.js?v=2.0.19';
+import * as MoreView from './views/more.js?v=2.0.19';
+import * as AdminView from './views/admin.js?v=2.0.19';
+import * as AdminLoginView from './views/admin-login.js?v=2.0.19';
+import * as PartnerView from './views/partner.js?v=2.0.19';
 
 var ROUTES = {
   home: HomeView,
@@ -331,7 +331,7 @@ function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
   if (location.protocol === 'file:') return;
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('./sw.js?v=2.0.18').then(function (reg) {
+    navigator.serviceWorker.register('./sw.js?v=2.0.19').then(function (reg) {
       /* 매 방문마다 새 버전이 있는지 확인 → 배포 직후에도 오래된 앱 셸이 남지 않습니다 */
       if (reg && reg.update) {
         reg.update().catch(function () {});

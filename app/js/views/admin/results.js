@@ -1,16 +1,16 @@
 /* 관리자 → 검사 결과: 등록 · 수정 · is_public 공개 토글 · 항목별 설명(item_details) · 결과지 업로드 */
-import { CHECK_TYPES } from '../../config.js?v=2.0.18';
-import { editorHtml, bindEditor, fillItemsDetailed } from '../../check-items.js?v=2.0.18';
-import { bindPdfAutofill } from '../../pdf-parser.js?v=2.0.18';
+import { CHECK_TYPES } from '../../config.js?v=2.0.19';
+import { editorHtml, bindEditor, fillItemsDetailed } from '../../check-items.js?v=2.0.19';
+import { bindPdfAutofill } from '../../pdf-parser.js?v=2.0.19';
 import {
   state, listProfiles, listResults, adminSaveResult, adminUpdateResult, adminDeleteResult,
   uploadResultFile, listOrganizations, friendlyError, todayStr
-} from '../../store.js?v=2.0.18';
-import { logAudit } from '../../store-security.js?v=2.0.18';
+} from '../../store.js?v=2.0.19';
+import { logAudit } from '../../store-security.js?v=2.0.19';
 import {
   icon, esc, fmtDate, toast, badge, openSheet, closeSheet, confirmDialog, setBusy,
   noticeBox, emptyState
-} from '../../ui.js?v=2.0.18';
+} from '../../ui.js?v=2.0.19';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';

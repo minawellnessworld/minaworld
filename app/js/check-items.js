@@ -6,8 +6,8 @@
      localStorage(유형별)에 보관되어 다음 등록 화면부터 기본값이 됩니다.
    - "초기 기본값 복원" 은 저장값을 지우고 코드 기본값으로 되돌립니다.
    ===================================================================== */
-import { CHECK_ITEM_TEMPLATES } from './config.js?v=2.0.18';
-import { esc } from './ui.js?v=2.0.18';
+import { CHECK_ITEM_TEMPLATES } from './config.js?v=2.0.19';
+import { esc } from './ui.js?v=2.0.19';
 
 var STORAGE_PREFIX = 'mina.check-items.v1.';
 
@@ -271,7 +271,12 @@ export function bindEditor(root, prefix, typeSelector, onNotice) {
   /* 기본 항목이 자동으로 채워진 상태(사용자가 아무것도 고치지 않은 상태)에서만
      검사 유형 변경 시 항목 세트를 통째로 교체한다. 한 글자라도 고쳤으면 덮어쓰지 않는다. */
   var dirty = false;
-  itemsEl.addEventListener('input', function () { dirty = true; });
+  /* 실제 사용자 입력(isTrusted)만 '고친 것'으로 봅니다. PDF 자동 입력이 값을 넣으며
+     보내는 input 이벤트까지 dirty 로 잡으면, 결과지 PDF를 첨부한 뒤 검사 유형을 바꿔도
+     항목 세트가 바뀌지 않습니다. */
+  itemsEl.addEventListener('input', function (event) {
+    if (!event || event.isTrusted) dirty = true;
+  });
   itemsEl.addEventListener('click', function (event) {
     if (event.target && event.target.closest && event.target.closest('[data-kv-remove]')) dirty = true;
   });
