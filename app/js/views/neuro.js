@@ -1,7 +1,7 @@
 /* S03. NEURO TRAINING — 뉴로피드백 패키지 · 훈련 기록 */
-import { state, getPrograms, listPackages, listSessions, listBookings, friendlyError } from '../store.js?v=2.0.19';
-import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, chartBaseOptions } from '../ui.js?v=2.0.19';
-import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.19';
+import { state, getPrograms, listPackages, listSessions, listBookings, friendlyError } from '../store.js?v=2.0.20';
+import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, chartBaseOptions } from '../ui.js?v=2.0.20';
+import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.20';
 
 function packageCard(program) {
   var isSingle = program.id === 'neuro_1';
@@ -18,6 +18,37 @@ function packageCard(program) {
   '</article>';
 }
 
+function scorePair(ex) {
+  var parts = [];
+  if (ex.score_s !== null && ex.score_s !== undefined) parts.push(ex.score_s + 'S');
+  if (ex.score_p !== null && ex.score_p !== undefined) parts.push(ex.score_p + 'P');
+  return parts.join(' ');
+}
+
+function detailsBlock(details) {
+  if (!details || !details.exercises || !details.exercises.length) return '';
+  var totals = [];
+  if (details.total_score_s !== null && details.total_score_s !== undefined) totals.push(details.total_score_s + 'S');
+  if (details.total_points_p !== null && details.total_points_p !== undefined) totals.push(details.total_points_p + 'P');
+  var rows = details.exercises.map(function (ex) {
+    return '<div class="neuro-ex-row">' +
+      '<span class="neuro-ex-seq">' + esc(ex.seq) + '</span>' +
+      '<span class="neuro-ex-name">' + esc(ex.exercise || '-') + '</span>' +
+      '<span class="neuro-ex-proto">' + esc(ex.protocol || '-') + '</span>' +
+      '<span class="neuro-ex-score">' + esc(scorePair(ex) || '-') + '</span>' +
+      '</div>';
+  }).join('');
+  return '<div class="neuro-details">' +
+    '<div class="neuro-details-head">' +
+      '<span class="metric-chip">총 ' + esc(totals.join(' · ') || '-') + '</span>' +
+      '<span class="muted small">' + details.exercises.length + '단계' +
+        (details.begin_time ? ' · ' + esc(details.begin_time) + (details.finish_time ? ' ~ ' + esc(details.finish_time) : '') : '') +
+      '</span>' +
+    '</div>' +
+    '<div class="neuro-ex-table">' + rows + '</div>' +
+    '</div>';
+}
+
 function sessionRow(session, index) {
   var metrics = [];
   if (session.focus_metric !== null && session.focus_metric !== undefined) {
@@ -32,6 +63,7 @@ function sessionRow(session, index) {
       '<div class="session-head"><strong>' + esc(session.protocol || '맞춤 프로토콜 훈련') + '</strong>' +
         '<span class="muted small">' + fmtDate(session.trained_at) + '</span></div>' +
       (metrics.length ? '<div class="metric-chips">' + metrics.join('') + '</div>' : '') +
+      detailsBlock(session.session_details) +
       (session.prev_comparison ? '<p class="session-note">이전 대비 · ' + esc(session.prev_comparison) + '</p>' : '') +
       (session.counselor_memo ? '<p class="session-memo">' + icon('user', 14) + '<span>담당 상담사 메모 · ' + esc(session.counselor_memo) + '</span></p>' : '') +
     '</div>' +
@@ -100,6 +132,15 @@ export async function render(ctx) {
     }).join('');
   }
 
+  var scoreSessions = sessions.filter(function (s) {
+    var d = s.session_details || {};
+    return d.total_score_s !== null && d.total_score_s !== undefined;
+  });
+  var metricSessions = sessions.filter(function (s) {
+    return (s.focus_metric !== null && s.focus_metric !== undefined) || (s.calm_metric !== null && s.calm_metric !== undefined);
+  });
+  var chartMode = scoreSessions.length >= 2 ? 'score' : (metricSessions.length >= 2 ? 'metric' : '');
+
   var sessionsBlock;
   if (!state.session) {
     sessionsBlock = emptyState({
@@ -115,9 +156,11 @@ export async function render(ctx) {
     });
   } else {
     sessionsBlock = '<div class="chart-card">' +
-      (sessions.length >= 2
+      (chartMode
         ? '<div class="chart-wrap"><canvas id="neuro-chart"></canvas></div>' +
-          '<p class="chart-caption">실제 등록된 회차 기록만 표시됩니다 (집중 · 이완 지표)</p>'
+          '<p class="chart-caption">' + (chartMode === 'score'
+            ? '회차별 훈련 점수(S) · 포인트(P) — 실제 등록된 기록만 표시됩니다'
+            : '실제 등록된 회차 기록만 표시됩니다 (집중 · 이완 지표)') + '</p>'
         : '<p class="chart-caption">비교 그래프는 회차 기록이 2회 이상일 때 표시됩니다. 현재 ' + sessions.length + '회 기록.</p>') +
     '</div>' +
     '<div class="session-list">' + sessions.map(sessionRow).join('') + '</div>';
@@ -191,22 +234,34 @@ export async function render(ctx) {
       }
 
       var canvas = el.querySelector('#neuro-chart');
-      if (canvas && sessions.length >= 2) {
+      if (canvas && chartMode) {
         if (!window.Chart) {
           var wrap = canvas.parentNode;
           wrap.innerHTML = '<p class="muted small">그래프 라이브러리를 불러오지 못했습니다. 기록 목록은 아래에서 확인할 수 있습니다.</p>';
         } else {
-          var points = sessions.filter(function (s) {
-            return (s.focus_metric !== null && s.focus_metric !== undefined) ||
-              (s.calm_metric !== null && s.calm_metric !== undefined);
-          });
-          var labels = points.map(function (s) { return (s.session_no || '') + '회'; });
-          var focusData = points.map(function (s) {
-            return s.focus_metric === null || s.focus_metric === undefined ? null : Number(s.focus_metric);
-          });
-          var calmData = points.map(function (s) {
-            return s.calm_metric === null || s.calm_metric === undefined ? null : Number(s.calm_metric);
-          });
+          var labels = [];
+          var seriesA = [];
+          var seriesB = [];
+          var labelA = '집중 지표';
+          var labelB = '이완 지표';
+          if (chartMode === 'score') {
+            labels = scoreSessions.map(function (s) { return '#' + (s.session_no || '') ; });
+            seriesA = scoreSessions.map(function (s) { return Number(s.session_details.total_score_s); });
+            seriesB = scoreSessions.map(function (s) {
+              var p = s.session_details.total_points_p;
+              return p === null || p === undefined ? null : Number(p);
+            });
+            labelA = '훈련 점수(S)';
+            labelB = '포인트(P)';
+          } else {
+            labels = metricSessions.map(function (s) { return (s.session_no || '') + '회'; });
+            seriesA = metricSessions.map(function (s) {
+              return s.focus_metric === null || s.focus_metric === undefined ? null : Number(s.focus_metric);
+            });
+            seriesB = metricSessions.map(function (s) {
+              return s.calm_metric === null || s.calm_metric === undefined ? null : Number(s.calm_metric);
+            });
+          }
           var options = chartBaseOptions();
           new window.Chart(canvas.getContext('2d'), {
             type: 'line',
@@ -214,11 +269,11 @@ export async function render(ctx) {
               labels: labels,
               datasets: [
                 {
-                  label: '집중 지표', data: focusData, borderColor: '#070D1E', backgroundColor: 'rgba(7,13,30,0.08)',
+                  label: labelA, data: seriesA, borderColor: '#070D1E', backgroundColor: 'rgba(7,13,30,0.08)',
                   tension: 0.35, spanGaps: true, pointRadius: 3.5, pointBackgroundColor: '#070D1E', borderWidth: 2
                 },
                 {
-                  label: '이완 지표', data: calmData, borderColor: '#F5B82E', backgroundColor: 'rgba(245,184,46,0.14)',
+                  label: labelB, data: seriesB, borderColor: '#F5B82E', backgroundColor: 'rgba(245,184,46,0.14)',
                   tension: 0.35, spanGaps: true, pointRadius: 3.5, pointBackgroundColor: '#F5B82E', borderWidth: 2
                 }
               ]

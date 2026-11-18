@@ -5,19 +5,19 @@
     → get_booked_slots RPC 로 이미 예약된 시간대 비활성(중복 차단)
     → DB 유니크 인덱스(idx_bookings_no_overlap) 위반 시 한국어 안내
    ===================================================================== */
-import { CONFIG, BOOKING_STATUS, BOOKING_PAYMENT_STATUS } from './config.js?v=2.0.19';
+import { CONFIG, BOOKING_STATUS, BOOKING_PAYMENT_STATUS } from './config.js?v=2.0.20';
 import {
   state, createBooking, updateBooking, cancelBooking, listBookings, validateCoupon,
   getBookedSlots, listAllPrograms, listProfiles, friendlyError
-} from './store.js?v=2.0.19';
+} from './store.js?v=2.0.20';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listOrgSchedules, buildSlotsFromSchedules
-} from './store-org.js?v=2.0.19';
-import { logAudit } from './store-security.js?v=2.0.19';
+} from './store-org.js?v=2.0.20';
+import { logAudit } from './store-security.js?v=2.0.20';
 import {
   esc, fmtKRW, fmtDate, icon, toast, openSheet, closeSheet, noticeBox, setBusy, go, track,
   confirmDialog, bookingStatusTone, paymentStatusTone, emptyState, loadingBlock
-} from './ui.js?v=2.0.19';
+} from './ui.js?v=2.0.20';
 
 function dateToInput(d) {
   var m = ('0' + (d.getMonth() + 1)).slice(-2);

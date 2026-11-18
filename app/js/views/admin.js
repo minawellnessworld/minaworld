@@ -4,28 +4,29 @@
 import {
   CHECK_TYPES, BOOKING_STATUS, BOOKING_PAYMENT_STATUS, PAYMENT_STATUS, ROLES, GRADES,
   COMMUNITY_CATEGORIES, ENROLLMENT_STATUS, categoryLabel
-} from '../config.js?v=2.0.19';
+} from '../config.js?v=2.0.20';
 import {
   state, isAdmin, isStaff, listProfiles, listPackages, adminSavePackage, adminUpdatePackage,
   listSessions, adminSaveSession, listAllPrograms, adminUpdateProgram,
   listCohorts, adminCreateCohort, adminUpdateCohort, listEnrollments, adminUpdateEnrollment,
   listMaterials, adminCreateMaterial, listCoupons, adminCreateCoupon, adminUpdateCoupon,
   listNotes, adminCreateNote, listPayments, adminSetPaymentStatus, friendlyError, todayStr
-} from '../store.js?v=2.0.19';
+} from '../store.js?v=2.0.20';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, setBusy, go
-} from '../ui.js?v=2.0.19';
-import { logAudit } from '../store-security.js?v=2.0.19';
-import * as OverviewTab from './admin/overview.js?v=2.0.19';
-import * as BookingsTab from './admin/bookings.js?v=2.0.19';
-import * as MembersTab from './admin/members.js?v=2.0.19';
-import * as ResultsTab from './admin/results.js?v=2.0.19';
-import * as ContentTab from './admin/content.js?v=2.0.19';
-import * as OrgsTab from './admin/orgs.js?v=2.0.19';
-import * as SettlementsTab from './admin/settlements.js?v=2.0.19';
-import * as AuditTab from './admin/audit.js?v=2.0.19';
-import * as SecurityTab from './admin/security.js?v=2.0.19';
+} from '../ui.js?v=2.0.20';
+import { logAudit } from '../store-security.js?v=2.0.20';
+import * as OverviewTab from './admin/overview.js?v=2.0.20';
+import * as BookingsTab from './admin/bookings.js?v=2.0.20';
+import * as MembersTab from './admin/members.js?v=2.0.20';
+import * as ResultsTab from './admin/results.js?v=2.0.20';
+import * as ContentTab from './admin/content.js?v=2.0.20';
+import * as OrgsTab from './admin/orgs.js?v=2.0.20';
+import * as SettlementsTab from './admin/settlements.js?v=2.0.20';
+import * as AuditTab from './admin/audit.js?v=2.0.20';
+import * as SecurityTab from './admin/security.js?v=2.0.20';
+import { captureSectionHtml, bindNeuroCapture } from './admin/neuro-capture.js?v=2.0.20';
 
 var TABS = [
   { id: 'overview', label: '운영 요약', ico: 'chart' },
@@ -93,6 +94,7 @@ async function buildNeuro(ctx) {
   var packages = await listPackages();
   var sessions = await listSessions();
   var sortedSessions = sessions.slice().sort(function (a, b) { return Number(b.session_no || 0) - Number(a.session_no || 0); });
+  var captureApi = null;
 
   var packageRows = packages.map(function (p) {
     var remain = Math.max(0, Number(p.total_sessions || 0) - Number(p.used_sessions || 0));
@@ -107,10 +109,18 @@ async function buildNeuro(ctx) {
   }).join('');
 
   var sessionRows = sortedSessions.map(function (s) {
+    var d = s.session_details || {};
+    var detailText = '-';
+    if (d.exercises && d.exercises.length) {
+      var sPart = d.total_score_s === null || d.total_score_s === undefined ? '-' : d.total_score_s;
+      var pPart = d.total_points_p === null || d.total_points_p === undefined ? '-' : d.total_points_p;
+      detailText = d.exercises.length + '단계<br><span class="muted small">' + sPart + 'S · ' + pPart + 'P</span>';
+    }
     return '<tr>' +
       '<td>' + (s.session_no || '') + '회</td>' +
       '<td class="muted small">' + esc(memberName(profiles, s.user_id)) + '</td>' +
       '<td>' + fmtDate(s.trained_at) + '</td>' +
+      '<td class="muted small">' + detailText + '</td>' +
       '<td>' + esc(s.protocol || '-') + (s.duration_minutes ? '<br><span class="muted small">' + s.duration_minutes + '분</span>' : '') + '</td>' +
       '<td class="muted small">' + (s.focus_metric === null || s.focus_metric === undefined ? '-' : Number(s.focus_metric).toFixed(1)) + ' / ' +
         (s.calm_metric === null || s.calm_metric === undefined ? '-' : Number(s.calm_metric).toFixed(1)) + '</td>' +
@@ -140,6 +150,7 @@ async function buildNeuro(ctx) {
       '<h2 class="admin-h2">보유 패키지 (' + packages.length + ')</h2>' +
       table(['회원', '패키지', '사용/총', '상태', '조정'], packageRows || emptyRow(5, '등록된 패키지가 없습니다.')) +
     '</section>' +
+    captureSectionHtml() +
     '<section class="admin-section">' +
       '<h2 class="admin-h2">회차 기록 입력</h2>' +
       '<div class="admin-form">' +
@@ -163,12 +174,14 @@ async function buildNeuro(ctx) {
         '</div>' +
         '<label class="field"><span class="field-label">이전 대비 코멘트</span><input type="text" id="ses-prev" placeholder="예: 집중 유지 시간 20% 향상"></label>' +
         '<label class="field"><span class="field-label">담당 상담사 메모 (회원에게 표시)</span><textarea id="ses-memo" rows="2"></textarea></label>' +
+        '<label class="check-row"><input type="checkbox" id="ses-detail-decrement" checked>' +
+          '<span>연결 패키지 사용 횟수 +1 차감 <span class="muted small">(과거 회차를 소급 등록할 때는 해제)</span></span></label>' +
         '<button type="button" class="btn btn-primary" id="ses-submit">회차 기록 저장</button>' +
       '</div>' +
     '</section>' +
     '<section class="admin-section">' +
       '<h2 class="admin-h2">회차 기록 (' + sessions.length + ')</h2>' +
-      table(['회차', '회원', '훈련일', '프로토콜', '집중/이완', '이전 대비', '상담사', '메모'], sessionRows || emptyRow(8, '등록된 훈련 기록이 없습니다.')) +
+      table(['회차', '회원', '훈련일', '단계 기록', '프로토콜', '집중/이완', '이전 대비', '상담사', '메모'], sessionRows || emptyRow(9, '등록된 훈련 기록이 없습니다.')) +
     '</section>';
 
   return {
@@ -237,6 +250,8 @@ async function buildNeuro(ctx) {
         };
         setBusy(sesSubmit, true, '저장 중');
         try {
+          var details = captureApi && captureApi.getDetails ? captureApi.getDetails() : null;
+          var decrementBox = el.querySelector('#ses-detail-decrement');
           await adminSaveSession({
             user_id: userId,
             package_id: packageId || null,
@@ -248,13 +263,44 @@ async function buildNeuro(ctx) {
             calm_metric: num('#ses-calm'),
             counselor_name: el.querySelector('#ses-counselor').value.trim(),
             prev_comparison: el.querySelector('#ses-prev').value.trim(),
-            counselor_memo: el.querySelector('#ses-memo').value.trim()
-          });
+            counselor_memo: el.querySelector('#ses-memo').value.trim(),
+            session_details: details || {}
+          }, { decrement_package: !decrementBox || decrementBox.checked });
           toast('회차 기록이 저장되었습니다.', 'success');
           ctx.rerender();
         } catch (err) {
           toast(friendlyError(err), 'error');
           setBusy(sesSubmit, false);
+        }
+      });
+
+      captureApi = bindNeuroCapture(el, {
+        profiles: profiles,
+        packages: packages,
+        sessions: sessions,
+        getSelectedUser: function () { return el.querySelector('#ses-user').value; },
+        onSessionPicked: function (picked) {
+          if (picked.userId) el.querySelector('#ses-user').value = picked.userId;
+          var pkgSelect = el.querySelector('#ses-package');
+          var activePkgs = packages.filter(function (p) {
+            return p.status !== 'expired' && (!picked.userId || String(p.user_id) === String(picked.userId));
+          });
+          if (activePkgs.length === 1) pkgSelect.value = activePkgs[0].id;
+          var s = picked.session;
+          el.querySelector('#ses-no').value = s.no;
+          if (s.date) el.querySelector('#ses-date').value = s.date;
+          var protocols = (s.protocols || []).filter(function (x) { return x && x.toUpperCase() !== 'NONE'; });
+          var mainProtocol = protocols.length ? protocols[0] : (s.protocols && s.protocols[0] ? s.protocols[0] : '');
+          el.querySelector('#ses-protocol').value = (mainProtocol ? mainProtocol + ' · ' : '') + s.step_count + '단계';
+          el.querySelector('#ses-duration').value = '';
+          el.querySelector('#ses-focus').value = '';
+          el.querySelector('#ses-calm').value = '';
+          var box = el.querySelector('#ses-detail-decrement');
+          if (box) {
+            var today = todayStr();
+            box.checked = !s.date || s.date >= today;
+          }
+          captureApi.refreshBadges();
         }
       });
     }

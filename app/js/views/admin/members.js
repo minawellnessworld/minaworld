@@ -1,14 +1,14 @@
 /* 관리자 → 회원 관리: 통합 상세 뷰(가입·프로그램·예약·결제·검사·훈련·상담) + 상태 관리 */
-import { ROLES, GRADES, PROFILE_STATUS, CHECK_TYPES, BOOKING_STATUS } from '../../config.js?v=2.0.19';
+import { ROLES, GRADES, PROFILE_STATUS, CHECK_TYPES, BOOKING_STATUS } from '../../config.js?v=2.0.20';
 import {
   state, listProfiles, adminUpdateProfile, listBookings, listResults, listSessions,
   listPayments, listNotes, listPackages, listOrganizations, friendlyError
-} from '../../store.js?v=2.0.19';
-import { listMembershipsForUser } from '../../store-org.js?v=2.0.19';
-import { logAudit } from '../../store-security.js?v=2.0.19';
+} from '../../store.js?v=2.0.20';
+import { listMembershipsForUser } from '../../store-org.js?v=2.0.20';
+import { logAudit } from '../../store-security.js?v=2.0.20';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, badge, openSheet, closeSheet, noticeBox, loadingBlock
-} from '../../ui.js?v=2.0.19';
+} from '../../ui.js?v=2.0.20';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -243,7 +243,14 @@ async function openMemberDetail(userId, profile, orgs) {
           '<h4 class="admin-h4">뉴로피드백 ' + sessions.length + '회</h4>' +
           (sessions.length
             ? sessions.map(function (s) {
-                return '<div class="mini-row"><span>' + (s.session_no || '') + '회 · ' + fmtDate(s.trained_at) + '</span><strong>' + esc(s.protocol || '') + '</strong>' +
+                var d = s.session_details || {};
+                var detail = '';
+                if (d.exercises && d.exercises.length) {
+                  var sPart = d.total_score_s === null || d.total_score_s === undefined ? '-' : d.total_score_s;
+                  var pPart = d.total_points_p === null || d.total_points_p === undefined ? '-' : d.total_points_p;
+                  detail = ' · ' + d.exercises.length + '단계 ' + sPart + 'S/' + pPart + 'P';
+                }
+                return '<div class="mini-row"><span>' + (s.session_no || '') + '회 · ' + fmtDate(s.trained_at) + detail + '</span><strong>' + esc(s.protocol || '') + '</strong>' +
                   (s.counselor_name ? '<em class="muted small">' + esc(s.counselor_name) + '</em>' : '') + '</div>';
               }).join('')
             : '<p class="muted small">훈련 기록이 없습니다.</p>') +

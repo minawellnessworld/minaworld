@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>뉴로피드백 캡처 인식 점검 · MINA WORLD</title>
+  <link rel="stylesheet" href="./css/app.css?v=2.0.20">
+  <style>
+    .cap-wrap { max-width: 900px; margin: 0 auto; padding: 16px 16px 60px; }
+    .cap-wrap h1 { font-size: 18px; margin: 8px 0 4px; }
+    .cap-drop { border: 1.5px dashed #C9C2B2; border-radius: 12px; padding: 18px; text-align: center; background: #FBF9F4; margin-top: 12px; }
+    .cap-drop.dragover { border-color: #070D1E; background: #F2EFE7; }
+    .cap-status { font-size: 12px; color: #4A4F63; margin-top: 10px; white-space: pre-wrap; }
+    .cap-wrap pre { white-space: pre-wrap; word-break: break-all; font-size: 10.5px; background: #f5f3ee; padding: 10px; border-radius: 8px; max-height: 420px; overflow: auto; }
+    .cap-preview { max-width: 100%; border: 1px solid #E4DFD3; border-radius: 8px; margin-top: 10px; }
+    .cap-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-top: 8px; }
+    .cap-table th, .cap-table td { border: 1px solid #E4DFD3; padding: 3px 5px; text-align: left; }
+    .cap-table th { background: #F5F2EA; }
+    .cap-low { background: #FFF3D6; }
+  </style>
+</head>
+<body>
+  <div class="cap-wrap">
+    <h1>뉴로피드백 캡처 인식 점검</h1>
+    <p class="muted small">NeuroBrain Management System의 Training list 캡처를 이 화면에서만 읽습니다. 이미지는 서버로 보내지 않고 DB에도 저장하지 않습니다.</p>
+
+    <div class="cap-drop" id="cap-drop">
+      <strong>캡처 이미지를 여기에 붙여넣기(Ctrl+V) 하거나 선택하세요</strong>
+      <div style="margin-top:10px">
+        <input type="file" id="cap-file" accept="image/*">
+      </div>
+    </div>
+    <div class="cap-status" id="cap-status"></div>
+    <img class="cap-preview" id="cap-preview" alt="" hidden>
+    <div id="cap-summary"></div>
+    <pre id="cap-json">아직 분석한 이미지가 없습니다.</pre>
+  </div>
+
+  <script type="module">
+    import { recognizeNeuroCapture } from './js/capture-ocr.js?v=2.0.20';
+
+    var statusEl = document.getElementById('cap-status');
+    var previewEl = document.getElementById('cap-preview');
+    var summaryEl = document.getElementById('cap-summary');
+    var jsonEl = document.getElementById('cap-json');
+    var dropEl = document.getElementById('cap-drop');
+    var fileEl = document.getElementById('cap-file');
+    var busy = false;
+
+    function setStatus(text) { statusEl.textContent = text; }
+
+    function esc(v) {
+      return String(v === null || v === undefined ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function renderSummary(model) {
+      var html = '<h2 class="admin-h4" style="margin-top:16px">인식 결과</h2>';
+      html += '<p class="small">표 영역 x ' + model.table.x0 + '~' + model.table.x1 + ' · y ' + model.table.y0 + '~' + model.table.y1 +
+        ' · 열 ' + model.table.columns.length + '개 · 행 ' + model.table.rows + '개 · ' + model.elapsedMs + 'ms</p>';
+      html += '<p class="small">열 이름: ' + model.table.columns.map(function (c) { return esc((c.key || '?') + '(' + (c.label || '') + ')'); }).join(' | ') + '</p>';
+      html += '<p class="small">회원: ' + esc(model.member.name || '-') + ' · 생년월일 ' + esc(model.member.birthday || '-') +
+        ' · ' + esc(model.member.gender || '-') + ' · 기간 ' + esc(model.member.dateFrom || '-') + ' ~ ' + esc(model.member.dateTo || '-') +
+        ' · 코드 ' + esc(model.member.memberCode || '-') + '</p>';
+      if (model.warnings.length) html += '<p class="small" style="color:#8A6A12">⚠ ' + model.warnings.map(esc).join(' / ') + '</p>';
+
+      model.sessions.forEach(function (s) {
+        html += '<h3 class="admin-h4" style="margin-top:14px">#' + esc(s.no) + ' · ' + esc(s.date || '날짜 없음') +
+          ' · ' + esc(s.begin.text || '') + ' → ' + esc(s.finish.text || '') +
+          ' · 총 ' + esc(s.total_score_s) + 'S / ' + esc(s.total_points_p) + 'P · ' + s.step_count + '단계 · ' + esc(s.trainee) + '</h3>';
+        html += '<table class="cap-table"><thead><tr><th>SEQ</th><th>Protocol</th><th>exercise</th><th>score</th><th>S</th><th>P</th><th>신뢰도</th></tr></thead><tbody>';
+        s.exercises.forEach(function (ex) {
+          html += '<tr class="' + (ex.confidence > 0 && ex.confidence < 70 ? 'cap-low' : '') + '"><td>' + esc(ex.seq) + '</td><td>' + esc(ex.protocol) +
+            '</td><td>' + esc(ex.exercise) + '</td><td>' + esc(ex.raw_score) + '</td><td>' + esc(ex.score_s) + '</td><td>' + esc(ex.score_p) +
+            '</td><td>' + esc(ex.confidence) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+      });
+      summaryEl.innerHTML = html;
+    }
+
+    async function analyze(source) {
+      if (busy) return;
+      busy = true;
+      summaryEl.innerHTML = '';
+      jsonEl.textContent = '분석 중…';
+      statusEl.textContent = '';
+      if (previewEl.dataset.url) URL.revokeObjectURL(previewEl.dataset.url);
+      var url = URL.createObjectURL(source);
+      previewEl.dataset.url = url;
+      previewEl.src = url;
+      previewEl.hidden = false;
+      try {
+        var model = await recognizeNeuroCapture(source, {
+          onProgress: function (p) { setStatus(p.percent + '% · ' + p.message); }
+        });
+        window.__lastResult = model;
+        renderSummary(model);
+        jsonEl.textContent = JSON.stringify(model, null, 1);
+        setStatus('완료 · ' + model.elapsedMs + 'ms');
+      } catch (err) {
+        window.__lastResult = { error: String(err && err.message || err) };
+        jsonEl.textContent = String(err && err.message || err);
+        setStatus('실패: ' + String(err && err.message || err));
+      } finally {
+        busy = false;
+      }
+    }
+
+    fileEl.addEventListener('change', function () {
+      if (fileEl.files && fileEl.files[0]) analyze(fileEl.files[0]);
+    });
+    dropEl.addEventListener('click', function (e) {
+      if (e.target === fileEl) return;
+      fileEl.click();
+    });
+    dropEl.addEventListener('dragover', function (e) { e.preventDefault(); dropEl.classList.add('dragover'); });
+    dropEl.addEventListener('dragleave', function () { dropEl.classList.remove('dragover'); });
+    dropEl.addEventListener('drop', function (e) {
+      e.preventDefault();
+      dropEl.classList.remove('dragover');
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) analyze(f);
+    });
+    document.addEventListener('paste', function (e) {
+      var items = (e.clipboardData && e.clipboardData.items) || [];
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].type && items[i].type.indexOf('image') === 0) {
+          var blob = items[i].getAsFile();
+          if (blob) { analyze(blob); return; }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

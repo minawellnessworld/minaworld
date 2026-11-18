@@ -6,9 +6,9 @@
      · 프로그램·기수·쿠폰·기본 게시글만 시드로 보관
      · 개인 측정 데이터는 절대 임의 생성하지 않음 (빈 상태 표시)
    ===================================================================== */
-import { CONFIG } from './config.js?v=2.0.19';
-import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.19';
-import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.19';
+import { CONFIG } from './config.js?v=2.0.20';
+import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.20';
+import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.20';
 
 export var state = {
   mode: 'local',
@@ -911,7 +911,8 @@ export async function adminUpdatePackage(id, patch) {
   return localUpdate('neuro_packages', id, patch);
 }
 
-export async function adminSaveSession(payload) {
+export async function adminSaveSession(payload, options) {
+  var opts = options || {};
   var row = Object.assign({ created_by: currentUser() ? currentUser().id : null, created_at: nowIso() }, payload);
   var saved;
   if (state.mode === 'live') {
@@ -921,7 +922,7 @@ export async function adminSaveSession(payload) {
   } else {
     saved = localInsert('neuro_sessions', row);
   }
-  if (row.package_id) {
+  if (row.package_id && opts.decrement_package !== false) {
     var packages = await listPackages(row.user_id);
     var target = null;
     for (var i = 0; i < packages.length; i++) {
