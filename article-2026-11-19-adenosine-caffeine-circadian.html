@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TTMVKBHNZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TTMVKBHNZM');
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      location.replace(location.href.replace('http:', 'https:'));
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오후 커피와 야간 스마트폰이 깊은 잠을 훔치는 이유 — 아데노신 수면 압력과 뇌의 24시간 시계 | 하루 한 스푼, 뇌과학 - MINA Wellness World</title>
+  <meta name="description" content="잠자리에 누워도 잠이 오지 않는 이유를 아데노신(Adenosine) 수면 압력과 카페인 반감기, 그리고 시상하부 생체시계(SCN)와 멜라토닌 타이밍으로 풀어내고, 수면의 질과 낮 회복을 되찾는 4단계 뇌 컨디션 루틴을 안내합니다." />
+  <meta name="keywords" content="아데노신, 수면 압력, 카페인 반감기, 일주기 리듬, 생체시계, 멜라토닌, 빛 노출, 수면의 질, 뇌 회복, 수면 위생, 뇌과학, 뇌파 코칭, 기업웰니스, 미나월드" />
+  <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="Vi6kKPe24ViYvS4NbUpW02Nco_04PP_qHLX9UmNT3QM" />
+  <meta name="naver-site-verification" content="b397311e6eb26e5eec40f3994740c10e6a243a4a" />
+  <link rel="canonical" href="https://www.minaworld.co.kr/article-2026-11-19-adenosine-caffeine-circadian.html" />
+  <meta property="og:site_name" content="MINA Wellness World" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.minaworld.co.kr/article-2026-11-19-adenosine-caffeine-circadian.html" />
+  <meta property="og:title" content="오후 커피와 야간 스마트폰이 깊은 잠을 훔치는 이유 — 아데노신 수면 압력과 뇌의 24시간 시계 | 하루 한 스푼, 뇌과학 - MINA Wellness World" />
+  <meta property="og:description" content="잠자리에 누워도 잠이 오지 않는 이유를 아데노신(Adenosine) 수면 압력과 카페인 반감기, 그리고 시상하부 생체시계(SCN)와 멜라토닌 타이밍으로 풀어내고, 수면의 질과 낮 회복을 되찾는 4단계 뇌 컨디션 루틴을 안내합니다." />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+    #reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(to right, #22D3EE, #FF7E95, #3CD070);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-white">
+  
+  <!-- 상단 읽기 진행률 바 -->
+  <div id="reading-bar"></div>
+
+  <!-- 헤더 / 내비게이션 바 -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/85 border-b border-white/10 transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="font-serif font-bold text-xl tracking-wider text-white group-hover:text-brand-accent transition">MINA</span>
+        <span class="text-xs uppercase tracking-widest text-brand-accent font-semibold">Wellness World</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="community.html" class="hidden sm:inline-flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          <span>📚 하루 한 스푼 뇌과학 목록</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 text-slate-300 hover:text-brand-accent transition">
+          <span>← 메인 홈으로</span>
+        </a>
+        <a href="contact.html" class="px-4 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white shadow-md shadow-brand-accent/20 transition">
+          상담/제휴 문의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 본문 영역 -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16 w-full">
+    
+    <!-- 빵부스러기 내비게이션 -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8 overflow-x-auto no-scrollbar">
+      <a href="index.html" class="hover:text-white transition">홈</a>
+      <span>/</span>
+      <a href="community.html" class="hover:text-white transition">하루 한 스푼, 뇌과학</a>
+      <span>/</span>
+      <span class="text-brand-blue font-medium">목요일 · 수면과 회복</span>
+    </nav>
+
+    <!-- 아티클 헤더 -->
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-xs">
+        <span class="px-3 py-1 rounded-full font-bold bg-brand-blue/15 text-brand-blue border border-brand-blue/30">목요일 · 수면과 회복</span>
+        <span class="text-slate-400">2026.11.19</span>
+        <span class="text-slate-500">·</span>
+        <span class="text-slate-400">6분 완독</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
+        오후 커피와 야간 스마트폰이 깊은 잠을 훔치는 이유 — 아데노신 수면 압력과 뇌의 24시간 시계
+      </h1>
+      
+      <p class="text-base md:text-xl text-slate-300 font-medium leading-relaxed mb-8">
+        잠은 '피곤함'이 아니라 두 개의 시계가 만드는 신호입니다. 오늘 잠의 질을 바꾸는 네 가지 조절점
+      </p>
+
+      <!-- 작성자 정보 -->
+      <div class="flex items-center gap-4 py-4 px-5 rounded-2xl bg-brand-card/70 border border-white/10">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-600 flex items-center justify-center text-lg font-bold text-white shadow-md">
+          M
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white flex items-center gap-2">
+            이미나 대표
+            <span class="text-[11px] font-normal text-slate-400">| 뇌교육상담사 · MINA Wellness World</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            뇌과학 기반 뉴로웰니스 솔루션과 신체 움직임을 결합하여 건강한 뇌 컨디션을 만듭니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 핵심 요약 콜아웃 박스 -->
+      <div class="mt-8 p-6 rounded-2xl bg-brand-navy border-l-4 border-brand-blue border-r border-t border-b border-white/10 card-glow">
+        <div class="flex items-center gap-2 text-brand-blue font-bold text-xs uppercase tracking-wider mb-2">
+          <span>💡 30초 핵심 요약 (Executive Summary)</span>
+        </div>
+        <p class="text-sm text-slate-200 leading-relaxed">
+          졸음은 두 시스템의 합작입니다. 깨어 있는 동안 뇌에는 <strong class="text-white">아데노신(Adenosine)</strong>이 차곡차곡 쌓여 '수면 압력'을 만들고, 시상하부의 <strong class="text-white">생체시계(SCN)</strong>는 빛을 읽어 하루 중 언제 잠들 준비를 할지 정합니다. 카페인은 아데노신을 없애지 않고 <strong class="text-white">수용체를 가려</strong> 신호만 미루며, 그 반감기는 평균 5시간 안팎입니다. 두 시계가 어긋나면 잠들기까지 오래 걸리고, 깬 뒤에도 개운하지 않습니다. 오늘부터 바로 조절할 수 있는 4단계 수면 압력·생체시계 루틴을 정리했습니다.
+        </p>
+      </div>
+    </header>
+
+    <!-- 상세 본문 -->
+    <article class="mb-16">
+      <div class="prose prose-invert max-w-none text-slate-300 space-y-8 text-base leading-relaxed">
+        
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-blue">01.</span> 아데노신 — 깨어 있는 시간이 쌓아 올리는 '수면 압력'
+          </h2>
+          <p>
+            아침에 눈을 뜬 순간부터 뇌는 조용히 졸음의 재료를 쌓기 시작합니다. 신경세포가 활동하며 에너지를 쓰는 과정에서 <strong class="text-white">아데노신(Adenosine)</strong>이라는 부산물이 생기고, 이것이 뇌간과 기저전뇌 부근의 수용체에 붙으면서 <strong class="text-white">수면 압력(Sleep Pressure)</strong>이 올라갑니다. 흔히 '수면 항상성'이라 부르는 시스템으로, 깨어 있는 시간이 길수록 압력이 차오르고 잠으로 배출됩니다.
+          </p>
+          <p>
+            흥미로운 점은 이 압력이 <strong class="text-white">'쌓인 양'을 스스로 측정하는 방식</strong>이라는 것입니다. 어제 잠을 적게 잤다면 오늘 낮에 더 빨리 차오르고, 잘 잤다면 완만하게 오릅니다. 그래서 밤을 새운 다음 날 오후에는 눈꺼풀이 무겁고, 반대로 늦잠을 잔 날은 밤이 되어도 잠이 오지 않습니다. 의지나 습관 문제가 아니라 <strong class="text-white">압력계가 정직하게 작동한 결과</strong>입니다.
+          </p>
+          <p>
+            여기서 카페인의 역할이 갈립니다. 카페인은 아데노신을 분해하지도, 압력을 낮추지도 않습니다. 아데노신이 붙을 <strong class="text-white">수용체 자리를 대신 차지해</strong> 졸음 신호가 전달되지 않게 가릴 뿐입니다. 그래서 커피를 마신 뒤에도 압력은 계속 쌓이고, 카페인이 빠져나가는 순간 <strong class="text-white">밀린 졸음이 한꺼번에 밀려옵니다</strong>. 오후 늦게 마신 커피가 밤잠을 방해하는 이유가 여기에 있습니다.
+          </p>
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+            <h4 class="text-sm font-bold text-brand-blue mb-2">☕ 카페인 반감기, 숫자로 보면</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>평균 반감기는 약 5시간:</strong> 성인 기준 카페인 혈중 농도가 절반으로 줄어드는 데 걸리는 시간입니다. 개인차가 커서 3시간대부터 7시간 이상까지 벌어집니다(유전 형질·간 대사·복용 중인 약·흡연 여부의 영향).</li>
+              <li><strong>오후 2시의 커피 200mg은 자정에도 남습니다:</strong> 5시간 반감기로 계산하면 오후 7시 100mg, 자정 무렵 약 50mg. 잔을 비웠어도 몸에는 커피 반 잔이 남아 있는 셈입니다.</li>
+              <li><strong>커피 한 잔이 늘 문제는 아닙니다:</strong> 같은 양이라도 대사가 빠른 사람은 영향이 작습니다. 중요한 것은 평균값이 아니라 <strong>내 잠이 흔들리는 시각</strong>을 관찰하는 일입니다.</li>
+            </ul>
+          </div>
+          <p>
+            참고로 아데노신은 낮의 각성에도 쓰입니다. 잠을 충분히 자고 나면 압력이 낮아져 오전에 맑게 깨어나고, 오후 1~3시 사이에는 생체시계의 자연스러운 저점이 찾아와 졸음이 몰려옵니다. 이때의 졸음을 커피로 계속 덮으면 압력은 밤으로 넘어가고, 밤에는 '졸리지 않는 몸'이 남습니다. <strong class="text-white">압력을 없애는 것이 아니라 배출 시각을 미루는 것</strong>이라는 점을 기억하면 오후의 선택이 달라집니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-blue">02.</span> 뇌의 24시간 시계 — 빛이 정하는 멜라토닌 타이밍
+          </h2>
+          <p>
+            수면 압력만으로는 잠을 설명할 수 없습니다. 압력이 충분해도 낮 12시에 잠들지는 않기 때문입니다. 두 번째 축은 <strong class="text-white">일주기 리듬(Circadian Rhythm)</strong>입니다. 시상하부의 <strong class="text-white">시교차상핵(SCN)</strong>이 몸의 24시간 시계 역할을 하며, 체온·호르몬·각성도·소화 효소의 분비 시각을 하루 주기로 조율합니다.
+          </p>
+          <p>
+            이 시계를 매일 아침 다시 맞추는 신호가 <strong class="text-white">빛</strong>입니다. 눈의 망막에 있는 빛 감지 세포가 아침 햇빛을 받으면 SCN에 '지금이 낮'이라는 신호가 전달되고, 밤이 되면 송과체가 <strong class="text-white">멜라토닌(Melatonin)</strong>을 분비해 몸을 잠의 준비 상태로 넘깁니다. 멜라토닌 분비가 시작되는 시점(보통 습관적 취침 2시간 전후)은 사람마다 다르지만, 그 시각을 결정하는 가장 강한 변수는 <strong class="text-white">아침에 얼마나 밝은 빛을 봤는지</strong>입니다.
+          </p>
+          <p>
+            그래서 밤의 문제는 대개 아침에서 시작됩니다. 아침을 실내 조명으로만 보내면 시계가 늦게 맞춰지고, 저녁까지 각성이 남아 잠들 시각이 밀립니다. 반대로 밤늦게 스마트폰과 밝은 화면을 오래 보면 멜라토닌 분비가 늦어져 <strong class="text-white">몸은 아직 저녁이라고 판단하는데 시계는 자정을 가리키는 상태</strong>가 됩니다. 잠자리에 누워 뒤척이는 시간이 길어지는 대표적인 패턴입니다.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-blue uppercase tracking-wider block mb-1">신호 1</span>
+              <h4 class="text-base font-bold text-white mb-2">누워서 30분 이상 뒤척임</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                피곤한데 잠이 안 옵니다. 수면 압력은 충분한데 생체시계가 아직 '낮'으로 설정된 상태일 수 있습니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-blue uppercase tracking-wider block mb-1">신호 2</span>
+              <h4 class="text-base font-bold text-white mb-2">새벽 3시 각성, 아침의 무거움</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                잠들어도 중간에 깨고, 아침에 일어나기 어렵습니다. 늦은 카페인과 늦은 취침이 겹친 흔한 결과입니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-blue uppercase tracking-wider block mb-1">신호 3</span>
+              <h4 class="text-base font-bold text-white mb-2">주말 몰아자기 뒤의 월요일</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                주말에 2~3시간 늦게 자고 늦게 일어나면 시계가 그만큼 이동합니다. 사회적 시차(Social Jetlag)입니다.
+              </p>
+            </div>
+          </div>
+
+          <p>
+            세 신호는 모두 <strong class="text-white">'압력은 쌓였는데 시계가 어긋난'</strong> 상태를 가리킵니다. 이때 잠들기 위해 술을 더 마시거나 수면제에 기대는 방식은 뇌의 자연스러운 리듬을 대신 만들어주지 못합니다. 필요한 것은 압력과 시계를 <strong class="text-white">같은 방향으로 다시 정렬</strong>하는 생활 설계입니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-blue">03.</span> 수면 압력과 생체시계를 다시 맞추는 4단계 루틴
+          </h2>
+          <div class="bg-brand-navy p-6 rounded-2xl border border-white/10 space-y-3">
+            <p class="text-xs text-slate-300">
+              잠드는 시간을 억지로 당기는 대신 <strong>낮의 빛과 카페인 시각, 저녁의 조도</strong>를 조절하는 방식입니다. 오늘 하루부터 적용할 수 있습니다.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-2 list-disc pl-5">
+              <li><strong>1단계 · 카페인 컷오프 시각 정하기:</strong> 취침 시각에서 8시간 전을 마지막 커피·녹차·에너지드링크 시각으로 정합니다. 자정에 자는 사람이라면 오후 4시, 11시에 자는 사람이라면 오후 3시가 기준입니다. 오후 2시 이후에는 디카페인이나 물로 바꾸는 편이 안전합니다.</li>
+              <li><strong>2단계 · 기상 후 30분 안에 바깥 빛 10분:</strong> 창가나 야외에서 햇빛을 봅니다. 흐린 날도 실내 조명보다 훨씬 밝습니다. 이 빛이 SCN을 오늘의 시각에 맞춰 고정하고, 그날 밤 멜라토닌 분비 시각을 앞당깁니다.</li>
+              <li><strong>3단계 · 오후 졸음은 20분 낮잠으로, 밤 조도는 낮추기:</strong> 오후 1~3시의 졸음은 20분 이내 낮잠이나 5분 스트레칭으로 처리합니다(오후 4시 이후 낮잠은 수면 압력을 미리 소모합니다). 해가 진 뒤에는 실내 조명을 낮추고, 취침 1시간 전에는 화면 밝기를 최소로 줄이거나 스마트폰을 침실 밖에 둡니다.</li>
+              <li><strong>4단계 · 기상 시각을 주말에도 1시간 안으로 유지:</strong> 취침 시각은 조금 흔들려도 기상 시각은 고정하는 것이 시계를 지키는 핵심입니다. 주말에 몰아자야 한다면 늦잠 대신 낮 20분 낮잠으로 보충합니다. 취침 90분 전 따뜻한 물로 씻어 몸의 중심 체온을 낮추는 것도 잠들기를 돕는 신호입니다.</li>
+            </ul>
+            <p class="text-xs text-slate-400 pt-1">
+              ※ 카페인에 민감하거나 혈압·수면 관련 질환으로 관리 중이라면 컷오프 시각과 낮잠 여부를 주치의와 상의해 조정하세요. 이 글은 생활 속 뇌 컨디션 관리를 위한 정보이며, 특정 증상의 진단이나 치료를 대신하지 않습니다.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-4 pt-4 border-t border-white/10">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <span class="text-brand-blue">04.</span> 미나월드의 수면·회복 뇌 컨디션 케어
+          </h2>
+          <p>
+            미나월드의 <strong>1:1 뉴로웰니스 &amp; 뇌파 코칭</strong>과 <strong>기업 맞춤 뇌 피로 관리 워크숍</strong>은 뇌파 리듬과 각성·이완 상태를 함께 살펴본 뒤, 개인의 근무·생활 패턴에 맞춘 빛 노출 시각, 카페인 컷오프, 취침 전 이완 루틴을 함께 설계합니다. 잠은 더 오래 누워 있는 시간이 아니라, 두 시계가 같은 방향을 가리킬 때 깊어집니다.
+          </p>
+          <div class="mt-4 p-5 rounded-2xl bg-brand-card border border-blue-500/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">🌙 수면 &amp; 회복 뇌 컨디션 케어</h4>
+              <p class="text-xs text-slate-400">1:1 뉴로웰니스 코칭, 기업 뇌 피로 관리 워크숍, 교대근무자 수면 리듬 설계</p>
+            </div>
+            <a href="contact.html" class="px-6 py-2.5 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white text-xs font-bold shrink-0 transition">
+              프로그램 문의하기
+            </a>
+          </div>
+        </section>
+
+      </div>
+    </article>
+
+    <!-- 공유 및 하단 내비게이션 -->
+    <div class="py-8 border-t border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">아티클 공유하기:</span>
+        <button onclick="copyCurrentUrl()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-1.5">
+          <span>🔗 링크 복사</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="community.html" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+          목록으로 돌아가기
+        </a>
+        <a href="contact.html" class="px-5 py-2 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white shadow-md transition">
+          1:1 프로그램 상담 신청
+        </a>
+      </div>
+    </div>
+
+    <!-- 다른 요일의 '하루 한 스푼, 뇌과학' 추천 링크 -->
+    <section class="mt-16">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>✨</span> 함께 읽으면 좋은 뇌과학 인사이트
+        </h3>
+        <a href="community.html" class="text-xs text-brand-accent hover:underline">전체보기 →</a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="article-2026-11-18-hippocampus-retrieval-memory.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-cyan-400/40 transition block group">
+          <div class="text-[11px] text-cyan-400 font-bold mb-1">집중력과 기억력</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-cyan-400 transition mb-1">
+            열심히 읽었는데 기억이 안 나는 이유 — 해마의 망각 곡선과 인출 기억 설계
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">읽은 횟수가 아니라 꺼내 쓴 횟수가 기억을 남기는 이유와 1-3-7-14 간격 루틴</p>
+        </a>
+
+        <a href="article-2026-11-17-vagus-nerve-hrv.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-pink-500/40 transition block group">
+          <div class="text-[11px] text-pink-400 font-bold mb-1">스트레스와 감정</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-accent transition mb-1">
+            참는다고 가라앉지 않는 이유 — 미주신경과 HRV로 회복하는 자율신경 브레이크
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">몸에서 뇌로 올라가는 미주신경 신호와 4단계 자율신경 브레이크 루틴</p>
+        </a>
+
+        <a href="article-glymphatic-sleep.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-blue/40 transition block group">
+          <div class="text-[11px] text-brand-blue font-bold mb-1">수면과 뇌 건강</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-blue transition mb-1">
+            수면 중 뇌 청소 시스템 '글림파틱 시스템'의 비밀
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">깊은 잠에 들어야 시작되는 뇌의 야간 청소와 델타파 수면 환경</p>
+        </a>
+
+        <a href="article-2026-11-16-prefrontal-burnout.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-purple-400/40 transition block group">
+          <div class="text-[11px] text-purple-400 font-bold mb-1">뇌과학 기초</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-purple-400 transition mb-1">
+            월요일만 되면 머리가 멈추는 이유 — 전두엽 의사결정 피로와 번아웃 리셋
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">사소한 선택이 쌓여 전전두엽 배터리를 고갈시키는 의사결정 피로와 4단계 리셋 루틴</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (아임웹 정보 100% 반영) -->
+  <footer class="py-14 border-t border-white/10 text-xs text-slate-400 bg-brand-dark/95">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- 1열: 브랜드 로고 및 저작권 -->
+        <div>
+          <h4 class="text-base font-bold text-white tracking-wider mb-2 font-serif">MINA WORLD</h4>
+          <p class="text-slate-500 text-xs">© 2026 Make.</p>
+        </div>
+
+        <!-- 2열: SITEMAP -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">SITEMAP</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="about.html" class="hover:text-white transition">ABOUT US</a></li>
+            <li><a href="programs.html" class="hover:text-white transition">PROGRAM</a></li>
+            <li><a href="community.html" class="hover:text-white transition">COMMUNITY</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">CONTACT</a></li>
+          </ul>
+        </div>
+
+        <!-- 3열: SERVICE & BANK -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">SERVICE</h4>
+          <p class="text-slate-300 font-medium mb-1">010-5424-0807</p>
+          <p class="text-slate-500 mb-0.5">Mon - Fri AM 09:00 - 18:00</p>
+          <p class="text-slate-500 mb-4">Sat.Sun.Red-Day Off</p>
+
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">BANK</h4>
+          <p class="text-slate-400">KAKAO BANK 3333-37-1190044</p>
+        </div>
+
+        <!-- 4열: INSTAGRAM, NAVER, KAKAO TALK -->
+        <div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">INSTAGRAM</h4>
+            <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://www.instagram.com/wellnessworld.zip</a>
+          </div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">NAVER</h4>
+            <a href="https://naver.me/xhPGBxC0" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://naver.me/xhPGBxC0</a>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">KAKAO TALK</h4>
+            <a href="http://pf.kakao.com/_WxmhEX" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">http://pf.kakao.com/_WxmhEX</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 mb-6">
+        <div>
+          <span>Seoul, Korea</span>
+          <span class="mx-2">|</span>
+          <span>Biz License 893-53-00975</span>
+          <span class="mx-2">|</span>
+          <span>© 2026 MINA WORLD. All rights reserved</span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+          <span class="text-slate-600">|</span>
+          <a href="#" class="hover:text-slate-300 transition">Privacy</a>
+        </div>
+      </div>
+
+      <!-- 맨 하단 한 줄 사업자 상세 정보 -->
+      <div class="text-[11px] text-slate-600 leading-relaxed">
+        상호명: 미나월드 대표자: 이미나 사업장주소: 서울 송파구 오금로46길 41 (가락동) 2층 2567호 연락처: 01054240807 사업자등록번호: 893-53-00975 대표자 이메일: minawellnesslab@gmail.com
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // 읽기 진행률 표시
+    window.addEventListener('scroll', function() {
+      var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      var bar = document.getElementById('reading-bar');
+      if (bar) {
+        bar.style.width = scrolled + '%';
+      }
+    });
+
+    // 현재 URL 클립보드 복사
+    function copyCurrentUrl() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          alert('아티클 링크가 복사되었습니다! 원하는 곳에 공유해보세요.');
+        });
+      } else {
+        alert('주소창의 링크를 복사해주세요: ' + window.location.href);
+      }
+    }
+  </script>
+</body>
+</html>
