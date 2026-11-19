@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TTMVKBHNZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TTMVKBHNZM');
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      location.replace(location.href.replace('http:', 'https:'));
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>앉아만 있으면 오후에 머리가 멍해지는 이유 — 리듬 움직임이 켜는 전두엽 혈류와 세로토닌 스위치 | 하루 한 스푼, 뇌과학 - MINA Wellness World</title>
+  <meta name="description" content="오후의 멍함을 장시간 좌식으로 인한 정맥 환류·뇌혈류 저하, 소뇌·기저핵 운동 회로, 뇌간 솔기핵의 세로토닌, 근육이 분비하는 마이오카인(Myokine)으로 풀어내고, 오늘 바로 쓰는 4단계 움직임 뇌 리셋 루틴을 안내합니다." />
+  <meta name="keywords" content="리듬 운동, 좌식 생활, 뇌혈류, 전두엽 혈류, 종아리 펌프, 정맥 환류, 세로토닌, 솔기핵, 마이오카인, 신경영양, 움직임, 뇌 컨디션, 뇌과학, 기업웰니스, 미나월드" />
+  <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="Vi6kKPe24ViYvS4NbUpW02Nco_04PP_qHLX9UmNT3QM" />
+  <meta name="naver-site-verification" content="b397311e6eb26e5eec40f3994740c10e6a243a4a" />
+  <link rel="canonical" href="https://www.minaworld.co.kr/article-2026-11-20-rhythm-movement-brain-bloodflow.html" />
+  <meta property="og:site_name" content="MINA Wellness World" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.minaworld.co.kr/article-2026-11-20-rhythm-movement-brain-bloodflow.html" />
+  <meta property="og:title" content="앉아만 있으면 오후에 머리가 멍해지는 이유 — 리듬 움직임이 켜는 전두엽 혈류와 세로토닌 스위치 | 하루 한 스푼, 뇌과학 - MINA Wellness World" />
+  <meta property="og:description" content="오후의 멍함을 장시간 좌식으로 인한 정맥 환류·뇌혈류 저하, 소뇌·기저핵 운동 회로, 뇌간 솔기핵의 세로토닌, 근육이 분비하는 마이오카인(Myokine)으로 풀어내고, 오늘 바로 쓰는 4단계 움직임 뇌 리셋 루틴을 안내합니다." />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+    #reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(to right, #22D3EE, #FF7E95, #3CD070);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-white">
+  
+  <!-- 상단 읽기 진행률 바 -->
+  <div id="reading-bar"></div>
+
+  <!-- 헤더 / 내비게이션 바 -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/85 border-b border-white/10 transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="font-serif font-bold text-xl tracking-wider text-white group-hover:text-brand-accent transition">MINA</span>
+        <span class="text-xs uppercase tracking-widest text-brand-accent font-semibold">Wellness World</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="community.html" class="hidden sm:inline-flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          <span>📚 하루 한 스푼 뇌과학 목록</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 text-slate-300 hover:text-brand-accent transition">
+          <span>← 메인 홈으로</span>
+        </a>
+        <a href="contact.html" class="px-4 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white shadow-md shadow-brand-accent/20 transition">
+          상담/제휴 문의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 본문 영역 -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16 w-full">
+    
+    <!-- 빵부스러기 내비게이션 -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8 overflow-x-auto no-scrollbar">
+      <a href="index.html" class="hover:text-white transition">홈</a>
+      <span>/</span>
+      <a href="community.html" class="hover:text-white transition">하루 한 스푼, 뇌과학</a>
+      <span>/</span>
+      <span class="text-brand-gold font-medium">금요일 · 명상·운동과 뇌파</span>
+    </nav>
+
+    <!-- 아티클 헤더 -->
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-xs">
+        <span class="px-3 py-1 rounded-full font-bold bg-brand-gold/15 text-brand-gold border border-brand-gold/30">금요일 · 명상·운동과 뇌파</span>
+        <span class="text-slate-400">2026.11.20</span>
+        <span class="text-slate-500">·</span>
+        <span class="text-slate-400">7분 완독</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
+        앉아만 있으면 오후에 머리가 멍해지는 이유 — 리듬 움직임이 켜는 전두엽 혈류와 세로토닌 스위치
+      </h1>
+      
+      <p class="text-base md:text-xl text-slate-300 font-medium leading-relaxed mb-8">
+        오후의 멍함은 의지가 약해서가 아니라 몸이 뇌로 보내던 신호가 끊긴 상태입니다. 오늘 바로 켜는 네 가지 움직임 스위치
+      </p>
+
+      <!-- 작성자 정보 -->
+      <div class="flex items-center gap-4 py-4 px-5 rounded-2xl bg-brand-card/70 border border-white/10">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-300 to-amber-600 flex items-center justify-center text-lg font-bold text-brand-dark shadow-md">
+          M
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white flex items-center gap-2">
+            이미나 대표
+            <span class="text-[11px] font-normal text-slate-400">| 뇌교육상담사 · MINA Wellness World</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            뇌과학 기반 뉴로웰니스 솔루션과 신체 움직임을 결합하여 건강한 뇌 컨디션을 만듭니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 핵심 요약 콜아웃 박스 -->
+      <div class="mt-8 p-6 rounded-2xl bg-brand-navy border-l-4 border-brand-gold border-r border-t border-b border-white/10 card-glow">
+        <div class="flex items-center gap-2 text-brand-gold font-bold text-xs uppercase tracking-wider mb-2">
+          <span>💡 30초 핵심 요약 (Executive Summary)</span>
+        </div>
+        <p class="text-sm text-slate-200 leading-relaxed">
+          오후의 멍함은 '집중력이 떨어졌다'기보다 <strong class="text-white">몸의 순환과 각성 리듬이 함께 꺼진 상태</strong>에 가깝습니다. 오래 앉아 있으면 종아리 근육의 펌프가 멈춰 정맥 환류가 느려지고, 얕은 호흡으로 이산화탄소가 빠져나가면 뇌혈관이 살짝 수축해 <strong class="text-white">전두엽으로 가는 혈류</strong>가 줄어듭니다. 여기에 일정한 박자의 움직임이 더해지면 소뇌·기저핵의 운동 회로가 전두엽을 다시 깨우고, 뇌간 <strong class="text-white">솔기핵의 세로토닌</strong> 신경 활동이 기분과 집중의 기준선을 안정시킵니다. 근육이 수축할 때 분비되는 <strong class="text-white">마이오카인(Myokine)</strong>은 몸에서 뇌로 보내는 '정리 신호'입니다. 땀을 뺄 필요는 없습니다. 2분의 리듬이면 충분합니다.
+        </p>
+      </div>
+    </header>
+
+    <!-- 상세 본문 -->
+    <article class="mb-16">
+      <div class="prose prose-invert max-w-none text-slate-300 space-y-8 text-base leading-relaxed">
+        
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-gold">01.</span> 앉아 있는 몸이 뇌로 보내는 신호 — 느려진 정맥 환류와 전두엽 혈류
+          </h2>
+          <p>
+            오전 내내 자리에 앉아 일한 날, 점심을 먹고 나면 머리가 물에 잠긴 것처럼 무거워집니다. 이때 흔히 '집중력이 바닥났다'고 말하지만, 몸에서 벌어지는 일을 먼저 보면 설명이 조금 달라집니다. 서 있거나 걸을 때는 종아리와 발바닥 근육이 수축할 때마다 정맥을 짜 올려 <strong class="text-white">피를 심장으로 되돌려 보내는 펌프</strong> 역할을 합니다. 흔히 '두 번째 심장'이라 부르는 구조입니다.
+          </p>
+          <p>
+            그런데 의자에 앉아 무릎이 굽혀지고 종아리가 눌리면 이 펌프가 거의 멈춥니다. 혈액이 다리로 몰리고 심장으로 돌아오는 양이 줄면, 한 번 박동에 뿜어내는 혈액량도 함께 줄어듭니다. 뇌는 전체 혈류의 상당 부분을 꾸준히 공급받아야 제 기능을 하는 기관이라, <strong class="text-white">순환의 미세한 저하</strong>가 곧바로 체감으로 이어질 수 있습니다. 실제로 여러 연구에서 <strong class="text-white">4시간가량 끊김 없이 앉아 있으면 중대뇌동맥의 혈류 속도가 낮아지는 경향</strong>이 보고되었고, 중간중간 가볍게 걷는 것만으로 그 저하가 상쇄되었습니다.
+          </p>
+          <p>
+            호흡도 한몫합니다. 앉아서 화면을 오래 보면 어깨가 올라가고 갈비뼈 아래쪽이 잘 안 움직이는 <strong class="text-white">얕은 가슴 호흡</strong>으로 바뀌기 쉽습니다. 이때 이산화탄소가 평소보다 빠져나가는데, 이산화탄소는 뇌혈관을 이완시키는 가장 강한 신호 중 하나입니다. 혈중 이산화탄소가 조금만 낮아져도 뇌혈관은 수축해 <strong class="text-white">뇌로 가는 혈류가 줄어듭니다</strong>. 목과 어깨의 긴장으로 목 혈관 주변이 조여지는 것도 겹칩니다.
+          </p>
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+            <h4 class="text-sm font-bold text-brand-gold mb-2">🩸 이때 뇌에서 먼저 흔들리는 곳</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>전전두엽(PFC):</strong> 판단·계획·작업기억을 맡는 영역으로, 산소와 포도당 공급 변화에 민감합니다. 혈류가 조금만 줄어도 '읽었는데 내용이 남지 않는' 현상이 먼저 나타납니다.</li>
+              <li><strong>각성 유지 회로:</strong> 뇌간의 각성 신경핵은 순환과 감각 입력에 함께 반응합니다. 앉아서 움직임 입력이 끊기면 각성의 '바닥'이 내려갑니다.</li>
+              <li><strong>오후 1~3시의 자연 저점:</strong> 생체시계가 만드는 하루 중 각성의 골과 겹치면서, 같은 좌식이라도 오후의 멍함이 더 크게 느껴집니다.</li>
+            </ul>
+          </div>
+          <p>
+            중요한 것은 이 상태가 <strong class="text-white">의지의 문제가 아니라는 점</strong>입니다. 커피를 한 잔 더 마시거나 자세를 고쳐 앉는 것으로 잠깐 가려질 뿐, 몸에서 뇌로 가던 신호는 여전히 끊겨 있습니다. 필요한 것은 각성을 억지로 끌어올리는 자극이 아니라 <strong class="text-white">순환과 감각 입력을 다시 켜는 움직임</strong>입니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-gold">02.</span> 박자가 뇌를 깨운다 — 소뇌·기저핵 운동 회로와 세로토닌
+          </h2>
+          <p>
+            아무 움직임이나 같은 효과를 내지는 않습니다. 오후의 멍함에 특히 잘 듣는 것은 <strong class="text-white">일정한 박자를 가진 리듬 움직임</strong>입니다. 걷기, 제자리 스텝, 종아리 들었다 내리기, 팔을 같은 간격으로 흔드는 동작처럼 <strong class="text-white">'예측 가능한 시간 간격'</strong>이 반복되는 움직임입니다.
+          </p>
+          <p>
+            이유는 뇌 안에 시간을 세는 회로가 따로 있기 때문입니다. <strong class="text-white">소뇌(Cerebellum)</strong>는 수백 밀리초 단위의 짧은 간격을, <strong class="text-white">기저핵(Basal Ganglia)</strong>은 몇 초 단위의 리듬을 정교하게 맞춥니다. 이 두 영역은 운동을 조율하는 데 그치지 않고, 시상(thalamus)을 거쳐 <strong class="text-white">전두엽과 계속 신호를 주고받는 고리</strong>를 이룹니다. 그래서 규칙적인 박자로 몸을 움직이면 운동 영역만 쓰는 것이 아니라, 판단과 주의를 맡는 전두엽까지 함께 깨어납니다. 걷기 같은 리듬 운동이 기분과 사고에 영향을 준다는 관찰이 오래 쌓여 온 이유입니다.
+          </p>
+          <p>
+            두 번째 스위치는 <strong class="text-white">세로토닌(Serotonin)</strong>입니다. 뇌간의 <strong class="text-white">솔기핵(Raphe Nuclei)</strong>에 모여 있는 세로토닌 신경은 뇌 전체로 가지를 뻗어 기분의 기준선, 참을성, 충동 조절, 수면 준비에 관여합니다. 이 신경들은 <strong class="text-white">규칙적으로 반복되는 몸의 리듬</strong>과 함께 활동 패턴이 바뀌는 것으로 관찰되어 왔습니다(동물 연구에서 locomotor 활동과 솔기핵 발화의 연동이 보고된 바 있습니다). 요점은 강도가 아닙니다. <strong class="text-white">같은 박자가 계속 이어지는 느낌</strong> 자체가 뇌간에 '지금은 예측 가능한 상태'라는 신호를 보내고, 위협을 경계하는 편도체의 긴장을 낮춥니다.
+          </p>
+          <p>
+            반대로 숨을 몰아쉬며 땀을 빼는 고강도 운동은 오후의 멍함에는 오히려 부담이 될 수 있습니다. 교감신경이 크게 올라가면 잠시 각성은 오르지만, 곧 피로가 몰려와 오후 후반의 집중이 더 흔들립니다. <strong class="text-white">낮은 강도 + 일정한 박자 + 짧은 시간</strong>이 이 상황의 정답에 가깝습니다.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-gold uppercase tracking-wider block mb-1">신호 1</span>
+              <h4 class="text-base font-bold text-white mb-2">같은 문장을 세 번 읽는다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                눈은 글자를 따라가는데 내용이 남지 않습니다. 시선을 한 곳에 오래 고정하며 화면을 응시하는 상태 — 전두엽 혈류와 각성이 함께 내려간 전형적인 신호입니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-gold uppercase tracking-wider block mb-1">신호 2</span>
+              <h4 class="text-base font-bold text-white mb-2">손발이 서늘하고 다리가 무겁다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                몸의 중심에서 말초로 가는 순환이 느려졌다는 체감 신호입니다. 종아리가 붓거나 양말 자국이 오래 남는다면 좌식 시간이 길었다는 뜻입니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-gold uppercase tracking-wider block mb-1">신호 3</span>
+              <h4 class="text-base font-bold text-white mb-2">숨이 얕고 하품이 잦다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                어깨가 올라가고 갈비뼈가 잘 안 움직입니다. 하품은 뇌가 산소와 각성을 요구하는 생리적 신호입니다. 이때 일어나 2분만 걸어도 체감이 달라집니다.
+              </p>
+            </div>
+          </div>
+
+          <p>
+            세 신호는 모두 <strong class="text-white">'입력이 끊긴 뇌'</strong>가 보내는 요청입니다. 이때 더 세게 몰아붙이면 전두엽은 소모되고, 반대로 자극만 찾아 커피와 단것을 반복하면 순환은 그대로입니다. 필요한 것은 <strong class="text-white">몸을 통해 뇌로 들어가는 입력을 다시 만드는 일</strong>입니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-gold">03.</span> 근육이 보내는 신호 물질 — 마이오카인과 몸에서 뇌로 가는 청소 신호
+          </h2>
+          <p>
+            근육은 힘을 쓰는 기관으로만 알려져 왔지만, 지금은 <strong class="text-white">호르몬을 분비하는 내분비 기관</strong>으로도 설명됩니다. 근육이 수축할 때 혈액으로 내보내는 신호 물질을 통틀어 <strong class="text-white">마이오카인(Myokine)</strong>이라 부릅니다. 대표적으로 운동 중 근육에서 분비되는 <strong class="text-white">인터루킨-6(IL-6)</strong>는 만성 염증 상황의 그것과 역할이 달라, 운동 직후에는 오히려 염증을 가라앉히는 신호(IL-10, IL-1ra)를 함께 끌어올리는 것으로 보고됩니다. <strong class="text-white">이리신(Irisin)</strong>과 <strong class="text-white">카텝신 B(Cathepsin B)</strong>는 해마 쪽 신경영양 신호와 연결된다는 연구가 이어지고 있습니다.
+          </p>
+          <p>
+            여기서 실용적인 포인트는 <strong class="text-white">'한 번의 긴 운동'이 아니라 '자주 짧게'</strong>입니다. 근육 수축에 따른 신호 분비는 수축이 일어날 때마다 조금씩 나옵니다. 아침에 1시간 운동하고 남은 8시간을 계속 앉아 있는 것보다, 하루 동안 <strong class="text-white">2~3분짜리 움직임을 여러 번 끼워 넣는 편</strong>이 혈류·혈당·각성 신호를 하루 종일 고르게 유지합니다. 오후의 멍함은 '오늘 운동을 안 해서'가 아니라 <strong class="text-white">'지난 두 시간 동안 몸이 멈춰 있어서'</strong> 생기는 경우가 훨씬 많습니다.
+          </p>
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+            <h4 class="text-sm font-bold text-brand-gold mb-2">🔁 짧은 움직임이 남기는 것</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>정맥 환류 재가동:</strong> 종아리 펌프가 다시 작동하며 심장으로 돌아가는 혈액량이 회복됩니다.</li>
+              <li><strong>뇌혈관 이완:</strong> 호흡이 깊어지며 이산화탄소 균형이 돌아오고 뇌혈류가 제자리를 찾습니다.</li>
+              <li><strong>감각 입력 재개:</strong> 발바닥 압력, 관절 위치 감각, 전정기관 신호가 뇌간 각성 회로를 다시 자극합니다.</li>
+              <li><strong>마이오카인 분비:</strong> 근육 수축마다 대사·염증 조절 신호가 혈액으로 나옵니다.</li>
+              <li><strong>리듬의 안정 효과:</strong> 일정한 박자가 예측 가능성을 만들고, 세로토닌·자율신경의 기준선을 고르게 합니다.</li>
+            </ul>
+          </div>
+          <p>
+            이 신호들은 <strong class="text-white">'피로 청소'</strong>라는 관점으로 묶어 볼 수 있습니다. 깨어 있는 동안 뇌에는 대사 부산물이 쌓이고, 몸의 순환이 이를 실어 나릅니다. 밤의 깊은 잠에서 글림파틱 시스템이 청소를 맡는다면(수면 편 참고), 낮에는 <strong class="text-white">몸을 움직여 순환을 돌리는 것</strong>이 같은 방향의 일을 합니다. 그래서 낮에 거의 움직이지 않은 날은 밤에 잠들기까지 더 오래 걸리고, 아침에도 개운하지 않은 경우가 많습니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-gold">오늘부터</span> 4단계 움직임 뇌 리셋 루틴
+          </h2>
+          <div class="bg-brand-navy p-6 rounded-2xl border border-white/10 space-y-3">
+            <p class="text-xs text-slate-300">
+              운동복도, 땀도 필요 없습니다. <strong>하루의 좌식 시간을 '끊는' 방식</strong>으로 설계했습니다. 오늘 오후부터 바로 시작할 수 있습니다.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-2 list-disc pl-5">
+              <li><strong>1단계 · 50분마다 2분, 종아리·어깨 리듬 풀기:</strong> 알람을 50분에 맞춰 두고 일어납니다. 뒤꿈치를 천천히 들었다 내리기 20회를 두 번(종아리 펌프 재가동), 어깨를 앞뒤로 같은 박자에 10회씩 굴리기, 마지막 20초는 등 뒤에서 손을 잡고 가슴을 여는 동작. 자리에서 일어나지 못하는 상황이라면 의자에 앉아 발목을 위아래로 30회만 해도 좋습니다.</li>
+              <li><strong>2단계 · 점심 뒤 햇빛 리듬 걷기 12분:</strong> 식사 후 10~15분이 지나면 밖으로 나가 <strong>일정한 속도로 12분</strong> 걷습니다. 박자를 세며 걸으면 더 좋습니다(편안하게 말할 수 있는 속도, 분당 100~110걸음 안팎). 햇빛은 생체시계를 오늘 시각에 고정하고, 걷기는 식후 순환과 각성을 함께 올립니다. 오후 3시의 저점이 훨씬 얕아집니다.</li>
+              <li><strong>3단계 · 숨 고르기 + 대근육 1분 스위치:</strong> 오후에 멍함이 올 때 <strong>4초 들이마시고 6초 내쉬기 5회</strong>로 숨을 고른 뒤, 큰 근육을 1분만 씁니다. 의자에서 일어나 앉기 10회, 벽 밀기 10초씩 3회, 혹은 계단 한 층 오르내리기. 호흡으로 이산화탄소 균형을 되찾고, 대근육 수축으로 마이오카인 신호를 더합니다.</li>
+              <li><strong>4단계 · 오후 슬럼프에는 엘리베이터 대신 '2층 리듬 계단':</strong> 자리를 옮길 일이 생기면 엘리베이터 대신 계단 두 층을 <strong>같은 박자로</strong> 오릅니다. 숨이 살짝 찰 정도면 충분하고, 과호흡이 올 만큼 빠르게 하지 않습니다. 회의 전, 화장실 갈 때, 커피 가지러 갈 때 중 하루 두 번이면 좋습니다.</li>
+            </ul>
+            <p class="text-xs text-slate-400 pt-1">
+              ※ 하루 총량은 <strong class="text-slate-300">짧은 움직임 8~12회</strong>면 충분합니다. 무릎·허리·심혈관 질환으로 관리 중이거나 어지럼이 동반된다면 동작의 강도와 시간을 주치의와 상의해 조정하세요. 이 글은 생활 속 뇌 컨디션 관리를 위한 정보이며, 특정 증상의 진단이나 치료를 대신하지 않습니다.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-4 pt-4 border-t border-white/10">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <span class="text-brand-gold">04.</span> 미나월드의 움직임·뇌 컨디션 케어
+          </h2>
+          <p>
+            미나월드의 <strong>1:1 뉴로웰니스 &amp; 뇌파 코칭</strong>과 <strong>기업 맞춤 뇌 컨디션 워크숍</strong>은 뇌파와 각성·이완 상태를 먼저 살펴본 뒤, 그 사람의 근무 형태와 생활 동선에 맞춘 <strong>움직임·호흡·리듬 루틴</strong>을 함께 설계합니다. 사무직·교대근무·장시간 운전처럼 앉아 있는 시간이 긴 환경에서는 '언제, 몇 분, 어떤 박자로' 움직일지를 정하는 것만으로 오후의 컨디션이 달라집니다.
+          </p>
+          <div class="mt-4 p-5 rounded-2xl bg-brand-card border border-brand-gold/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">🏃 움직임 &amp; 뇌 컨디션 케어</h4>
+              <p class="text-xs text-slate-400">1:1 뉴로웰니스 코칭, 기업 좌식 근로자 뇌 피로 케어, 뇌파 기반 리듬·호흡 프로그램</p>
+            </div>
+            <a href="contact.html" class="px-6 py-2.5 rounded-full bg-brand-gold hover:bg-yellow-500 text-brand-dark text-xs font-bold shrink-0 transition">
+              프로그램 문의하기
+            </a>
+          </div>
+        </section>
+
+      </div>
+    </article>
+
+    <!-- 공유 및 하단 내비게이션 -->
+    <div class="py-8 border-t border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">아티클 공유하기:</span>
+        <button onclick="copyCurrentUrl()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-1.5">
+          <span>🔗 링크 복사</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="community.html" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+          목록으로 돌아가기
+        </a>
+        <a href="contact.html" class="px-5 py-2 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white shadow-md transition">
+          1:1 프로그램 상담 신청
+        </a>
+      </div>
+    </div>
+
+    <!-- 다른 요일의 '하루 한 스푼, 뇌과학' 추천 링크 -->
+    <section class="mt-16">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>✨</span> 함께 읽으면 좋은 뇌과학 인사이트
+        </h3>
+        <a href="community.html" class="text-xs text-brand-accent hover:underline">전체보기 →</a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="article-2026-11-19-adenosine-caffeine-circadian.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-blue-400/40 transition block group">
+          <div class="text-[11px] text-blue-400 font-bold mb-1">수면과 회복</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-blue-400 transition mb-1">
+            오후 커피와 야간 스마트폰이 깊은 잠을 훔치는 이유 — 아데노신 수면 압력과 뇌의 24시간 시계
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">카페인 반감기와 멜라토닌 타이밍으로 잠의 질을 되찾는 4단계 수면·회복 루틴</p>
+        </a>
+
+        <a href="article-exercise-bdnf.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-gold/40 transition block group">
+          <div class="text-[11px] text-brand-gold font-bold mb-1">금요일 · 명상·운동과 뇌파</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-gold transition mb-1">
+            가벼운 러닝이 뇌의 BDNF(뇌신경성장인자)를 폭발시키는 원리
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">유산소 운동이 해마의 신경세포 생성을 돕는 신경영양 신호</p>
+        </a>
+
+        <a href="article-2026-11-17-vagus-nerve-hrv.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-pink-500/40 transition block group">
+          <div class="text-[11px] text-pink-400 font-bold mb-1">스트레스와 감정</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-accent transition mb-1">
+            참는다고 가라앉지 않는 이유 — 미주신경과 HRV로 회복하는 자율신경 브레이크
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">몸에서 뇌로 올라가는 미주신경 신호와 4단계 자율신경 브레이크 루틴</p>
+        </a>
+
+        <a href="article-2026-11-16-prefrontal-burnout.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-purple-400/40 transition block group">
+          <div class="text-[11px] text-purple-400 font-bold mb-1">뇌과학 기초</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-purple-400 transition mb-1">
+            월요일만 되면 머리가 멈추는 이유 — 전두엽 의사결정 피로와 번아웃 리셋
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">사소한 선택이 쌓여 전전두엽 배터리를 고갈시키는 의사결정 피로와 4단계 리셋 루틴</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (아임웹 정보 100% 반영) -->
+  <footer class="py-14 border-t border-white/10 text-xs text-slate-400 bg-brand-dark/95">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- 1열: 브랜드 로고 및 저작권 -->
+        <div>
+          <h4 class="text-base font-bold text-white tracking-wider mb-2 font-serif">MINA WORLD</h4>
+          <p class="text-slate-500 text-xs">© 2026 Make.</p>
+        </div>
+
+        <!-- 2열: SITEMAP -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">SITEMAP</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="about.html" class="hover:text-white transition">ABOUT US</a></li>
+            <li><a href="programs.html" class="hover:text-white transition">PROGRAM</a></li>
+            <li><a href="community.html" class="hover:text-white transition">COMMUNITY</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">CONTACT</a></li>
+          </ul>
+        </div>
+
+        <!-- 3열: SERVICE & BANK -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">SERVICE</h4>
+          <p class="text-slate-300 font-medium mb-1">010-5424-0807</p>
+          <p class="text-slate-500 mb-0.5">Mon - Fri AM 09:00 - 18:00</p>
+          <p class="text-slate-500 mb-4">Sat.Sun.Red-Day Off</p>
+
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">BANK</h4>
+          <p class="text-slate-400">KAKAO BANK 3333-37-1190044</p>
+        </div>
+
+        <!-- 4열: INSTAGRAM, NAVER, KAKAO TALK -->
+        <div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">INSTAGRAM</h4>
+            <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://www.instagram.com/wellnessworld.zip</a>
+          </div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">NAVER</h4>
+            <a href="https://naver.me/xhPGBxC0" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://naver.me/xhPGBxC0</a>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">KAKAO TALK</h4>
+            <a href="http://pf.kakao.com/_WxmhEX" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">http://pf.kakao.com/_WxmhEX</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 mb-6">
+        <div>
+          <span>Seoul, Korea</span>
+          <span class="mx-2">|</span>
+          <span>Biz License 893-53-00975</span>
+          <span class="mx-2">|</span>
+          <span>© 2026 MINA WORLD. All rights reserved</span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+          <span class="text-slate-600">|</span>
+          <a href="#" class="hover:text-slate-300 transition">Privacy</a>
+        </div>
+      </div>
+
+      <!-- 맨 하단 한 줄 사업자 상세 정보 -->
+      <div class="text-[11px] text-slate-600 leading-relaxed">
+        상호명: 미나월드 대표자: 이미나 사업장주소: 서울 송파구 오금로46길 41 (가락동) 2층 2567호 연락처: 01054240807 사업자등록번호: 893-53-00975 대표자 이메일: minawellnesslab@gmail.com
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // 읽기 진행률 표시
+    window.addEventListener('scroll', function() {
+      var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      var bar = document.getElementById('reading-bar');
+      if (bar) {
+        bar.style.width = scrolled + '%';
+      }
+    });
+
+    // 현재 URL 클립보드 복사
+    function copyCurrentUrl() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          alert('아티클 링크가 복사되었습니다! 원하는 곳에 공유해보세요.');
+        });
+      } else {
+        alert('주소창의 링크를 복사해주세요: ' + window.location.href);
+      }
+    }
+  </script>
+</body>
+</html>
