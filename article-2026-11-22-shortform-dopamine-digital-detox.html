@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TTMVKBHNZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TTMVKBHNZM');
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      location.replace(location.href.replace('http:', 'https:'));
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>릴스 10분만 보려다 1시간이 사라지는 이유 — 숏폼의 변동 보상과 도파민 기준선 리셋 | 하루 한 스푼, 뇌과학 - MINA Wellness World</title>
+  <meta name="description" content="숏폼을 멈추지 못하는 것은 의지가 약해서가 아니라 '다음에 무엇이 나올지 모르는' 변동 보상 설계 때문입니다. 도파민 예측 오차(VTA·측좌핵, wanting vs liking)와 기준선 하강·보상 내성을 정리하고, 디지털 도파민 과부하 3신호와 오늘부터 실천하는 4단계 디지털 디톡스 루틴을 안내합니다." />
+  <meta name="keywords" content="숏폼 중독, 릴스 도파민, 변동 보상, 도파민 예측 오차, 도파민 기준선, 보상 내성, wanting liking, VTA, 측좌핵, 도파민 디톡스, 디지털 디톡스, 주의 잔여물, 맥락 전환 비용, 스크롤 습관, 흑백 모드, 디지털 일몰, 뇌과학, 뉴로웰니스, 미나월드" />
+  <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="Vi6kKPe24ViYvS4NbUpW02Nco_04PP_qHLX9UmNT3QM" />
+  <meta name="naver-site-verification" content="b397311e6eb26e5eec40f3994740c10e6a243a4a" />
+  <link rel="canonical" href="https://www.minaworld.co.kr/article-2026-11-22-shortform-dopamine-digital-detox.html" />
+  <meta property="og:site_name" content="MINA Wellness World" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.minaworld.co.kr/article-2026-11-22-shortform-dopamine-digital-detox.html" />
+  <meta property="og:title" content="릴스 10분만 보려다 1시간이 사라지는 이유 — 숏폼의 변동 보상과 도파민 기준선 리셋 | 하루 한 스푼, 뇌과학 - MINA Wellness World" />
+  <meta property="og:description" content="숏폼을 멈추지 못하는 것은 의지가 약해서가 아니라 '다음에 무엇이 나올지 모르는' 변동 보상 설계 때문입니다. 도파민 예측 오차와 기준선 하강·보상 내성을 정리하고, 디지털 도파민 과부하 3신호와 4단계 디지털 디톡스 루틴을 안내합니다." />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+    #reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(to right, #34D399, #FF7E95, #3CD070);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-white">
+  
+  <!-- 상단 읽기 진행률 바 -->
+  <div id="reading-bar"></div>
+
+  <!-- 헤더 / 내비게이션 바 -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/85 border-b border-white/10 transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="font-serif font-bold text-xl tracking-wider text-white group-hover:text-brand-accent transition">MINA</span>
+        <span class="text-xs uppercase tracking-widest text-brand-accent font-semibold">Wellness World</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="community.html" class="hidden sm:inline-flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          <span>📚 하루 한 스푼 뇌과학 목록</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 text-slate-300 hover:text-brand-accent transition">
+          <span>← 메인 홈으로</span>
+        </a>
+        <a href="contact.html" class="px-4 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white shadow-md shadow-brand-accent/20 transition">
+          상담/제휴 문의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 본문 영역 -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16 w-full">
+    
+    <!-- 빵부스러기 내비게이션 -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8 overflow-x-auto no-scrollbar">
+      <a href="index.html" class="hover:text-white transition">홈</a>
+      <span>/</span>
+      <a href="community.html" class="hover:text-white transition">하루 한 스푼, 뇌과학</a>
+      <span>/</span>
+      <span class="text-brand-accent font-medium">일요일 · 생활습관 · 디지털 디톡스</span>
+    </nav>
+
+    <!-- 아티클 헤더 -->
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-xs">
+        <span class="px-3 py-1 rounded-full font-bold bg-brand-accent/15 text-brand-accent border border-brand-accent/30">일요일 · 생활습관 · 디지털 디톡스</span>
+        <span class="text-slate-400">2026.11.22</span>
+        <span class="text-slate-500">·</span>
+        <span class="text-slate-400">9분 완독</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight" style="word-break: keep-all;">
+        릴스 10분만 보려다 1시간이 사라지는 이유 — 숏폼의 변동 보상과 도파민 기준선 리셋
+      </h1>
+      
+      <p class="text-base md:text-xl text-slate-300 font-medium leading-relaxed mb-8" style="word-break: keep-all;">
+        멈추지 못하는 건 의지가 아니라 '다음에 뭐가 나올지 모르는' 구조 때문입니다. 도파민의 눈금이 어떻게 옮겨가는지 읽고, 오늘 저녁부터 되돌리는 법
+      </p>
+
+      <!-- 작성자 정보 -->
+      <div class="flex items-center gap-4 py-4 px-5 rounded-2xl bg-brand-card/70 border border-white/10">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-accent to-purple-600 flex items-center justify-center text-lg font-bold text-white shadow-md">
+          M
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white flex items-center gap-2">
+            이미나 대표
+            <span class="text-[11px] font-normal text-slate-400">| 뇌교육상담사 · MINA Wellness World</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            뇌과학 기반 뉴로웰니스 솔루션과 신체 움직임을 결합하여 건강한 뇌 컨디션을 만듭니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 핵심 요약 콜아웃 박스 -->
+      <div class="mt-8 p-6 rounded-2xl bg-brand-navy border-l-4 border-brand-accent border-r border-t border-b border-white/10 card-glow">
+        <div class="flex items-center gap-2 text-brand-accent font-bold text-xs uppercase tracking-wider mb-2">
+          <span>💡 30초 핵심 요약 (Executive Summary)</span>
+        </div>
+        <p class="text-sm text-slate-200 leading-relaxed">
+          숏폼을 멈추지 못하는 힘의 정체는 <strong class="text-white">'다음에 무엇이 나올지 모른다'</strong>는 사실입니다. 뇌는 이미 아는 보상보다 <strong class="text-white">예측이 틀렸을 때 더 크게 반응</strong>하고, 그 신호를 만드는 것이 도파민입니다. 자판기보다 슬롯머신 앞에서 손을 떼기 어려운 이유와 같습니다. 문제는 그 뒤에 옵니다. 짧고 강한 보상이 반복되면 도파민의 <strong class="text-white">기준선(baseline)이 아래로 내려가</strong> 같은 자극이 예전만큼 와닿지 않고, 15초마다 맥락이 바뀌는 화면은 전전두엽에 <strong class="text-white">전환 비용과 주의 잔여물</strong>을 계속 남깁니다. 그래서 필요한 것은 의지력이 아니라 <strong class="text-white">자극의 세기와 간격을 다시 설계하는 일</strong>입니다.
+        </p>
+      </div>
+    </header>
+
+    <!-- 상세 본문 -->
+    <article class="mb-16">
+      <div class="prose prose-invert max-w-none text-slate-300 space-y-8 text-base leading-relaxed">
+        
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-accent">01.</span> '좋아서'가 아니라 '다음이 궁금해서' 멈추지 못한다
+          </h2>
+          <p>
+            밤 11시에 침대에 누워 "릴스 하나만 보고 잘게"라고 마음먹었다가, 고개를 들면 12시를 넘긴 시각이 되어 있습니다. 이때 흔히 드는 생각은 "내가 의지가 약한가"입니다. 하지만 이 장면을 뇌과학적으로 들여다보면 이야기가 조금 달라집니다. 그 순간 뇌가 붙잡혀 있는 것은 <strong class="text-white">영상의 내용</strong>이 아니라 <strong class="text-white">아직 오지 않은 다음 영상</strong>이기 때문입니다.
+          </p>
+          <p>
+            보상 회로의 핵심에는 <strong class="text-white">중뇌의 배쪽 피개부(VTA, Ventral Tegmental Area)</strong>에서 시작해 <strong class="text-white">측좌핵(Nucleus Accumbens)</strong>으로 이어지는 도파민 경로가 있습니다. 흔히 도파민을 '쾌락 물질'이라고 부르지만, 1990년대 이후의 연구는 이 물질의 역할을 조금 다르게 설명합니다. 1997년 볼프람 슐츠(Wolfram Schultz) 팀이 발표한 연구는 원숭이의 도파민 뉴런이 <strong class="text-white">예상하지 못한 보상</strong>에서 강하게 발화하고, 보상이 예측되는 순간이 되면 그 발화가 보상이 아니라 <strong class="text-white">예측 신호 쪽으로 옮겨가며</strong>, 예상보다 적게 들어오면 기준선 아래로 떨어진다는 것을 보여주었습니다. 이것이 <strong class="text-white">보상 예측 오차(Reward Prediction Error)</strong>입니다.
+          </p>
+          <p>
+            이 관점에서 보면 도파민은 '얻었다'는 결과보다 <strong class="text-white">'예상보다 좋았다'는 어긋남</strong>에 반응합니다. 그리고 사람의 뇌에서 이 어긋남을 가장 효율적으로, 가장 많이 만들어내는 장치 중 하나가 <strong class="text-white">다음에 무엇이 나올지 알 수 없는 피드</strong>입니다. 심리학에서는 오래전부터 같은 원리가 알려져 있었습니다. 스키너(B. F. Skinner)의 실험에서 <strong class="text-white">변동 비율 강화(Variable Ratio Reinforcement)</strong> — 몇 번 만에 보상이 나올지 모르는 조건 — 가 행동을 가장 질기게 유지했습니다. 자판기에 동전을 넣는 일은 쉽게 그치지만, 슬롯머신 앞에서 발이 떨어지지 않는 이유입니다.
+          </p>
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+            <h4 class="text-sm font-bold text-brand-accent mb-2">🎰 '다음이 궁금한' 뇌에서 벌어지는 일</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>예측 오차의 최대화:</strong> 순서가 정해진 목록은 금방 지루해지지만, 알고리즘이 고른 다음 영상은 매번 빗나갈 수 있습니다. 어긋남이 클수록 도파민 신호도 커집니다.</li>
+              <li><strong>wanting과 liking의 분리:</strong> 켄트 버리지(Kent Berridge)의 연구는 '원한다(wanting)'와 '좋아한다(liking)'가 서로 다른 회로라는 것을 보여줍니다. 도파민은 주로 <strong>가지려는 갈망</strong> 쪽을 밀어 올립니다. 재미있어서 멈추지 못하는 게 아니라, 다음 것을 향한 갈망이 계속 켜져 있는 상태에 가깝습니다.</li>
+              <li><strong>멈춤의 기회비용:</strong> 지금 손을 떼면 '다음에 나올 좋은 영상'을 놓칠 수 있다는 계산이 무의식적으로 작동합니다. 손실 회피 성향이 스크롤을 한 번 더 붙잡습니다.</li>
+              <li><strong>무한한 공급:</strong> 예전의 즐거움에는 끝이 있었습니다. 책은 한 권이 끝나고, 영화는 엔딩이 있습니다. 피드에는 끝이 없고, 그래서 '멈출 지점'이 스스로 오지 않습니다.</li>
+            </ul>
+          </div>
+          <p>
+            결국 여기서 중요한 것은 <strong class="text-white">내 의지의 문제가 아니라 구조의 문제</strong>라는 사실입니다. 무한하고 예측 불가능하며 즉시 반응하는 자극을 상대로 '그만 보자'는 결심 하나로 버티는 것은, 구조적으로 불리한 싸움입니다. 그래서 다음 질문은 "어떻게 참을까"가 아니라 <strong class="text-white">"이 구조에 어떻게 마찰을 넣을까"</strong>가 되어야 합니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-accent">02.</span> 짧은 자극 뒤 찾아오는 역풍 — 도파민 기준선과 보상 내성
+          </h2>
+          <p>
+            짧은 영상이 주는 문제는 '재미있다'에서 끝나지 않습니다. 30분쯤 스크롤을 멈추고 나면 이상하게 공허하고, 손에는 폰이 들려 있고, 머리는 더 무거워져 있습니다. 이 역풍을 이해하려면 도파민 신호를 두 층으로 나눠 볼 필요가 있습니다.
+          </p>
+          <p>
+            하나는 순간순간 치솟는 <strong class="text-white">위상성(phasic) 신호</strong>이고, 다른 하나는 그 신호들이 오가는 바닥의 높이인 <strong class="text-white">긴장성(tonic) 기준선</strong>입니다. 기준선은 "지금 내 세상이 대략 얼마나 보상적인가"에 대한 뇌의 저울입니다. 자극이 강하고 잦으면 이 저울은 <strong class="text-white">더 높은 자극을 기준</strong>으로 다시 맞춰집니다. 같은 자극이 들어와도 예전만큼 '예상보다 좋다'는 어긋남이 생기지 않으니, 체감되는 재미는 줄어듭니다. 이것이 <strong class="text-white">보상 내성</strong>입니다. 취향이 변한 것이 아니라 <strong class="text-white">신호의 눈금이 옮겨간 것</strong>입니다.
+          </p>
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+            <h4 class="text-sm font-bold text-brand-accent mb-2">🧪 '도파민 디톡스'라는 말에 대한 정직한 정정</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              도파민을 몸에서 '빼내는' 것은 가능하지도, 필요하지도 않습니다. 도파민은 의욕을 만들고 움직임을 시작하는 데 반드시 필요한 신경전달물질입니다. 이른바 디톡스가 실제로 하는 일은 <strong class="text-white">자극의 세기와 간격을 조절해 저울의 눈금을 되돌리는 것</strong>입니다. 강한 자극이 반복되면 보상 회로의 반응성이 조정된다는 패턴은 중독 연구에서 오래 관찰되어 왔지만, 숏폼 시청에서 이것이 얼마나, 얼마나 빨리 일어나는지는 사람마다 차이가 큽니다. 그러니 '뇌가 망가졌다'가 아니라 <strong class="text-white">'지금 내 저울이 높은 쪽에 맞춰져 있다'</strong> 정도로 읽는 것이 정확합니다.
+            </p>
+          </div>
+          <p>
+            두 번째 역풍은 앞쪽 뇌의 피로입니다. 15초에서 60초 사이로 맥락이 계속 바뀌는 화면을 보는 동안 전전두엽은 <strong class="text-white">맥락 전환(context switching)</strong>을 쉬지 않고 수행합니다. 전환에는 비용이 붙습니다. 소피 르로이(Sophie Leroy)가 정리한 <strong class="text-white">주의 잔여물(Attention Residue)</strong> 개념처럼, 이전 과제가 끝나도 그 내용의 일부가 작업기억에 남아 다음 과제의 용량을 갉아먹습니다. 짧은 영상은 끝나도 남습니다. 그래서 한 시간을 봤는데 머릿속에는 아무것도 남지 않고, 오히려 집중력의 '연료'만 줄어든 듯한 느낌이 듭니다.
+          </p>
+
+          <div class="overflow-x-auto my-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-white/5 text-slate-200">
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">구분</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">숏폼의 빠른 보상</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">느린 보상(산책·대화·독서)</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-300">
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">보상까지</td>
+                  <td class="px-3 py-2.5 border border-white/10">수 초</td>
+                  <td class="px-3 py-2.5 border border-white/10">수 분 ~ 수십 분</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">예측 가능성</td>
+                  <td class="px-3 py-2.5 border border-white/10">낮음(변동 보상) → 도파민 신호 큼</td>
+                  <td class="px-3 py-2.5 border border-white/10">높음 → 신호는 작지만 안정적</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">기준선에 미치는 영향</td>
+                  <td class="px-3 py-2.5 border border-white/10">눈금을 위로 끌어올림</td>
+                  <td class="px-3 py-2.5 border border-white/10">눈금을 제자리로 되돌림</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">끝난 뒤 남는 것</td>
+                  <td class="px-3 py-2.5 border border-white/10">공허함, 시각·인지 피로, 주의 잔여물</td>
+                  <td class="px-3 py-2.5 border border-white/10">정리된 생각, 몸의 이완, 대화의 여운</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            표를 보면 알 수 있듯, 두 보상은 좋고 나쁨의 관계가 아니라 <strong class="text-white">역할이 다른 두 종류의 자극</strong>입니다. 문제는 하루의 대부분이 왼쪽 칸으로 채워질 때 생깁니다. 오른쪽 칸의 자극은 원래 '느려서' 밀려나기 쉽고, 밀려난 자리를 왼쪽 칸이 채우면 저울은 점점 더 높은 쪽으로 굳어갑니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-accent">03.</span> 디지털 도파민 과부하 3신호
+          </h2>
+          <p>
+            사용 시간을 세지 않아도, 우리는 하루에 몇 번씩 자기 저울의 위치를 체감으로 읽습니다. 아래 세 장면이 자주 나온다면 눈금이 높은 쪽에 맞춰져 있다는 신호입니다.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-accent uppercase tracking-wider block mb-1">신호 1</span>
+              <h4 class="text-base font-bold text-white mb-2">쉬려고 켰는데 더 뻐근하다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                '휴식'으로 시작한 스크롤이 끝나면 눈이 뻑뻑하고 머리 뒤가 무겁습니다. 가까운 화면에 초점을 고정하고 빠른 장면 전환을 따라가는 일은 시각 피질과 눈의 조절근에 부하를 쌓습니다. 쉬는 시간에 회복을 쓰지 않고 소비한 셈입니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-accent uppercase tracking-wider block mb-1">신호 2</span>
+              <h4 class="text-base font-bold text-white mb-2">10분이 답답하게 느껴진다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                긴 글, 영화, 누군가와의 대화가 10분을 넘기면 손이 근질거리고 다른 것을 찾게 됩니다. 짧은 자극에 맞춰진 뇌에서는 느린 흐름이 '지루함'이 아니라 '견디기 어려운 공백'으로 느껴집니다. 이 변화는 의지보다 인내의 문턱이 올라갔다는 신호에 가깝습니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-accent uppercase tracking-wider block mb-1">신호 3</span>
+              <h4 class="text-base font-bold text-white mb-2">무의식적으로 폰을 잠금 해제한다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                특별히 볼 것이 없는데도 화면을 켜고, 앱을 열고, 몇 초 만에 닫기를 반복합니다. 목적 없는 확인이 하루에 수십 번 반복된다면 손의 동작이 습관 회로에 굳은 상태입니다. 이때는 '무엇을 보려고'가 아니라 '손이 먼저 움직인' 경우가 많습니다.
+              </p>
+            </div>
+          </div>
+
+          <p>
+            세 신호의 공통점은 <strong class="text-white">자극의 양이 아니라 자극의 리듬</strong>이 문제라는 것입니다. 많이 봐서가 아니라, 짧고 불규칙하게 계속 봐서 저울과 주의 회로가 그 리듬에 맞춰진 것입니다. 그래서 해법도 '완전히 끊기'가 아니라 <strong class="text-white">간격과 마찰을 다시 넣는 일</strong>이 됩니다.
+          </p>
+          <div class="p-5 rounded-2xl bg-brand-navy border border-brand-accent/25 my-6">
+            <h4 class="text-sm font-bold text-brand-accent mb-2">🔍 30초 셀프 체크</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              지금 폰을 뒤집어 놓고 30초만 기다려 보세요. 30초 안에 손이 폰으로 두 번 이상 갔다면 신호 3, 기다리는 동안 초조함이나 '뭔가 아쉬운' 느낌이 또렷했다면 신호 2, 최근 스크롤 후 눈·목이 뻐근한 날이 사흘 이상 이어졌다면 신호 1에 가깝습니다. 하나도 해당되지 않는다면 지금의 리듬을 그대로 유지해도 좋습니다.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-accent">오늘부터</span> 도파민 기준선을 되돌리는 4단계 디지털 디톡스 루틴
+          </h2>
+          <div class="bg-brand-navy p-6 rounded-2xl border border-white/10 space-y-3">
+            <p class="text-xs text-slate-300">
+              앱을 지우거나 폰을 끊을 필요는 없습니다. <strong>아침을 비우고, 마찰을 넣고, 느린 보상을 먼저 놓고, 밤의 경계를 만드는</strong> 순서로 설계했습니다. 하루에 다 하지 않아도 됩니다.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-2 list-disc pl-5">
+              <li><strong>1단계 · 기상 직후 30분 '무(無)스크롤' 아침 열기:</strong> 눈을 뜨자마자 피드를 열면 그날의 저울이 가장 높은 지점에서 시작됩니다. 대신 창문을 열고 5분 햇빛을 보고, 물 한 잔을 마시고, 오늘 꼭 할 일 세 가지만 적어 보세요. 아침의 첫 30분은 뇌가 하루의 기준선을 정하는 시간이라, 여기를 비워 두는 것만으로 오후의 충동이 눈에 띄게 줄어듭니다. 폰은 침대에서 팔이 닿지 않는 곳에 두는 것으로 충분합니다.</li>
+              <li><strong>2단계 · 홈 화면 분리·흑백 모드로 '3초 마찰력' 넣기:</strong> 숏폼 앱을 홈 화면 첫 장에서 빼고, 두 번째 폴더 안쪽으로 옮깁니다. 추가로 아이폰은 '설정 → 손쉬운 사용 → 디스플레이 및 텍스트 크기 → 색상 필터 → 색상 필터 켜기 → 회색조', 안드로이드는 '디지털 웰빙 → 취침 모드 → 흑백'으로 화면을 흑백으로 바꿔 두세요. 색이 빠지면 영상의 유인력이 크게 떨어지고, 앱을 여는 데 3초가 더 걸리는 것만으로 무의식적 실행의 상당 부분이 걸러집니다. 목적이 있을 때는 그대로 열면 됩니다. 이 루틴은 '금지'가 아니라 '한 번 더 생각할 틈'을 만드는 일입니다.</li>
+              <li><strong>3단계 · 숏폼 대신 '느린 보상 15분' 먼저 끼우기:</strong> 저녁에 폰을 들기 전에 15분짜리 느린 보상을 먼저 놓습니다. 동네를 한 바퀴 걷기, 따뜻한 차를 식혀 가며 마시기, 가족과 오늘 있었던 일 세 가지만 이야기하기, 종이책 몇 장 읽기 중 하나면 됩니다. 핵심은 <strong>폰을 참는 것이 아니라 다른 보상을 먼저 채우는 것</strong>입니다. 15분을 채우고 나면 피드를 열어도 '허기'가 아니라 '선택'으로 열게 됩니다.</li>
+              <li><strong>4단계 · 취침 30분 전, 침실 밖 충전과 디지털 일몰:</strong> 잠들기 30분 전에 폰을 침실 밖 충전 자리에 꽂고, 화면 밝기와 알림을 한 단계 내립니다. 밤의 스크롤은 두 가지를 동시에 망칩니다. 하나는 빛과 각성으로 잠의 시작을 늦추는 일, 다른 하나는 다음 날 아침의 저울을 미리 끌어올리는 일입니다. 침대에서는 대신 4초 들이마시고 6초 내쉬는 호흡을 10회, 오늘 하루를 한 줄로 적어 보세요.</li>
+            </ul>
+            <p class="text-xs text-slate-400 pt-1">
+              ※ 신호 3이 두드러지면 2단계부터, 신호 2라면 3단계의 '느린 보상 15분'을 먼저 시작해 보세요. 사흘만 지켜도 달라지는 것은 사용 시간이 아니라 <strong>긴 글을 읽을 때의 편안함</strong>입니다. 이 글은 생활 속 뇌 컨디션 관리를 위한 정보이며, 특정 증상의 진단이나 치료를 대신하지 않습니다. 스마트폰 사용을 스스로 조절하기 어려워 일상생활에 지장이 크다면 전문가와 상담하시길 권합니다.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-4 pt-4 border-t border-white/10">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <span class="text-brand-accent">04.</span> 미나월드의 집중·주의력 회복 뉴로웰니스 케어
+          </h2>
+          <p>
+            여기까지의 루틴은 생활에서 저울의 눈금을 되돌리는 일입니다. 그런데 <strong>내 주의 회로가 지금 어디에 얼마나 묶여 있는지</strong>는 체감만으로는 알기 어렵습니다. 미나월드는 <strong>2채널 정밀 뇌파 측정</strong>으로 눈을 뜬 상태·감은 상태·집중 과제를 수행하는 동안의 주파수 대역별 활동을 비교해, 각성과 이완이 어디에서 어긋나는지 확인합니다.
+          </p>
+          <p>
+            결과는 점수가 아니라 <strong>오늘의 컨디션 지도</strong>로 씁니다. 과열된 각성이 내려오지 않는 분에게는 입력을 끊고 호흡으로 낮추는 루틴을, 가라앉아 시작이 어려운 분에게는 빛과 리듬으로 각성을 올리는 루틴을 제안합니다. <strong>1:1 뉴로웰니스 &amp; 뇌파 코칭</strong>에서는 여기에 집중 시작 루틴과 화면 사용 전후의 회복 루틴을 함께 설계하고, <strong>수험생·성인 주의력 집중 프로그램</strong>에서는 학습·업무 전후의 뇌 상태를 비교하며 자기 조절을 훈련합니다. 기업·기관 <strong>뇌 컨디션 워크숍</strong>에서는 근무 형태에 맞춘 디지털 사용 습관 설계로 확장합니다.
+          </p>
+          <div class="mt-4 p-5 rounded-2xl bg-brand-card border border-brand-accent/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">🧠 집중·주의력 회복 뉴로웰니스 케어</h4>
+              <p class="text-xs text-slate-400">2채널 정밀 뇌파 측정, 1:1 뉴로웰니스 &amp; 뇌파 코칭, 수험생·성인 주의력 집중 루틴, 기업·기관 워크숍</p>
+            </div>
+            <a href="contact.html" class="px-6 py-2.5 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white text-xs font-bold shrink-0 transition">
+              프로그램 문의하기
+            </a>
+          </div>
+        </section>
+
+      </div>
+    </article>
+
+    <!-- 공유 및 하단 내비게이션 -->
+    <div class="py-8 border-t border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">아티클 공유하기:</span>
+        <button onclick="copyCurrentUrl()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-1.5">
+          <span>🔗 링크 복사</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="community.html" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+          목록으로 돌아가기
+        </a>
+        <a href="contact.html" class="px-5 py-2 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white shadow-md transition">
+          1:1 프로그램 상담 신청
+        </a>
+      </div>
+    </div>
+
+    <!-- 다른 요일의 '하루 한 스푼, 뇌과학' 추천 링크 -->
+    <section class="mt-16">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>✨</span> 함께 읽으면 좋은 뇌과학 인사이트
+        </h3>
+        <a href="community.html" class="text-xs text-brand-accent hover:underline">전체보기 →</a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="article-2026-11-21-alpha-smr-beta-brainwaves.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-emerald-400/40 transition block group">
+          <div class="text-[11px] text-emerald-400 font-bold mb-1">토요일 · 뉴로피드백</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-emerald-400 transition mb-1">
+            눈만 감았는데 뇌파가 바뀐다 — 알파파·SMR파·하이베타파로 읽는 내 뇌의 컨디션 스위치
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">뇌파 대역으로 내 컨디션을 읽고 기어를 바꾸는 4단계</p>
+        </a>
+
+        <a href="article-flow-focus.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-cyan-400/40 transition block group">
+          <div class="text-[11px] text-cyan-400 font-bold mb-1">수요일 · 집중력과 기억력</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-cyan-400 transition mb-1">
+            산만한 뇌를 초몰입(Flow) 상태로 이끄는 뇌파의 비밀
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">주의 전환 잔여물을 지우고 몰입으로 들어가는 방법</p>
+        </a>
+
+        <a href="article-2026-11-16-prefrontal-burnout.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-blue-400/40 transition block group">
+          <div class="text-[11px] text-blue-400 font-bold mb-1">월요일 · 뇌과학 기초</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-blue-400 transition mb-1">
+            월요일만 되면 머리가 멈추는 이유 — 전두엽 의사결정 피로와 번아웃 리셋
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">작업기억 과부하를 풀고 한 주를 가볍게 여는 4단계</p>
+        </a>
+
+        <a href="article-weekend-brain-rest.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-accent/40 transition block group">
+          <div class="text-[11px] text-brand-accent font-bold mb-1">일요일 · 웰니스 생활 습관</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-accent transition mb-1">
+            주말에 침대에만 누워있는데 왜 더 피곤할까?
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">몸은 쉬어도 뇌는 쉬지 못하는 DMN 과열의 역설</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (아임웹 정보 100% 반영) -->
+  <footer class="py-14 border-t border-white/10 text-xs text-slate-400 bg-brand-dark/95">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- 1열: 브랜드 로고 및 저작권 -->
+        <div>
+          <h4 class="text-base font-bold text-white tracking-wider mb-2 font-serif">MINA WORLD</h4>
+          <p class="text-slate-500 text-xs">© 2026 Make.</p>
+        </div>
+
+        <!-- 2열: SITEMAP -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">SITEMAP</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="about.html" class="hover:text-white transition">ABOUT US</a></li>
+            <li><a href="programs.html" class="hover:text-white transition">PROGRAM</a></li>
+            <li><a href="community.html" class="hover:text-white transition">COMMUNITY</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">CONTACT</a></li>
+          </ul>
+        </div>
+
+        <!-- 3열: SERVICE & BANK -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">SERVICE</h4>
+          <p class="text-slate-300 font-medium mb-1">010-5424-0807</p>
+          <p class="text-slate-500 mb-0.5">Mon - Fri AM 09:00 - 18:00</p>
+          <p class="text-slate-500 mb-4">Sat.Sun.Red-Day Off</p>
+
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">BANK</h4>
+          <p class="text-slate-400">KAKAO BANK 3333-37-1190044</p>
+        </div>
+
+        <!-- 4열: INSTAGRAM, NAVER, KAKAO TALK -->
+        <div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">INSTAGRAM</h4>
+            <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://www.instagram.com/wellnessworld.zip</a>
+          </div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">NAVER</h4>
+            <a href="https://naver.me/xhPGBxC0" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://naver.me/xhPGBxC0</a>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">KAKAO TALK</h4>
+            <a href="http://pf.kakao.com/_WxmhEX" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">http://pf.kakao.com/_WxmhEX</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 mb-6">
+        <div>
+          <span>Seoul, Korea</span>
+          <span class="mx-2">|</span>
+          <span>Biz License 893-53-00975</span>
+          <span class="mx-2">|</span>
+          <span>© 2026 MINA WORLD. All rights reserved</span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+          <span class="text-slate-600">|</span>
+          <a href="#" class="hover:text-slate-300 transition">Privacy</a>
+        </div>
+      </div>
+
+      <!-- 맨 하단 한 줄 사업자 상세 정보 -->
+      <div class="text-[11px] text-slate-600 leading-relaxed">
+        상호명: 미나월드 대표자: 이미나 사업장주소: 서울 송파구 오금로46길 41 (가락동) 2층 2567호 연락처: 01054240807 사업자등록번호: 893-53-00975 대표자 이메일: minawellnesslab@gmail.com
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // 읽기 진행률 표시
+    window.addEventListener('scroll', function() {
+      var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      var bar = document.getElementById('reading-bar');
+      if (bar) {
+        bar.style.width = scrolled + '%';
+      }
+    });
+
+    // 현재 URL 클립보드 복사
+    function copyCurrentUrl() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          alert('아티클 링크가 복사되었습니다! 원하는 곳에 공유해보세요.');
+        });
+      } else {
+        alert('주소창의 링크를 복사해주세요: ' + window.location.href);
+      }
+    }
+  </script>
+</body>
+</html>

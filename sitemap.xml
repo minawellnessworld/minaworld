@@ -32,9 +32,15 @@
   </url>
   <url>
     <loc>https://www.minaworld.co.kr/community.html</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.minaworld.co.kr/article-2026-11-22-shortform-dopamine-digital-detox.html</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.minaworld.co.kr/article-2026-11-21-alpha-smr-beta-brainwaves.html</loc>
