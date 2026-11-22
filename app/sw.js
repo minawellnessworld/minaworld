@@ -4,7 +4,7 @@
    - 신규 v2 모듈(store-org / store-security / admin-login / partner / admin/*) 포함
    - Supabase · CDN · GA4 요청은 네트워크 패스스루 (캐시하지 않음)
    ===================================================================== */
-const VERSION = 'mina-app-v2.0.22';
+const VERSION = 'mina-app-v2.0.23';
 const CACHE_NAME = VERSION + '-shell';          // 앱 셸 선캐시
 const RUNTIME_CACHE = VERSION + '-runtime';     // 런타임 보조 캐시
 
@@ -12,56 +12,56 @@ const RUNTIME_CACHE = VERSION + '-runtime';     // 런타임 보조 캐시
 const PRECACHE_ASSETS = [
   './',
   './index.html',
-  './manifest.json?v=2.0.22',
-  './css/app.css?v=2.0.22',
+  './manifest.json?v=2.0.23',
+  './css/app.css?v=2.0.23',
 
   /* core modules */
-  './js/app.js?v=2.0.22',
-  './js/config.js?v=2.0.22',
-  './js/catalog.js?v=2.0.22',
-  './js/check-items.js?v=2.0.22',
-  './js/pdf-parser.js?v=2.0.22',
-  './js/capture-ocr.js?v=2.0.22',
-  './js/supabase.js?v=2.0.22',
-  './js/store.js?v=2.0.22',
-  './js/spoon.js?v=2.0.22',
-  './js/store-org.js?v=2.0.22',
-  './js/store-security.js?v=2.0.22',
-  './js/ui.js?v=2.0.22',
-  './js/booking.js?v=2.0.22',
+  './js/app.js?v=2.0.23',
+  './js/config.js?v=2.0.23',
+  './js/catalog.js?v=2.0.23',
+  './js/check-items.js?v=2.0.23',
+  './js/pdf-parser.js?v=2.0.23',
+  './js/capture-ocr.js?v=2.0.23',
+  './js/supabase.js?v=2.0.23',
+  './js/store.js?v=2.0.23',
+  './js/spoon.js?v=2.0.23',
+  './js/store-org.js?v=2.0.23',
+  './js/store-security.js?v=2.0.23',
+  './js/ui.js?v=2.0.23',
+  './js/booking.js?v=2.0.23',
 
   /* B2C views */
-  './js/views/home.js?v=2.0.22',
-  './js/views/brain-check.js?v=2.0.22',
-  './js/views/neuro.js?v=2.0.22',
-  './js/views/my-brain.js?v=2.0.22',
-  './js/views/programs.js?v=2.0.22',
-  './js/views/academy.js?v=2.0.22',
-  './js/views/community.js?v=2.0.22',
-  './js/views/account.js?v=2.0.22',
-  './js/views/more.js?v=2.0.22',
+  './js/views/home.js?v=2.0.23',
+  './js/views/brain-check.js?v=2.0.23',
+  './js/views/neuro.js?v=2.0.23',
+  './js/views/my-brain.js?v=2.0.23',
+  './js/views/programs.js?v=2.0.23',
+  './js/views/academy.js?v=2.0.23',
+  './js/views/community.js?v=2.0.23',
+  './js/views/account.js?v=2.0.23',
+  './js/views/more.js?v=2.0.23',
 
   /* admin · partner */
-  './js/views/admin.js?v=2.0.22',
-  './js/views/admin-login.js?v=2.0.22',
-  './js/views/partner.js?v=2.0.22',
-  './js/views/admin/overview.js?v=2.0.22',
-  './js/views/admin/bookings.js?v=2.0.22',
-  './js/views/admin/members.js?v=2.0.22',
-  './js/views/admin/results.js?v=2.0.22',
-  './js/views/admin/content.js?v=2.0.22',
-  './js/views/admin/orgs.js?v=2.0.22',
-  './js/views/admin/settlements.js?v=2.0.22',
-  './js/views/admin/audit.js?v=2.0.22',
-  './js/views/admin/security.js?v=2.0.22',
-  './js/views/admin/neuro-capture.js?v=2.0.22',
+  './js/views/admin.js?v=2.0.23',
+  './js/views/admin-login.js?v=2.0.23',
+  './js/views/partner.js?v=2.0.23',
+  './js/views/admin/overview.js?v=2.0.23',
+  './js/views/admin/bookings.js?v=2.0.23',
+  './js/views/admin/members.js?v=2.0.23',
+  './js/views/admin/results.js?v=2.0.23',
+  './js/views/admin/content.js?v=2.0.23',
+  './js/views/admin/orgs.js?v=2.0.23',
+  './js/views/admin/settlements.js?v=2.0.23',
+  './js/views/admin/audit.js?v=2.0.23',
+  './js/views/admin/security.js?v=2.0.23',
+  './js/views/admin/neuro-capture.js?v=2.0.23',
 
   /* icons · assets */
-  './icons/icon-192.png?v=2.0.22',
-  './icons/icon-512.png?v=2.0.22',
-  './icons/icon-maskable-512.png?v=2.0.22',
-  './icons/apple-touch-icon.png?v=2.0.22',
-  './icons/favicon-32.png?v=2.0.22',
+  './icons/icon-192.png?v=2.0.23',
+  './icons/icon-512.png?v=2.0.23',
+  './icons/icon-maskable-512.png?v=2.0.23',
+  './icons/apple-touch-icon.png?v=2.0.23',
+  './icons/favicon-32.png?v=2.0.23',
   '../assets/logo-pulse-accent.png',
   '../assets/logo-pulse-white.png'
 ];
