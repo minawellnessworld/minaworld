@@ -2808,42 +2808,62 @@ body.portal-mode .mode-banner { display: none; }
 .bg-arc-shot.is-zero { background: var(--red-soft); border-color: #E4B4AF; color: var(--red); }
 .bg-arc-shoot { margin-top: 12px; }
 
-/* 5) 브레인 주방 순서요리 */
-.bg-kit-order { margin-top: 12px; padding: 12px 13px; border-radius: var(--radius-md); background: var(--ivory); border: 1px solid var(--line); }
-.bg-kit-order-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.bg-kit-menu { font-size: 14px; font-weight: 800; letter-spacing: -0.02em; }
-.bg-kit-order-sub { flex: 0 0 auto; font-size: 10px; color: var(--muted-2); }
-.bg-kit-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
-.bg-kit-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px 4px 5px; border-radius: 999px; background: var(--white); border: 1px solid var(--line); font-size: 11px; color: var(--muted); transition: background 0.15s var(--ease), border-color 0.15s var(--ease); }
-.bg-kit-no { display: grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; background: var(--box); font-size: 9px; font-weight: 800; color: var(--muted-2); }
-.bg-kit-emoji { font-size: 13px; }
-.bg-kit-chip.is-next { border-color: var(--gold); background: var(--gold-soft); color: #241A02; font-weight: 800; box-shadow: 0 0 0 3px rgba(200, 152, 48, 0.16); }
-.bg-kit-chip.is-next .bg-kit-no { background: var(--gold); color: var(--white); }
-.bg-kit-chip.is-done { opacity: 0.48; }
-.bg-kit-chip.is-done .bg-kit-name { text-decoration: line-through; }
-.bg-kit-bowl {
-  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 6px;
-  min-height: 92px; margin-top: 10px; padding: 14px;
-  border-radius: 8px 8px 46% 46% / 8px 8px 30% 30%;
-  background: var(--white); border: 1px solid var(--line); border-top: 3px solid var(--line-strong);
-  transition: background 0.2s var(--ease);
+/* 5) 브레인 주방 매드니스 */
+.bg-rush-custs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+.bg-rush-cust {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 8px 5px 7px; border-radius: 14px; background: var(--ivory); border: 1px solid var(--line);
+  min-height: 100px; justify-content: center;
 }
-.bg-kit-bowl-label { font-size: 11px; color: var(--muted-2); letter-spacing: 0.04em; }
-.bg-kit-in { font-size: 26px; line-height: 1.1; animation: bgPopIn 0.26s var(--ease); }
-.bg-kit-bowl.is-complete { background: var(--green-soft); border-color: #CFE6DA; }
-.bg-kit-tray { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 12px; }
-.bg-kit-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 6px;
-  border-radius: var(--radius-sm); border: 1px solid var(--line-strong); background: var(--white);
-  font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  transition: transform 0.12s ease, background 0.12s ease;
+.bg-rush-cust.is-empty { background: var(--box); border-style: dashed; }
+.bg-rush-face { font-size: 21px; line-height: 1; }
+.bg-rush-bubble {
+  display: flex; flex-direction: column; gap: 2px; width: 100%;
+  padding: 4px 3px; border-radius: 9px; background: var(--white);
+  border: 1px solid var(--line-strong); text-align: center;
 }
-.bg-kit-btn:active { transform: scale(0.96); background: var(--gold-soft); }
-.bg-kit-btn-e { font-size: 22px; line-height: 1.1; }
-.bg-kit-btn-n { font-size: 10.5px; font-weight: 700; color: var(--navy); }
-.bg-kit-btn.is-used { opacity: 0.32; }
-.bg-kit-btn.is-used:active { transform: none; }
-.bg-kit-btn.is-wrong { background: var(--red-soft); border-color: var(--red); animation: bgShake 0.32s var(--ease); }
+.bg-rush-bubble.is-empty { font-size: 9px; line-height: 1.3; color: var(--muted-2); border-style: dashed; padding: 5px 3px; }
+.bg-rush-order { display: flex; align-items: center; justify-content: center; gap: 3px; font-size: 9px; font-weight: 700; color: var(--navy); }
+.bg-rush-order.is-done { opacity: 0.38; text-decoration: line-through; }
+.bg-rush-order-e { font-size: 12px; line-height: 1; }
+.bg-rush-order-n { font-size: 8.5px; line-height: 1.2; }
+.bg-rush-pat { display: block; width: 100%; height: 5px; border-radius: 999px; background: var(--box); overflow: hidden; }
+.bg-rush-pat-fill { display: block; height: 100%; width: 100%; background: var(--green); border-radius: 999px; }
+.bg-rush-pat-fill.is-warn { background: var(--yellow); }
+.bg-rush-pat-fill.is-low { background: var(--red); }
+
+.bg-rush-kitchen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
+.bg-rush-station { display: flex; flex-direction: column; gap: 4px; }
+.bg-rush-station-label { font-size: 9px; font-weight: 800; letter-spacing: 0.02em; color: var(--muted); text-align: center; }
+.bg-rush-slots { display: flex; flex-direction: column; gap: 5px; }
+.bg-rush-slot {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; min-height: 64px; padding: 7px 5px;
+  border-radius: 12px; border: 1px dashed var(--line-strong); background: var(--white);
+  cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.12s ease, border-color 0.12s ease;
+}
+.bg-rush-slot.is-empty { background: var(--box); }
+.bg-rush-slot.is-cooking { border-style: solid; border-color: var(--gold); background: var(--gold-soft); }
+.bg-rush-slot.is-ready { border-style: solid; border-color: #B9DCC8; background: var(--green-soft); box-shadow: 0 0 0 2px rgba(31, 122, 90, 0.1); }
+.bg-rush-slot.is-burnt { border-style: solid; border-color: #D9AFA8; background: #F5E4E1; }
+.bg-rush-slot.is-dish { border-style: solid; border-color: var(--yellow-dark); background: var(--yellow-soft); box-shadow: 0 0 0 2px rgba(245, 184, 46, 0.16); }
+.bg-rush-slot-e { font-size: 17px; line-height: 1; }
+.bg-rush-slot-n { font-size: 8px; line-height: 1.3; text-align: center; color: var(--muted); }
+.bg-rush-slot.is-dish .bg-rush-slot-n { color: #7A5B12; font-weight: 700; }
+.bg-rush-slot-bar { display: block; width: 100%; height: 4px; border-radius: 999px; background: rgba(7, 13, 30, 0.12); overflow: hidden; }
+.bg-rush-fill { display: block; height: 100%; background: var(--gold); border-radius: 999px; }
+.bg-rush-trash {
+  position: absolute; top: -6px; right: -6px; display: grid; place-items: center;
+  width: 20px; height: 20px; border-radius: 50%; background: var(--white);
+  border: 1px solid var(--line-strong); font-size: 10px; box-shadow: var(--shadow-sm);
+}
+.bg-rush-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 12px; }
+.bg-rush-act {
+  padding: 11px 6px; border-radius: var(--radius-sm); border: 1px solid var(--line-strong);
+  background: var(--white); font-family: inherit; font-size: 11.5px; font-weight: 800; color: var(--navy);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.bg-rush-act:active { background: var(--gold-soft); transform: scale(0.97); }
 
 /* 결과 */
 .bg-result { display: flex; flex-direction: column; align-items: center; padding-top: 6px; text-align: center; }

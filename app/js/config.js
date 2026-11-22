@@ -43,7 +43,7 @@ export var CONFIG = {
   SUPABASE_SCHEMA: 'public',
   STORAGE_BUCKET: 'brain-results',
   GA_MEASUREMENT_ID: 'G-TTMVKBHNZM',
-  APP_VERSION: '2.0.26',
+  APP_VERSION: '2.0.27',
   SCHEMA_VERSION: 'v2',
   SITE_URL: 'https://www.minaworld.co.kr',
   CONTACT_EMAIL: 'minawellnessworld@gmail.com',
@@ -168,13 +168,13 @@ export var BRAIN_GAMES = [
   },
   {
     key: 'order_cooking',
-    title: '브레인 주방 순서요리',
-    en: 'BRAIN KITCHEN',
-    area: '실행기능 · 순서 처리',
-    desc: '주문 레시피 순서대로 재료를 톡톡 담아 요리 완성하기',
-    howto: '45초 동안 주문서에 적힌 재료를 순서대로 담아 요리를 완성하세요. 순서가 틀리면 잠깐 흔들리고 다음 재료를 알려 줍니다. 완성한 접시 수가 기록됩니다.',
+    title: '브레인 주방 매드니스',
+    en: 'COOKING RUSH',
+    area: '멀티태스킹 · 시간 관리',
+    desc: '동시에 오는 손님 주문에 맞춰 굽고 담고 제때 서빙하기',
+    howto: '60초 동안 손님 3명의 주문을 동시에 처리합니다. 패티를 굽고(다 익으면 ‘완성’, 4.5초 지나면 탐) 번 위에 올려 버거를 만들고 음료를 내려, 주문한 손님을 탭하면 바로 서빙됩니다. 3.5초 안에 연속 서빙하면 콤보 보너스가 붙습니다.',
     direction: 'higher',
-    unit: '접시',
+    unit: '점',
     ico: 'utensils',
     tone: 'navy'
   }

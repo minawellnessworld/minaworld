@@ -1,9 +1,9 @@
 /* 관리자 → 제휴 기관 정산: payments(paid/refunded) + 기관 수수료율 기반 정산 생성·완료·CSV */
-import { SETTLEMENT_STATUS } from '../../config.js?v=2.0.26';
-import { state, listPayments, listOrganizations, friendlyError, todayStr } from '../../store.js?v=2.0.26';
-import { listSettlements, settlementTotals, createSettlement, markSettlementPaid } from '../../store-org.js?v=2.0.26';
-import { logAudit } from '../../store-security.js?v=2.0.26';
-import { icon, esc, fmtKRW, fmtDate, toast, badge, setBusy, downloadCsv, noticeBox, confirmDialog } from '../../ui.js?v=2.0.26';
+import { SETTLEMENT_STATUS } from '../../config.js?v=2.0.27';
+import { state, listPayments, listOrganizations, friendlyError, todayStr } from '../../store.js?v=2.0.27';
+import { listSettlements, settlementTotals, createSettlement, markSettlementPaid } from '../../store-org.js?v=2.0.27';
+import { logAudit } from '../../store-security.js?v=2.0.27';
+import { icon, esc, fmtKRW, fmtDate, toast, badge, setBusy, downloadCsv, noticeBox, confirmDialog } from '../../ui.js?v=2.0.27';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
