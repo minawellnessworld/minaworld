@@ -5,19 +5,19 @@
     → get_booked_slots RPC 로 이미 예약된 시간대 비활성(중복 차단)
     → DB 유니크 인덱스(idx_bookings_no_overlap) 위반 시 한국어 안내
    ===================================================================== */
-import { CONFIG, BOOKING_STATUS, BOOKING_PAYMENT_STATUS, POINT_USE_CATEGORIES } from './config.js?v=2.0.21';
+import { CONFIG, BOOKING_STATUS, BOOKING_PAYMENT_STATUS, POINT_USE_CATEGORIES } from './config.js?v=2.0.22';
 import {
   state, createBooking, updateBooking, cancelBooking, listBookings, validateCoupon,
   getBookedSlots, listAllPrograms, listProfiles, getPointSettings, friendlyError
-} from './store.js?v=2.0.21';
+} from './store.js?v=2.0.22';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listOrgSchedules, buildSlotsFromSchedules
-} from './store-org.js?v=2.0.21';
-import { logAudit } from './store-security.js?v=2.0.21';
+} from './store-org.js?v=2.0.22';
+import { logAudit } from './store-security.js?v=2.0.22';
 import {
   esc, fmtKRW, fmtDate, icon, toast, openSheet, closeSheet, noticeBox, setBusy, go, track,
   confirmDialog, bookingStatusTone, paymentStatusTone, emptyState, loadingBlock
-} from './ui.js?v=2.0.21';
+} from './ui.js?v=2.0.22';
 
 function dateToInput(d) {
   var m = ('0' + (d.getMonth() + 1)).slice(-2);
@@ -386,13 +386,16 @@ export function openBookingFlow(program, options) {
       function syncPoints() {
         var raw = Math.floor(Number(pointsInput && pointsInput.value ? pointsInput.value : 0) || 0);
         var cap = maxPointsAllowed();
-        var used = Math.max(0, Math.min(raw, myPoints, cap));
+        var limitPts = Math.max(0, Math.min(myPoints, cap));
+        var used = Math.max(0, Math.min(raw, limitPts));
         pointsUsed = used;
         pointsDiscount = used * krw;
         if (pointsHint) {
-          var text = '보유 ' + myPoints + 'P · 최대 ' + cap + 'P까지 사용 가능 (1P = ' + fmtKRW(krw) + ')';
+          var text = myPoints > 0
+            ? '보유 ' + myPoints + 'P · 최대 ' + limitPts + 'P까지 사용 가능 (1P = ' + fmtKRW(krw) + ')'
+            : '보유 포인트가 없습니다. 홈에서 오늘의 뇌 컨디션을 저장하면 적립됩니다.';
           if (raw > myPoints) text = '보유 포인트(' + myPoints + 'P)를 넘어 입력했습니다. ' + used + 'P로 적용됩니다.';
-          else if (raw > cap) text = '결제 금액 한도(' + cap + 'P)까지만 적용됩니다.';
+          else if (raw > limitPts) text = '결제 금액 한도(' + limitPts + 'P)까지만 적용됩니다.';
           else if (used > 0) text = used + 'P 사용 → ' + fmtKRW(pointsDiscount) + ' 할인';
           pointsHint.textContent = text;
         }
@@ -403,7 +406,7 @@ export function openBookingFlow(program, options) {
         pointsInput.addEventListener('input', syncPoints);
         var maxBtn = el.querySelector('#bk-points-max');
         if (maxBtn) maxBtn.addEventListener('click', function () {
-          pointsInput.value = String(maxPointsAllowed());
+          pointsInput.value = String(Math.max(0, Math.min(myPoints, maxPointsAllowed())));
           syncPoints();
         });
         var clearBtn = el.querySelector('#bk-points-clear');
