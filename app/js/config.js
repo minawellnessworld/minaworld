@@ -43,7 +43,7 @@ export var CONFIG = {
   SUPABASE_SCHEMA: 'public',
   STORAGE_BUCKET: 'brain-results',
   GA_MEASUREMENT_ID: 'G-TTMVKBHNZM',
-  APP_VERSION: '2.0.20',
+  APP_VERSION: '2.0.21',
   SCHEMA_VERSION: 'v2',
   SITE_URL: 'https://www.minaworld.co.kr',
   CONTACT_EMAIL: 'minawellnessworld@gmail.com',
@@ -90,6 +90,25 @@ export var MINA_MEANING = [
   { letter: 'N', word: 'NEURO', text: '뇌과학·뇌기능·뇌 건강' },
   { letter: 'A', word: 'ALIGNMENT', text: '수면·운동·생활 균형' }
 ];
+
+/* PART 8 — 포인트(리워드) 정책
+   1P = 10원 기준. 실제 값은 DB point_settings(관리자 화면에서 수정)가 우선이며,
+   아래 값은 마이그레이션 전·로컬 체험 모드의 기본값입니다. */
+export var POINT_DEFAULTS = {
+  krw_per_point: 10,
+  checkin_reward_points: 5,
+  min_use_points: 0
+};
+
+export var POINT_REASONS = {
+  wellness_checkin: '뇌 컨디션 체크인',
+  booking_use: '예약 포인트 사용',
+  booking_refund: '예약 취소·환불 복구',
+  admin_adjust: '관리자 조정'
+};
+
+/* 포인트 사용이 가능한 예약 카테고리 (뇌파검사 · 뉴로피드백) */
+export var POINT_USE_CATEGORIES = ['brain_check', 'neuro_training'];
 
 export var BOOKING_STATUS = {
   pending: '예약 대기',

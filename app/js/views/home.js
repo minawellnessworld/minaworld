@@ -1,19 +1,19 @@
 /* S01. 홈 — 개인 회원 메인 대시보드(PART 2-2) + 오늘의 뇌 컨디션 체크인 */
-import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.20';
+import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.21';
 import {
   state, listWellness, addWellness, listBookings, listPosts, listResults, listPackages,
-  listSessions, getPrograms, isStaff, isOrgWorker,
+  listSessions, getPrograms, getPointSettings, isStaff, isOrgWorker,
   friendlyError, dateKey, todayStr
-} from '../store.js?v=2.0.20';
+} from '../store.js?v=2.0.21';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listMyMemberships, setShareBrainResults
-} from '../store-org.js?v=2.0.20';
-import { recordConsents, logAudit } from '../store-security.js?v=2.0.20';
+} from '../store-org.js?v=2.0.21';
+import { recordConsents, logAudit } from '../store-security.js?v=2.0.21';
 import {
   icon, esc, fmtKRW, fmtDate, todayLabel, toast, emptyState, setBusy, sectionHead, go, track, noticeBox
-} from '../ui.js?v=2.0.20';
-import { requireLoginSheet } from '../booking.js?v=2.0.20';
-import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.20';
+} from '../ui.js?v=2.0.21';
+import { requireLoginSheet } from '../booking.js?v=2.0.21';
+import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.21';
 
 var MENU = [
   { key: 'brain_check', title: 'BRAIN CHECK', sub: '뇌파측정 · 뇌기능검사 예약', ico: 'pulse', href: '#/brain-check', tone: 'navy' },
@@ -66,6 +66,7 @@ export async function render(ctx) {
   var programs = [];
   var memberships = [];
   var branches = [];
+  var pointSettings = null;
 
   try {
     var jobs = [listPosts({ category: 'notice' }), listPosts({ category: 'event' })];
@@ -101,6 +102,13 @@ export async function render(ctx) {
   for (var i = 0; i < logs.length; i++) {
     if (logs[i].logged_at === todayStrValue) todayLog = logs[i];
   }
+
+  /* 포인트 정책(1P당 원 · 체크인 적립 P) — DB 설정값, 실패 시 기본값 */
+  try { pointSettings = await getPointSettings(); } catch (err) { pointSettings = null; }
+  var krwPerPoint = pointSettings ? Math.max(1, Number(pointSettings.krw_per_point || 10)) : 10;
+  var checkinReward = pointSettings ? Math.max(0, Number(pointSettings.checkin_reward_points || 0)) : 5;
+  var myPoints = state.profile && state.profile.points_balance !== undefined && state.profile.points_balance !== null
+    ? Number(state.profile.points_balance) : 0;
 
   var upcomingList = bookings.filter(function (b) {
     return (b.status === 'pending' || b.status === 'confirmed') && String(b.preferred_date) >= todayStrValue;
@@ -166,6 +174,9 @@ export async function render(ctx) {
         '<div class="checkin-head"><strong>오늘의 뇌 컨디션 체크인</strong>' +
           (todayLog ? '<span class="pill pill-ok">오늘 기록 완료</span>' : '<span class="muted small">1~5점</span>') +
         '</div>' +
+        (checkinReward > 0
+          ? '<p class="checkin-points">' + icon('coin', 14) + ' 저장 시 하루 1회 +' + checkinReward + 'P 적립 · 1P = ' + fmtKRW(krwPerPoint) + '</p>'
+          : '<p class="checkin-points">' + icon('coin', 14) + ' 1P = ' + fmtKRW(krwPerPoint) + ' · 뇌파검사·뉴로피드백 예약에 사용</p>') +
         CHECK_ROWS.map(function (row) {
           return scoreRow(row, todayLog ? todayLog[row.key] : 0);
         }).join('') +
@@ -242,6 +253,8 @@ export async function render(ctx) {
           dashTile('sparkle', '뉴로피드백 잔여', String(remaining) + '회', totalUsed ? '누적 ' + totalUsed + '회 훈련' : '이용권 없음', '#/neuro') +
           dashTile('heart', '최근 웰니스', latestWellness ? fmtDate(latestWellness.logged_at) : '기록 없음',
             latestWellness ? ('집중 ' + (latestWellness.focus_level || '-') + ' · 스트레스 ' + (latestWellness.stress_level || '-')) : '오늘 체크인해 보세요', '#/my-brain') +
+          dashTile('coin', '내 포인트', myPoints + 'P',
+            myPoints > 0 ? fmtKRW(myPoints * krwPerPoint) + ' 상당' : '체크인으로 적립', '#/account?focus=points') +
           dashTile('chat', '공지 · 이벤트', String(notices.length + events.length) + '건', topNotice ? topNotice.title : '새 소식 없음', '#/community') +
         '</div>' +
         (shareRequests.length
@@ -394,6 +407,7 @@ export async function render(ctx) {
       var saveBtn = el.querySelector('#checkin-save');
       if (saveBtn) {
         var saving = false; /* 연타로 중복 INSERT 되지 않도록 방지 */
+        var wasTodayRecorded = Boolean(todayLog);
         saveBtn.addEventListener('click', async function () {
           if (saving) return;
           if (!selected.focus_level || !selected.stress_level || !selected.sleep_level) {
@@ -404,7 +418,7 @@ export async function render(ctx) {
           saving = true;
           setBusy(saveBtn, true, '저장 중');
           try {
-            await addWellness({
+            var result = await addWellness({
               logged_at: todayStrValue,
               condition_label: '일일 체크인',
               focus_level: selected.focus_level,
@@ -415,9 +429,16 @@ export async function render(ctx) {
             track('wellness_checkin', {
               focus: selected.focus_level,
               stress: selected.stress_level,
-              sleep: selected.sleep_level
+              sleep: selected.sleep_level,
+              awarded_points: result && result.awardedPoints ? result.awardedPoints : 0
             });
-            toast('오늘의 뇌 컨디션이 기록되었습니다.', 'success');
+            if (result && result.awardedPoints > 0) {
+              toast('오늘의 뇌 컨디션 기록 +' + result.awardedPoints + 'P 적립되었습니다!', 'success');
+            } else if (wasTodayRecorded) {
+              toast('오늘의 뇌 컨디션이 수정 저장되었습니다.', 'success');
+            } else {
+              toast('오늘의 뇌 컨디션이 저장되었습니다.', 'success');
+            }
             if (typeof ctx.rerender === 'function') await ctx.rerender();
           } catch (err) {
             toast(friendlyError(err), 'error');

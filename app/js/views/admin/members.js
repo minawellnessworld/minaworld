@@ -1,14 +1,14 @@
 /* 관리자 → 회원 관리: 통합 상세 뷰(가입·프로그램·예약·결제·검사·훈련·상담) + 상태 관리 */
-import { ROLES, GRADES, PROFILE_STATUS, CHECK_TYPES, BOOKING_STATUS } from '../../config.js?v=2.0.20';
+import { ROLES, GRADES, PROFILE_STATUS, CHECK_TYPES, BOOKING_STATUS } from '../../config.js?v=2.0.21';
 import {
   state, listProfiles, adminUpdateProfile, listBookings, listResults, listSessions,
-  listPayments, listNotes, listPackages, listOrganizations, friendlyError
-} from '../../store.js?v=2.0.20';
-import { listMembershipsForUser } from '../../store-org.js?v=2.0.20';
-import { logAudit } from '../../store-security.js?v=2.0.20';
+  listPayments, listNotes, listPackages, listOrganizations, friendlyError, getPointSettings, listPointTransactions
+} from '../../store.js?v=2.0.21';
+import { listMembershipsForUser } from '../../store-org.js?v=2.0.21';
+import { logAudit } from '../../store-security.js?v=2.0.21';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, badge, openSheet, closeSheet, noticeBox, loadingBlock
-} from '../../ui.js?v=2.0.20';
+} from '../../ui.js?v=2.0.21';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';
@@ -37,6 +37,7 @@ export async function build(ctx) {
   var sessions = [];
   var orgs = [];
   var packages = [];
+  var krwPerPoint = 10;
   var writable = state.profile && (state.profile.role === 'admin' || state.profile.role === 'super_admin');
   var loadError = '';
 
@@ -51,6 +52,10 @@ export async function build(ctx) {
   } catch (err) {
     loadError = friendlyError(err);
   }
+  try {
+    var pts = await getPointSettings();
+    krwPerPoint = Math.max(1, Number(pts && pts.krw_per_point ? pts.krw_per_point : 10));
+  } catch (err) { krwPerPoint = 10; }
 
   function orgName(id) {
     for (var i = 0; i < orgs.length; i++) if (String(orgs[i].id) === String(id)) return orgs[i].name;
@@ -76,7 +81,7 @@ export async function build(ctx) {
       '<td>' + (writable
         ? '<select data-status="' + esc(p.id) + '">' + Object.keys(PROFILE_STATUS).map(function (s) { return opt(s, PROFILE_STATUS[s], p.status || 'active'); }).join('') + '</select>'
         : badge(PROFILE_STATUS[p.status || 'active'], statusTone(p.status))) + '</td>' +
-      '<td class="muted small">예약 ' + bookingCount + ' · 검사 ' + resultCount + ' · 훈련 ' + sessionCount + '</td>' +
+      '<td class="muted small">포인트 <strong>' + Number(p.points_balance || 0) + 'P</strong><br>예약 ' + bookingCount + ' · 검사 ' + resultCount + ' · 훈련 ' + sessionCount + '</td>' +
       '<td class="muted small">' + fmtDate(p.created_at) + '</td>' +
       '<td><button type="button" class="btn btn-ghost btn-xs" data-detail="' + esc(p.id) + '">통합 보기</button></td>' +
     '</tr>';
@@ -194,6 +199,15 @@ async function openMemberDetail(userId, profile, orgs) {
 
         var paidTotal = payments.reduce(function (sum, p) { return p.status === 'paid' ? sum + Number(p.amount || 0) : sum; }, 0);
 
+        var myPoints = profile && profile.points_balance !== undefined && profile.points_balance !== null ? Number(profile.points_balance) : 0;
+        var krw = 10;
+        try {
+          var ps = await getPointSettings();
+          krw = Math.max(1, Number(ps && ps.krw_per_point ? ps.krw_per_point : 10));
+        } catch (err) { krw = 10; }
+        var myPointTxs = [];
+        try { myPointTxs = await listPointTransactions(userId, 8); } catch (err) { myPointTxs = []; }
+
         body.innerHTML =
           '<div class="detail-grid">' +
             '<div class="detail-cell"><span>가입일</span><strong>' + fmtDate(profile ? profile.created_at : '') + '</strong></div>' +
@@ -203,6 +217,7 @@ async function openMemberDetail(userId, profile, orgs) {
             '<div class="detail-cell"><span>연락처</span><strong>' + esc(profile ? profile.phone || '-' : '-') + '</strong></div>' +
             '<div class="detail-cell"><span>소속 기관</span><strong>' + esc(orgName || '없음') + '</strong></div>' +
             '<div class="detail-cell"><span>누적 결제</span><strong>' + fmtKRW(paidTotal) + '</strong></div>' +
+            '<div class="detail-cell"><span>보유 포인트</span><strong>' + myPoints + 'P</strong><span class="muted small">' + fmtKRW(myPoints * krw) + ' 상당</span></div>' +
             '<div class="detail-cell"><span>목표</span><strong>' + esc(profile && profile.goals && profile.goals.length ? profile.goals.join(', ') : '-') + '</strong></div>' +
           '</div>' +
 
@@ -261,6 +276,16 @@ async function openMemberDetail(userId, profile, orgs) {
                 return '<div class="mini-row"><span>' + fmtDateTime(n.created_at) + '</span><strong>' + esc(n.memo) + '</strong></div>';
               }).join('')
             : '<p class="muted small">상담 기록이 없습니다.</p>') +
+
+          '<h4 class="admin-h4">포인트 내역 ' + myPointTxs.length + '건</h4>' +
+          (myPointTxs.length
+            ? myPointTxs.map(function (tx) {
+                var plus = Number(tx.delta) > 0;
+                return '<div class="mini-row"><span>' + fmtDate(tx.created_at) + ' · ' + esc(POINT_REASONS[tx.reason] || tx.reason || '') + '</span>' +
+                  '<strong class="' + (plus ? 'point-plus' : 'point-minus') + '">' + (plus ? '+' : '') + Number(tx.delta) + 'P</strong>' +
+                  '<em class="muted small">잔액 ' + Number(tx.balance_after || 0) + 'P</em></div>';
+              }).join('')
+            : '<p class="muted small">포인트 내역이 없습니다.</p>') +
 
           '<h4 class="admin-h4">기관 소속 ' + myMemberships.length + '건</h4>' +
           (myMemberships.length

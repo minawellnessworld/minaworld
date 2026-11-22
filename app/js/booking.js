@@ -5,19 +5,19 @@
     → get_booked_slots RPC 로 이미 예약된 시간대 비활성(중복 차단)
     → DB 유니크 인덱스(idx_bookings_no_overlap) 위반 시 한국어 안내
    ===================================================================== */
-import { CONFIG, BOOKING_STATUS, BOOKING_PAYMENT_STATUS } from './config.js?v=2.0.20';
+import { CONFIG, BOOKING_STATUS, BOOKING_PAYMENT_STATUS, POINT_USE_CATEGORIES } from './config.js?v=2.0.21';
 import {
   state, createBooking, updateBooking, cancelBooking, listBookings, validateCoupon,
-  getBookedSlots, listAllPrograms, listProfiles, friendlyError
-} from './store.js?v=2.0.20';
+  getBookedSlots, listAllPrograms, listProfiles, getPointSettings, friendlyError
+} from './store.js?v=2.0.21';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listOrgSchedules, buildSlotsFromSchedules
-} from './store-org.js?v=2.0.20';
-import { logAudit } from './store-security.js?v=2.0.20';
+} from './store-org.js?v=2.0.21';
+import { logAudit } from './store-security.js?v=2.0.21';
 import {
   esc, fmtKRW, fmtDate, icon, toast, openSheet, closeSheet, noticeBox, setBusy, go, track,
   confirmDialog, bookingStatusTone, paymentStatusTone, emptyState, loadingBlock
-} from './ui.js?v=2.0.20';
+} from './ui.js?v=2.0.21';
 
 function dateToInput(d) {
   var m = ('0' + (d.getMonth() + 1)).slice(-2);
@@ -123,6 +123,9 @@ export function openBookingFlow(program, options) {
   var originalAmount = program.price_krw === null || program.price_krw === undefined ? 0 : Number(program.price_krw);
   var discount = 0;
   var couponCode = '';
+  /* 포인트 사용: 뇌파검사 · 뉴로피드백 + 금액이 확정된 상품만 */
+  var pointEligible = POINT_USE_CATEGORIES.indexOf(program.category) >= 0 && originalAmount > 0;
+  var myPoints = profile.points_balance !== undefined && profile.points_balance !== null ? Number(profile.points_balance) : 0;
 
   var stateModel = {
     context: null,
@@ -174,8 +177,21 @@ export function openBookingFlow(program, options) {
         '<button type="button" class="btn btn-ghost btn-sm" id="bk-apply">적용</button></div>' +
         '<p class="field-hint" id="bk-coupon-msg">보유 쿠폰 코드를 입력하면 할인이 적용됩니다.</p></div>'
       : noticeBox('가격 미확정 상품입니다. 예약 접수 후 상담에서 금액을 확정하며, 이 단계에서는 결제가 발생하지 않습니다.', 'neutral')) +
+    (pointEligible
+      ? '<div class="field">' +
+          '<span class="field-label">포인트 사용 <span class="field-sub" id="bk-points-sub">보유 ' + myPoints + 'P · 1P = ' + fmtKRW(10) + '</span></span>' +
+          '<div class="input-inline">' +
+            '<input type="number" id="bk-points" min="0" step="1" inputmode="numeric" placeholder="0" autocomplete="off">' +
+            '<button type="button" class="btn btn-ghost btn-sm" id="bk-points-max">전액 사용</button>' +
+            '<button type="button" class="btn btn-ghost btn-sm" id="bk-points-clear">초기화</button>' +
+          '</div>' +
+          '<p class="field-hint" id="bk-points-hint">보유 ' + myPoints + 'P · 뇌파검사·뉴로피드백 예약에 사용할 수 있습니다.</p>' +
+          '<p class="field-hint">예약 취소·환불 시 사용한 포인트는 자동으로 복구됩니다.</p>' +
+        '</div>'
+      : '') +
     '<div class="pay-box">' +
       '<div class="pay-line"><span>결제 금액</span><strong id="bk-amount">' + (originalAmount > 0 ? fmtKRW(originalAmount) : '상담 후 확정') + '</strong></div>' +
+      '<p class="pay-detail" id="bk-amount-detail"></p>' +
       '<p class="pay-note">' + icon('info', 15) + ' 온라인 카드결제(PG) 연동 대기 상태입니다. 예약은 접수되며 입금/현장 확인으로 진행됩니다.</p>' +
       '<p class="pay-note">' + icon('sparkle', 15) + ' 결제 완료 시 뉴로피드백 이용권은 DB 트리거가 자동 등록하며, 환불 시 잔여 회차 기준으로 만료 처리됩니다.</p>' +
     '</div>';
@@ -343,11 +359,68 @@ export function openBookingFlow(program, options) {
       function refreshAmount() {
         if (!amountEl) return;
         if (!originalAmount) { amountEl.textContent = '상담 후 확정'; return; }
-        var final = Math.max(0, originalAmount - discount);
-        amountEl.innerHTML = (discount > 0
+        var afterCoupon = Math.max(0, originalAmount - discount);
+        var final = Math.max(0, afterCoupon - pointsDiscount);
+        amountEl.innerHTML = (discount > 0 || pointsDiscount > 0
           ? '<span class="amount-strike">' + fmtKRW(originalAmount) + '</span> ' + fmtKRW(final)
           : fmtKRW(final));
+        var detailEl = el.querySelector('#bk-amount-detail');
+        if (detailEl) {
+          var lines = ['프로그램 ' + fmtKRW(originalAmount)];
+          if (discount > 0) lines.push('쿠폰 -' + fmtKRW(discount));
+          if (pointsDiscount > 0) lines.push('포인트 ' + pointsUsed + 'P -' + fmtKRW(pointsDiscount));
+          detailEl.textContent = lines.join(' · ');
+        }
       }
+
+      /* ------------------------------------------------ 포인트 사용 */
+      var pointsInput = el.querySelector('#bk-points');
+      var pointsHint = el.querySelector('#bk-points-hint');
+      var krw = 10;
+      var pointsUsed = 0;
+      var pointsDiscount = 0;
+
+      function afterCouponAmount() { return Math.max(0, originalAmount - discount); }
+      function maxPointsAllowed() { return Math.floor(afterCouponAmount() / Math.max(1, krw)); }
+
+      function syncPoints() {
+        var raw = Math.floor(Number(pointsInput && pointsInput.value ? pointsInput.value : 0) || 0);
+        var cap = maxPointsAllowed();
+        var used = Math.max(0, Math.min(raw, myPoints, cap));
+        pointsUsed = used;
+        pointsDiscount = used * krw;
+        if (pointsHint) {
+          var text = '보유 ' + myPoints + 'P · 최대 ' + cap + 'P까지 사용 가능 (1P = ' + fmtKRW(krw) + ')';
+          if (raw > myPoints) text = '보유 포인트(' + myPoints + 'P)를 넘어 입력했습니다. ' + used + 'P로 적용됩니다.';
+          else if (raw > cap) text = '결제 금액 한도(' + cap + 'P)까지만 적용됩니다.';
+          else if (used > 0) text = used + 'P 사용 → ' + fmtKRW(pointsDiscount) + ' 할인';
+          pointsHint.textContent = text;
+        }
+        refreshAmount();
+      }
+
+      if (pointsInput) {
+        pointsInput.addEventListener('input', syncPoints);
+        var maxBtn = el.querySelector('#bk-points-max');
+        if (maxBtn) maxBtn.addEventListener('click', function () {
+          pointsInput.value = String(maxPointsAllowed());
+          syncPoints();
+        });
+        var clearBtn = el.querySelector('#bk-points-clear');
+        if (clearBtn) clearBtn.addEventListener('click', function () {
+          pointsInput.value = '';
+          syncPoints();
+        });
+        getPointSettings().then(function (settings) {
+          krw = Math.max(1, Number(settings && settings.krw_per_point ? settings.krw_per_point : 10));
+          var sub = el.querySelector('#bk-points-sub');
+          if (sub) sub.textContent = '보유 ' + myPoints + 'P · 1P = ' + fmtKRW(krw);
+          var minUse = Math.max(0, Number(settings && settings.min_use_points ? settings.min_use_points : 0));
+          if (minUse > 0) pointsInput.setAttribute('min', String(minUse));
+          syncPoints();
+        }).catch(function (err) { console.warn('[MINA] 포인트 설정 조회 실패', err); });
+      }
+      refreshAmount();
 
       var applyBtn = el.querySelector('#bk-apply');
       if (applyBtn) {
@@ -368,7 +441,7 @@ export function openBookingFlow(program, options) {
               couponCode = '';
               if (couponMsg) couponMsg.innerHTML = '<span class="err-text">' + esc(result.message) + '</span>';
             }
-            refreshAmount();
+            if (pointsInput) syncPoints(); else refreshAmount();
           } catch (err) {
             toast(friendlyError(err), 'error');
           } finally {
@@ -420,7 +493,8 @@ export function openBookingFlow(program, options) {
           }
 
           var methodEl = el.querySelector('input[name="pay-method"]:checked');
-          var finalAmount = Math.max(0, originalAmount - discount);
+          var afterCoupon = Math.max(0, originalAmount - discount);
+          var finalAmount = Math.max(0, afterCoupon - pointsDiscount);
           var branch = selectedBranch();
           var counselorEl = el.querySelector('#bk-counselor');
           var counselorId = stateModel.counselorId || null;
@@ -442,6 +516,7 @@ export function openBookingFlow(program, options) {
             original_amount: originalAmount,
             discount_amount: discount,
             final_amount: finalAmount,
+            points_used: pointsUsed,
             org_id: branch ? branch.org_id : null,
             branch_id: branch ? branch.id : null,
             branch_name: branch ? branch.name : '',
@@ -475,6 +550,9 @@ export function showBookingSuccess(booking, program, options) {
       (booking.branch_name ? '<div class="summary-row"><span>지점</span><strong>' + esc(booking.branch_name) + '</strong></div>' : '') +
       (booking.counselor_name ? '<div class="summary-row"><span>담당자</span><strong>' + esc(booking.counselor_name) + '</strong></div>' : '') +
       '<div class="summary-row"><span>금액</span><strong>' + (Number(booking.final_amount) > 0 ? fmtKRW(booking.final_amount) : '상담 후 확정') + '</strong></div>' +
+      (Number(booking.points_used) > 0
+        ? '<div class="summary-row"><span>포인트 사용</span><strong>' + Number(booking.points_used) + 'P (-' + fmtKRW(booking.points_discount_amount) + ')</strong></div>'
+        : '') +
       '<div class="summary-row"><span>예약 상태</span><strong>' + esc(BOOKING_STATUS[booking.status] || '예약 대기') + '</strong></div>' +
       '<div class="summary-row"><span>결제 상태</span><strong>' + esc(BOOKING_PAYMENT_STATUS[booking.payment_status] || '결제 모듈 연동 대기') + '</strong></div>' +
     '</div>' +
@@ -584,6 +662,8 @@ export function bookingItemHtml(booking) {
   var amountText = Number(booking.final_amount) > 0 ? fmtKRW(booking.final_amount) : '상담 후 확정';
   var discountLine = Number(booking.discount_amount) > 0
     ? '<span class="list-discount">쿠폰 ' + fmtKRW(booking.discount_amount) + ' 할인</span>' : '';
+  var pointsLine = Number(booking.points_used) > 0
+    ? '<span class="list-discount list-points">포인트 ' + Number(booking.points_used) + 'P (-' + fmtKRW(booking.points_discount_amount) + ')</span>' : '';
   return '<div class="list-card" data-booking-id="' + esc(booking.id) + '">' +
     '<div class="list-top">' +
       '<strong>' + esc(booking.program_title) + '</strong>' +
@@ -593,6 +673,7 @@ export function bookingItemHtml(booking) {
       '<span>' + icon('calendar', 15) + fmtDate(booking.preferred_date) + ' ' + esc(booking.preferred_time) + '</span>' +
       '<span>' + icon('wallet', 15) + amountText + '</span>' +
       discountLine +
+      pointsLine +
     '</div>' +
     (booking.branch_name ? '<div class="list-meta"><span>' + icon('pin', 15) + esc(booking.branch_name) + (booking.counselor_name ? ' · ' + esc(booking.counselor_name) : '') + '</span></div>' : '') +
     (booking.note ? '<p class="list-note">' + esc(booking.note) + '</p>' : '') +

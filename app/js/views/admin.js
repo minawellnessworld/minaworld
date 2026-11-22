@@ -3,30 +3,31 @@
        프로그램 · 아카데미 · 콘텐츠 · 쿠폰 · 상담 기록 · 제휴 기관 · 기관 정산 · 감사 로그 · 보안 */
 import {
   CHECK_TYPES, BOOKING_STATUS, BOOKING_PAYMENT_STATUS, PAYMENT_STATUS, ROLES, GRADES,
-  COMMUNITY_CATEGORIES, ENROLLMENT_STATUS, categoryLabel
-} from '../config.js?v=2.0.20';
+  COMMUNITY_CATEGORIES, ENROLLMENT_STATUS, categoryLabel, POINT_REASONS
+} from '../config.js?v=2.0.21';
 import {
   state, isAdmin, isStaff, listProfiles, listPackages, adminSavePackage, adminUpdatePackage,
   listSessions, adminSaveSession, listAllPrograms, adminUpdateProgram,
   listCohorts, adminCreateCohort, adminUpdateCohort, listEnrollments, adminUpdateEnrollment,
   listMaterials, adminCreateMaterial, listCoupons, adminCreateCoupon, adminUpdateCoupon,
-  listNotes, adminCreateNote, listPayments, adminSetPaymentStatus, friendlyError, todayStr
-} from '../store.js?v=2.0.20';
+  listNotes, adminCreateNote, listPayments, adminSetPaymentStatus, friendlyError, todayStr,
+  getPointSettings, adminUpdatePointSettings, adminAdjustPoints, listAllPointTransactions
+} from '../store.js?v=2.0.21';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, setBusy, go
-} from '../ui.js?v=2.0.20';
-import { logAudit } from '../store-security.js?v=2.0.20';
-import * as OverviewTab from './admin/overview.js?v=2.0.20';
-import * as BookingsTab from './admin/bookings.js?v=2.0.20';
-import * as MembersTab from './admin/members.js?v=2.0.20';
-import * as ResultsTab from './admin/results.js?v=2.0.20';
-import * as ContentTab from './admin/content.js?v=2.0.20';
-import * as OrgsTab from './admin/orgs.js?v=2.0.20';
-import * as SettlementsTab from './admin/settlements.js?v=2.0.20';
-import * as AuditTab from './admin/audit.js?v=2.0.20';
-import * as SecurityTab from './admin/security.js?v=2.0.20';
-import { captureSectionHtml, bindNeuroCapture } from './admin/neuro-capture.js?v=2.0.20';
+} from '../ui.js?v=2.0.21';
+import { logAudit } from '../store-security.js?v=2.0.21';
+import * as OverviewTab from './admin/overview.js?v=2.0.21';
+import * as BookingsTab from './admin/bookings.js?v=2.0.21';
+import * as MembersTab from './admin/members.js?v=2.0.21';
+import * as ResultsTab from './admin/results.js?v=2.0.21';
+import * as ContentTab from './admin/content.js?v=2.0.21';
+import * as OrgsTab from './admin/orgs.js?v=2.0.21';
+import * as SettlementsTab from './admin/settlements.js?v=2.0.21';
+import * as AuditTab from './admin/audit.js?v=2.0.21';
+import * as SecurityTab from './admin/security.js?v=2.0.21';
+import { captureSectionHtml, bindNeuroCapture } from './admin/neuro-capture.js?v=2.0.21';
 
 var TABS = [
   { id: 'overview', label: '운영 요약', ico: 'chart' },
@@ -38,7 +39,7 @@ var TABS = [
   { id: 'programs', label: '프로그램', ico: 'grid' },
   { id: 'academy', label: '아카데미', ico: 'user' },
   { id: 'content', label: '콘텐츠', ico: 'chat' },
-  { id: 'coupons', label: '쿠폰', ico: 'sparkle' },
+  { id: 'coupons', label: '쿠폰 · 포인트', ico: 'sparkle' },
   { id: 'notes', label: '상담 기록', ico: 'lock' },
   { id: 'orgs', label: '제휴 기관', ico: 'shield' },
   { id: 'settlements', label: '기관 정산', ico: 'wallet' },
@@ -644,10 +645,34 @@ async function buildAcademy(ctx) {
   };
 }
 
-/* ------------------------------------------------------------- coupons */
+/* ------------------------------------------------------ coupons · points */
 async function buildCoupons(ctx) {
   var coupons = await listCoupons();
   var writable = isAdmin();
+  var profiles = [];
+  var pointSettings = null;
+  var pointTxs = [];
+  try { profiles = await listProfiles(); } catch (err) { console.warn(err); }
+  try { pointSettings = await getPointSettings(); } catch (err) { pointSettings = null; }
+  try { pointTxs = await listAllPointTransactions(30); } catch (err) { pointTxs = []; }
+
+  var krw = pointSettings ? Math.max(1, Number(pointSettings.krw_per_point || 10)) : 10;
+  var reward = pointSettings ? Math.max(0, Number(pointSettings.checkin_reward_points || 0)) : 5;
+  var minUse = pointSettings ? Math.max(0, Number(pointSettings.min_use_points || 0)) : 0;
+  var pointsSum = profiles.reduce(function (sum, p) { return sum + Number(p.points_balance || 0); }, 0);
+
+  var pointRows = pointTxs.map(function (tx) {
+    var plus = Number(tx.delta) > 0;
+    return '<tr>' +
+      '<td class="muted small">' + fmtDate(tx.created_at) + '</td>' +
+      '<td class="muted small">' + esc(memberName(profiles, tx.user_id)) + '</td>' +
+      '<td>' + esc(POINT_REASONS[tx.reason] || tx.reason || '') + '</td>' +
+      '<td class="' + (plus ? 'point-plus' : 'point-minus') + '"><strong>' + (plus ? '+' : '') + Number(tx.delta) + 'P</strong></td>' +
+      '<td>' + Number(tx.balance_after || 0) + 'P</td>' +
+      '<td class="muted small">' + esc(tx.description || '') + '</td>' +
+    '</tr>';
+  }).join('');
+
   var rows = coupons.map(function (c) {
     return '<tr>' +
       '<td><strong>' + esc(c.code) + '</strong></td>' +
@@ -682,6 +707,45 @@ async function buildCoupons(ctx) {
     '<section class="admin-section">' +
       '<h2 class="admin-h2">쿠폰 목록 (' + coupons.length + ')</h2>' +
       table(['코드', '쿠폰명', '할인', '최소 금액', '만료', ''], rows || emptyRow(6, '쿠폰이 없습니다.')) +
+    '</section>' +
+    '<section class="admin-section">' +
+      '<h2 class="admin-h2">포인트 정책</h2>' +
+      (writable
+        ? '<div class="admin-form">' +
+            '<div class="form-grid form-grid-3">' +
+              '<label class="field"><span class="field-label">1P당 할인 금액 (원)</span><input type="number" id="pt-krw" min="1" value="' + krw + '"></label>' +
+              '<label class="field"><span class="field-label">체크인 적립 (P)</span><input type="number" id="pt-reward" min="0" value="' + reward + '"></label>' +
+              '<label class="field"><span class="field-label">최소 사용 (P)</span><input type="number" id="pt-min" min="0" value="' + minUse + '"></label>' +
+            '</div>' +
+            '<button type="button" class="btn btn-primary" id="pt-save">정책 저장</button>' +
+            '<p class="field-hint">현재: 1P = ' + fmtKRW(krw) + ' · 체크인 ' + reward + 'P(' + fmtKRW(reward * krw) + ' 상당) · 최소 사용 ' + (minUse > 0 ? minUse + 'P' : '제한 없음') + '. 저장 즉시 앱 화면·예약 계산에 반영됩니다.</p>' +
+          '</div>'
+        : adminReadOnlyNotice()) +
+      '<div class="stat-grid">' +
+        statCard('회원 보유 포인트 합계', pointsSum + 'P', fmtKRW(pointsSum * krw) + ' 상당', 'gold') +
+        statCard('포인트 내역', pointTxs.length + '건', '최근 30건', 'ivory') +
+        statCard('1P 기준', fmtKRW(krw), '예약 사용 단가', 'navy') +
+        statCard('체크인 적립', '+' + reward + 'P', '하루 1회', 'ivory') +
+      '</div>' +
+    '</section>' +
+    '<section class="admin-section">' +
+      '<h2 class="admin-h2">회원 포인트 지급 · 차감</h2>' +
+      (writable
+        ? '<div class="admin-form">' +
+            '<div class="form-grid">' +
+              '<label class="field"><span class="field-label">회원</span>' + memberSelect(profiles, 'pt-user', '회원 선택') + '</label>' +
+              '<label class="field"><span class="field-label">증감 포인트 (지급 +, 차감 -)</span><input type="number" id="pt-delta" step="1" placeholder="예: 50 또는 -20"></label>' +
+            '</div>' +
+            '<label class="field"><span class="field-label">사유</span><input type="text" id="pt-desc" maxlength="80" placeholder="예: 이벤트 당첨 보상 · 오적립 차감"></label>' +
+            '<button type="button" class="btn btn-primary" id="pt-adjust">포인트 조정</button>' +
+            '<p class="field-hint">조정은 보유 포인트 원장(point_transactions)에 사유와 처리 관리자와 함께 기록됩니다.</p>' +
+          '</div>'
+        : adminReadOnlyNotice()) +
+    '</section>' +
+    '<section class="admin-section">' +
+      '<h2 class="admin-h2">포인트 내역 (' + pointTxs.length + ')</h2>' +
+      table(['일자', '회원', '사유', '증감', '거래 후 잔액', '비고'], pointRows || emptyRow(6, '포인트 내역이 없습니다.')) +
+      noticeBox('체크인 적립·예약 사용·취소 복구는 DB 트리거가, 관리자 조정은 <code>admin_adjust_points</code> RPC가 기록합니다. 회원은 잔액을 직접 바꿀 수 없습니다.', 'neutral') +
     '</section>';
 
   return {
@@ -725,6 +789,51 @@ async function buildCoupons(ctx) {
             toast('쿠폰 상태가 변경되었습니다.', 'success');
             ctx.rerender();
           } catch (err) { toast(friendlyError(err), 'error'); }
+        });
+      }
+
+      /* 포인트 정책 저장 */
+      var ptSave = el.querySelector('#pt-save');
+      if (ptSave) {
+        ptSave.addEventListener('click', async function () {
+          var patch = {
+            krw_per_point: Number(el.querySelector('#pt-krw').value),
+            checkin_reward_points: Number(el.querySelector('#pt-reward').value),
+            min_use_points: Number(el.querySelector('#pt-min').value)
+          };
+          if (!patch.krw_per_point || patch.krw_per_point < 1) { toast('1P당 할인 금액을 1원 이상으로 입력해 주세요.'); return; }
+          setBusy(ptSave, true, '저장 중');
+          try {
+            var updated = await adminUpdatePointSettings(patch);
+            await logAudit({ action: 'point_settings_updated', target_table: 'point_settings', target_id: '1', detail: patch });
+            toast('포인트 정책이 저장되었습니다. 1P = ' + Number(updated && updated.krw_per_point ? updated.krw_per_point : patch.krw_per_point) + '원', 'success');
+            ctx.rerender();
+          } catch (err) {
+            toast(friendlyError(err), 'error');
+            setBusy(ptSave, false);
+          }
+        });
+      }
+
+      /* 회원 포인트 수동 지급 · 차감 */
+      var ptAdjust = el.querySelector('#pt-adjust');
+      if (ptAdjust) {
+        ptAdjust.addEventListener('click', async function () {
+          var userId = el.querySelector('#pt-user').value;
+          var delta = Number(el.querySelector('#pt-delta').value);
+          var desc = el.querySelector('#pt-desc').value.trim();
+          if (!userId) { toast('회원을 선택해 주세요.'); return; }
+          if (!delta) { toast('지급(+)/차감(-) 포인트를 입력해 주세요.'); return; }
+          setBusy(ptAdjust, true, '처리 중');
+          try {
+            var balance = await adminAdjustPoints(userId, delta, desc);
+            await logAudit({ action: 'point_adjusted', target_table: 'point_transactions', target_id: userId, detail: { delta: delta, balance_after: balance, description: desc } });
+            toast('포인트가 조정되었습니다. 현재 잔액 ' + Number(balance) + 'P', 'success');
+            ctx.rerender();
+          } catch (err) {
+            toast(friendlyError(err), 'error');
+            setBusy(ptAdjust, false);
+          }
         });
       }
     }

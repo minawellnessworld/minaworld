@@ -2552,3 +2552,66 @@ body.portal-mode .mode-banner { display: none; }
 @media (max-width: 380px) {
   .neuro-ex-row { grid-template-columns: 18px minmax(0, 1fr) 46px 58px; font-size: 11px; }
 }
+
+/* ------------------------------------------------------------- 포인트 */
+.checkin-points {
+  display: flex; align-items: center; gap: 5px;
+  margin: -4px 0 10px;
+  font-size: 11px; font-weight: 600; color: var(--gold-dark);
+  line-height: 1.45;
+}
+.checkin-points .ico { flex: 0 0 auto; }
+
+.point-card {
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(150deg, #FFFDF7, var(--gold-soft));
+  border: 1px solid rgba(201, 169, 110, 0.45);
+  box-shadow: var(--shadow-sm);
+}
+.point-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.point-balance { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.point-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; color: var(--gold-dark); text-transform: uppercase; }
+.point-value { font-size: 30px; font-weight: 800; letter-spacing: -0.04em; color: var(--navy); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.point-value em { font-size: 15px; font-style: normal; font-weight: 700; color: var(--gold-dark); margin-left: 2px; }
+.point-worth {
+  flex: 0 0 auto;
+  font-size: 11.5px; font-weight: 700; color: #6B5312;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  border-radius: 999px; padding: 5px 10px; white-space: nowrap;
+}
+.point-guide { margin: 12px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.point-guide li { position: relative; padding-left: 12px; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+.point-guide li::before {
+  content: ''; position: absolute; left: 0; top: 6px;
+  width: 4px; height: 4px; border-radius: 50%; background: var(--gold);
+}
+.point-guide strong { color: var(--navy); font-weight: 700; }
+
+.point-history {
+  margin-top: 12px; border-radius: var(--radius-md);
+  background: var(--white); border: 1px solid var(--line); overflow: hidden;
+}
+.point-history-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 11px 13px; border-bottom: 1px solid var(--line); background: #FCFBF8;
+}
+.point-history-head strong { font-size: 12px; font-weight: 800; color: var(--navy); }
+.point-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 10px 13px; border-bottom: 1px solid var(--line);
+}
+.point-row:last-child { border-bottom: 0; }
+.point-row-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.point-row-main strong { font-size: 12px; font-weight: 700; color: var(--navy); }
+.point-row-main .small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.point-row-side { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex: 0 0 auto; }
+.point-row-side strong { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.point-plus { color: var(--green); }
+.point-minus { color: var(--red); }
+.point-empty { padding: 12px 13px; }
+
+.pay-detail { margin-top: 4px; font-size: 10.5px; line-height: 1.5; color: #7A5B12; }
+.pay-detail:empty { display: none; }
+.list-points { color: var(--gold-dark); }

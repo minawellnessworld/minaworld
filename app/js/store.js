@@ -6,9 +6,9 @@
      · 프로그램·기수·쿠폰·기본 게시글만 시드로 보관
      · 개인 측정 데이터는 절대 임의 생성하지 않음 (빈 상태 표시)
    ===================================================================== */
-import { CONFIG } from './config.js?v=2.0.20';
-import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.20';
-import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.20';
+import { CONFIG, POINT_DEFAULTS } from './config.js?v=2.0.21';
+import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.21';
+import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.21';
 
 export var state = {
   mode: 'local',
@@ -146,6 +146,10 @@ export function friendlyError(err) {
   if (/row-level security|new row violates|permission denied/i.test(msg)) return '이 작업을 수행할 권한이 없습니다. (관리자 권한 또는 정책 확인 필요)';
   if (/duplicate key/i.test(msg) || code === '23505') return '이미 등록된 값입니다.';
   if (/function .* does not exist|Could not find the function/i.test(msg)) return 'DB v2 마이그레이션(supabase_schema_v2.sql)이 아직 적용되지 않았습니다. 적용 후 다시 시도해 주세요.';
+  if (/point_settings|point_transactions|admin_adjust_points/i.test(msg) && /does not exist|Could not find/i.test(msg)) return '포인트 기능 DB 마이그레이션(supabase_points_v4.sql)이 아직 적용되지 않았습니다. 적용 후 다시 시도해 주세요.';
+  if (/보유 포인트가 부족합니다/.test(msg)) return msg;
+  if (/최소 [0-9]+P 이상부터/.test(msg)) return msg;
+  if (/관리자만 포인트를 조정할 수 있습니다/.test(msg)) return '포인트 조정은 총괄 관리자만 할 수 있습니다.';
   if (/relation .* does not exist/i.test(msg)) return 'DB v2 테이블이 아직 생성되지 않았습니다. supabase_schema_v2.sql 적용이 필요합니다.';
   if (/Failed to fetch|NetworkError|Load failed/i.test(msg)) return '네트워크 연결을 확인해 주세요.';
   return msg || '요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.';
@@ -206,6 +210,14 @@ function seedLocal() {
     consent_logs: [],
     audit_logs: [],
     account_pre_assignments: [],
+    point_settings: [{
+      id: 1,
+      krw_per_point: POINT_DEFAULTS.krw_per_point,
+      checkin_reward_points: POINT_DEFAULTS.checkin_reward_points,
+      min_use_points: POINT_DEFAULTS.min_use_points,
+      updated_at: nowIso()
+    }],
+    point_transactions: [],
     auth_session: null
   };
   return db;
@@ -434,6 +446,7 @@ export async function signUp(payload) {
     goal_note: '',
     org_id: null,
     branch_id: null,
+    points_balance: 0,
     created_at: nowIso(),
     updated_at: nowIso()
   });
@@ -633,6 +646,8 @@ export async function createBooking(payload) {
     original_amount: payload.original_amount || 0,
     discount_amount: payload.discount_amount || 0,
     final_amount: payload.final_amount || 0,
+    points_used: Math.max(0, Math.round(Number(payload.points_used || 0))),
+    points_discount_amount: 0,
     status: payload.status || 'pending',
     payment_status: isBank ? 'bank_transfer' : isOnsite ? 'pending_pg' : 'pending_pg',
     counselor_id: payload.counselor_id || null,
@@ -658,7 +673,31 @@ export async function createBooking(payload) {
         throw new Error('이미 예약된 시간대입니다. 다른 시간을 선택해 주세요.');
       }
     }
-    booking = localInsert('bookings', row);
+    /* 로컬 체험 모드: DB 트리거 대신 같은 규칙(쿠폰 후 금액 기준 · 잔액 검증)으로 계산 */
+    var localRow = Object.assign({}, row);
+    var settings = localPointSettings();
+    var reqPts = Math.max(0, Number(localRow.points_used || 0));
+    var afterCoupon = Math.max(0, Number(localRow.original_amount || 0) - Number(localRow.discount_amount || 0));
+    if (reqPts > 0) {
+      var me = findProfile(id) || {};
+      var bal = Number(me.points_balance || 0);
+      if (reqPts > bal) throw new Error('보유 포인트가 부족합니다. (보유 ' + bal + 'P)');
+      if (Number(settings.min_use_points || 0) > 0 && reqPts < Number(settings.min_use_points)) {
+        throw new Error('최소 ' + settings.min_use_points + 'P 이상부터 사용할 수 있습니다.');
+      }
+      var krw = Math.max(1, Number(settings.krw_per_point || 1));
+      var usedPts = Math.min(reqPts, Math.max(0, Math.floor(afterCoupon / krw)));
+      localRow.points_used = usedPts;
+      localRow.points_discount_amount = usedPts * krw;
+      localRow.final_amount = Math.max(0, afterCoupon - localRow.points_discount_amount);
+    }
+    booking = localInsert('bookings', localRow);
+    if (Number(localRow.points_used || 0) > 0) {
+      localAddPointsLog(id, -Number(localRow.points_used), 'booking_use',
+        (localRow.program_title || '예약') + ' 예약 포인트 사용 (' + localRow.points_used + 'P)',
+        { booking_id: booking.id, org_id: localRow.org_id || null });
+      try { state.profile = findProfile(id); emit(); } catch (err) { console.warn(err); }
+    }
   }
 
   var paymentRow = {
@@ -696,6 +735,9 @@ export async function createBooking(payload) {
     console.warn('[MINA] 알림 기록 실패', err);
   }
 
+  /* 포인트 사용·적립이 반영되었으니 잔액을 다시 읽습니다. */
+  try { await refreshProfile(); } catch (err) { console.warn('[MINA] 포인트 잔액 갱신 실패', err); }
+
   return booking;
 }
 
@@ -723,12 +765,17 @@ export async function getBookedSlots(date, branchId, counselorId) {
 
 export async function updateBooking(id, patch) {
   var payload = Object.assign({}, patch, { updated_at: nowIso() });
+  var updated;
   if (state.mode === 'live') {
     var res = await clientSync().from('bookings').update(payload).eq('id', id).select().maybeSingle();
     if (res.error) throw new Error(friendlyError(res.error));
-    return res.data;
+    updated = res.data;
+  } else {
+    updated = localUpdate('bookings', id, payload);
   }
-  return localUpdate('bookings', id, payload);
+  /* 취소 시 포인트 복구가 일어나므로 잔액을 다시 읽습니다. */
+  try { await refreshProfile(); } catch (err) { console.warn('[MINA] 포인트 잔액 갱신 실패', err); }
+  return updated;
 }
 
 export async function cancelBooking(id) {
@@ -753,6 +800,7 @@ export async function adminSetBookingPayment(bookingId, status) {
     if (res.error) throw new Error(friendlyError(res.error));
     var payRes = await clientSync().from('payments').update(patch).eq('booking_id', bookingId).select();
     if (payRes.error) console.warn('[MINA] 결제 상태 변경 실패', payRes.error);
+    try { await refreshProfile(); } catch (err) { console.warn('[MINA] 포인트 잔액 갱신 실패', err); }
     return res.data;
   }
   var booking = localUpdate('bookings', bookingId, {
@@ -939,6 +987,131 @@ export async function adminSaveSession(payload, options) {
   return saved;
 }
 
+/* --------------------------------------------------------------- points */
+/* 포인트 정책(1P당 원 · 체크인 적립 P · 최소 사용 P) — DB point_settings 단일 행 */
+function localPointSettings() {
+  var rows = table('point_settings');
+  var row = rows && rows.length ? rows[0] : {};
+  var krw = Number(row.krw_per_point);
+  var reward = Number(row.checkin_reward_points);
+  var minUse = Number(row.min_use_points);
+  return {
+    id: 1,
+    krw_per_point: isFinite(krw) && krw >= 1 ? krw : POINT_DEFAULTS.krw_per_point,
+    checkin_reward_points: isFinite(reward) && reward >= 0 ? reward : POINT_DEFAULTS.checkin_reward_points,
+    min_use_points: isFinite(minUse) && minUse >= 0 ? minUse : POINT_DEFAULTS.min_use_points,
+    updated_at: row.updated_at || nowIso()
+  };
+}
+
+function localPointTransactionsOf(userId) {
+  return clone(table('point_transactions')).filter(function (tx) {
+    return String(tx.user_id) === String(userId);
+  });
+}
+
+/* 로컬 체험 모드 전용: 잔액 반영 + 원장 기록 (서버 트리거 역할) */
+function localAddPointsLog(userId, delta, reason, description, extra) {
+  var db = local();
+  var prof = null;
+  for (var i = 0; i < db.profiles.length; i++) {
+    if (String(db.profiles[i].id) === String(userId)) prof = db.profiles[i];
+  }
+  if (!prof) throw new Error('회원 정보를 찾지 못했습니다.');
+  var next = Number(prof.points_balance || 0) + Number(delta);
+  if (next < 0) throw new Error('보유 포인트가 부족합니다.');
+  prof.points_balance = next;
+  saveLocal();
+  return localInsert('point_transactions', Object.assign({
+    user_id: userId,
+    delta: Number(delta),
+    balance_after: next,
+    reason: reason,
+    description: description || ''
+  }, extra || {}));
+}
+
+export async function getPointSettings() {
+  if (state.mode === 'live') {
+    try {
+      var res = await clientSync().from('point_settings').select('*').eq('id', 1).maybeSingle();
+      if (res.error || !res.data) return Object.assign({ id: 1 }, POINT_DEFAULTS);
+      return res.data;
+    } catch (err) {
+      console.warn('[MINA] 포인트 설정 조회 실패', err);
+      return Object.assign({ id: 1 }, POINT_DEFAULTS);
+    }
+  }
+  return localPointSettings();
+}
+
+export async function listPointTransactions(userId, limit) {
+  var uidValue = userId || (state.session && state.session.user ? state.session.user.id : '');
+  if (state.mode === 'live') {
+    var q = clientSync().from('point_transactions').select('*').order('created_at', { ascending: false });
+    if (uidValue) q = q.eq('user_id', uidValue);
+    var res = await q.limit(limit || 20);
+    if (res.error) throw new Error(friendlyError(res.error));
+    return res.data || [];
+  }
+  var rows = uidValue ? localPointTransactionsOf(uidValue) : [];
+  rows = sortRows(rows, 'created_at', true);
+  return limit ? rows.slice(0, limit) : rows;
+}
+
+/* 관리자: 전체 회원 포인트 내역 */
+export async function listAllPointTransactions(limit) {
+  if (state.mode === 'live') {
+    var res = await clientSync().from('point_transactions').select('*').order('created_at', { ascending: false }).limit(limit || 50);
+    if (res.error) throw new Error(friendlyError(res.error));
+    return res.data || [];
+  }
+  return sortRows(clone(table('point_transactions')), 'created_at', true).slice(0, limit || 50);
+}
+
+export async function adminUpdatePointSettings(patch) {
+  var payload = {
+    krw_per_point: Math.max(1, Math.round(Number(patch.krw_per_point || POINT_DEFAULTS.krw_per_point))),
+    checkin_reward_points: Math.max(0, Math.round(Number(patch.checkin_reward_points || 0))),
+    min_use_points: Math.max(0, Math.round(Number(patch.min_use_points || 0))),
+    updated_at: nowIso()
+  };
+  if (state.mode === 'live') {
+    var res = await clientSync().from('point_settings').update(payload).eq('id', 1).select().maybeSingle();
+    if (res.error) throw new Error(friendlyError(res.error));
+    if (!res.data) {
+      var ins = await clientSync().from('point_settings').insert(Object.assign({ id: 1 }, payload)).select().maybeSingle();
+      if (ins.error) throw new Error(friendlyError(ins.error));
+      return ins.data;
+    }
+    return res.data;
+  }
+  var rows = table('point_settings');
+  if (!rows.length) return localInsert('point_settings', Object.assign({ id: 1 }, payload));
+  Object.assign(rows[0], payload);
+  saveLocal();
+  return clone(rows[0]);
+}
+
+/* 관리자 수동 지급(+)/차감(-) — 서버 RPC admin_adjust_points 가 잔액과 원장을 함께 기록 */
+export async function adminAdjustPoints(userId, delta, description) {
+  var amount = Math.round(Number(delta));
+  if (!userId) throw new Error('포인트를 조정할 회원을 선택해 주세요.');
+  if (!isFinite(amount) || amount === 0) throw new Error('조정할 포인트를 입력해 주세요. (지급은 +, 차감은 -)');
+  var desc = String(description || '').trim() || '관리자 포인트 조정';
+  if (state.mode === 'live') {
+    var res = await clientSync().rpc('admin_adjust_points', {
+      p_user_id: userId,
+      p_delta: amount,
+      p_description: desc
+    });
+    if (res.error) throw new Error(friendlyError(res.error));
+    return res.data;
+  }
+  var tx = localAddPointsLog(userId, amount, 'admin_adjust', desc, { created_by: state.session ? state.session.user.id : null });
+  return tx.balance_after;
+}
+
 /* ------------------------------------------------------------- wellness */
 export async function listWellness(userId, limit) {
   var rows;
@@ -959,8 +1132,13 @@ export async function listWellness(userId, limit) {
   return rows;
 }
 
+/* 오늘의 뇌 컨디션 체크인 저장
+   서버(wellness_logs AFTER INSERT 트리거)가 하루 1회 포인트를 적립합니다.
+   반환: { log, awardedPoints, pointsBalance } — 이번 저장으로 실제 적립된 P 와 현재 잔액 */
 export async function addWellness(payload) {
   var id = requireUid();
+  var beforeBalance = state.profile && state.profile.points_balance !== undefined && state.profile.points_balance !== null
+    ? Number(state.profile.points_balance) : null;
   var row = {
     user_id: id,
     logged_at: payload.logged_at || todayStr(),
@@ -970,12 +1148,39 @@ export async function addWellness(payload) {
     sleep_level: payload.sleep_level,
     memo: payload.memo || ''
   };
+  var saved = null;
+  var awardedPoints = 0;
+
   if (state.mode === 'live') {
     var res = await clientSync().from('wellness_logs').insert(row).select().maybeSingle();
     if (res.error) throw new Error(friendlyError(res.error));
-    return res.data;
+    saved = res.data;
+    try {
+      await refreshProfile();
+      var afterBalance = state.profile && state.profile.points_balance !== undefined && state.profile.points_balance !== null
+        ? Number(state.profile.points_balance) : null;
+      if (beforeBalance !== null && afterBalance !== null) awardedPoints = Math.max(0, afterBalance - beforeBalance);
+    } catch (err) {
+      console.warn('[MINA] 포인트 적립 확인 실패', err);
+    }
+  } else {
+    saved = localInsert('wellness_logs', row);
+    var settings = localPointSettings();
+    var reward = Math.max(0, Number(settings.checkin_reward_points || 0));
+    var already = localPointTransactionsOf(id).filter(function (tx) {
+      return tx.reason === 'wellness_checkin' && String(tx.ref_date) === String(row.logged_at);
+    });
+    if (reward > 0 && !already.length) {
+      localAddPointsLog(id, reward, 'wellness_checkin', '오늘의 뇌 컨디션 체크인 적립', { ref_date: row.logged_at });
+      awardedPoints = reward;
+    }
+    state.profile = findProfile(id);
+    emit();
   }
-  return localInsert('wellness_logs', row);
+
+  var pointsBalance = state.profile && state.profile.points_balance !== undefined && state.profile.points_balance !== null
+    ? Number(state.profile.points_balance) : 0;
+  return { log: saved, awardedPoints: awardedPoints, pointsBalance: pointsBalance };
 }
 
 /* 웰니스 체크 기록 삭제 (본인 기록 · 관리자) — 같은 날 중복 기록 정리용 */

@@ -4,18 +4,19 @@
 import {
   state, signIn, signUp, signOut, updateProfile, listBookings, listPayments,
   listCoupons, validateCoupon, listNotifications, markNotificationRead, isStaff, isOrgWorker,
+  getPointSettings, listPointTransactions,
   friendlyError, passwordIssue
-} from '../store.js?v=2.0.20';
-import { listMyMemberships, setShareBrainResults, requestOrgMembership, listOrganizationsFiltered } from '../store-org.js?v=2.0.20';
-import { CONSENT_ITEMS, CONSENT_LABELS, ROLES, PRIVACY_POLICY, privacyPolicyHtml } from '../config.js?v=2.0.20';
+} from '../store.js?v=2.0.21';
+import { listMyMemberships, setShareBrainResults, requestOrgMembership, listOrganizationsFiltered } from '../store-org.js?v=2.0.21';
+import { CONSENT_ITEMS, CONSENT_LABELS, ROLES, PRIVACY_POLICY, privacyPolicyHtml, POINT_REASONS } from '../config.js?v=2.0.21';
 import {
   recordConsents, listMyConsents, changeMyPassword, withdrawMyAccount, logAudit
-} from '../store-security.js?v=2.0.20';
+} from '../store-security.js?v=2.0.21';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, sectionHead,
   badge, openSheet, closeSheet, setBusy, go, timeAgo, paymentStatusTone, confirmDialog
-} from '../ui.js?v=2.0.20';
-import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.20';
+} from '../ui.js?v=2.0.21';
+import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.21';
 
 var GRADE_ORDER = ['Welcome', 'Mind', 'Neuro', 'Alignment'];
 var GRADE_DESC = {
@@ -230,6 +231,8 @@ export async function render(ctx) {
   var memberships = [];
   var consents = [];
   var orgs = [];
+  var pointSettings = null;
+  var pointTxs = [];
   var loadError = '';
 
   try {
@@ -244,6 +247,50 @@ export async function render(ctx) {
   } catch (err) {
     loadError = friendlyError(err);
   }
+
+  /* 포인트 잔액 · 정책 · 최근 내역 (실패해도 마이페이지의 다른 섹션은 그대로 보입니다) */
+  try { pointSettings = await getPointSettings(); } catch (err) { pointSettings = null; }
+  try { pointTxs = await listPointTransactions(state.session.user.id, 10); } catch (err) { pointTxs = []; }
+
+  var krwPerPoint = pointSettings ? Math.max(1, Number(pointSettings.krw_per_point || 10)) : 10;
+  var checkinReward = pointSettings ? Math.max(0, Number(pointSettings.checkin_reward_points || 0)) : 5;
+  var minUsePoints = pointSettings ? Math.max(0, Number(pointSettings.min_use_points || 0)) : 0;
+  var myPoints = profile.points_balance !== undefined && profile.points_balance !== null ? Number(profile.points_balance) : 0;
+
+  var pointRows = pointTxs.length
+    ? pointTxs.map(function (tx) {
+        var plus = Number(tx.delta) > 0;
+        var reasonLabel = POINT_REASONS[tx.reason] || tx.reason || '포인트';
+        return '<div class="point-row">' +
+          '<div class="point-row-main"><strong>' + esc(reasonLabel) + '</strong>' +
+            '<span class="muted small">' + fmtDate(tx.created_at) + (tx.description ? ' · ' + esc(tx.description) : '') + '</span></div>' +
+          '<div class="point-row-side"><strong class="' + (plus ? 'point-plus' : 'point-minus') + '">' +
+            (plus ? '+' : '') + Number(tx.delta) + 'P</strong>' +
+            '<span class="muted small">잔액 ' + Number(tx.balance_after || 0) + 'P</span></div>' +
+        '</div>';
+      }).join('')
+    : '<p class="muted small point-empty">아직 포인트 내역이 없습니다. 홈에서 오늘의 뇌 컨디션을 저장하면 +' + checkinReward + 'P가 적립됩니다.</p>';
+
+  var pointSection =
+    '<section class="section" id="points-section">' +
+      sectionHead('내 포인트', '<span class="muted small">1P = ' + fmtKRW(krwPerPoint) + '</span>') +
+      '<div class="point-card">' +
+        '<div class="point-top">' +
+          '<div class="point-balance"><span class="point-label">보유 포인트</span>' +
+            '<strong class="point-value">' + myPoints + '<em>P</em></strong></div>' +
+          '<div class="point-worth">' + fmtKRW(myPoints * krwPerPoint) + ' 할인 가능</div>' +
+        '</div>' +
+        '<ul class="point-guide">' +
+          '<li>홈 <strong>오늘의 뇌 컨디션</strong> 체크인 저장 시 하루 1회 <strong>+' + checkinReward + 'P</strong></li>' +
+          '<li>뇌파검사 · 뉴로피드백 예약 시 <strong>1P = ' + fmtKRW(krwPerPoint) + '</strong>로 사용</li>' +
+          '<li>최소 사용 ' + (minUsePoints > 0 ? minUsePoints + 'P' : '제한 없음') + ' · 결제 금액을 넘겨 사용할 수 없습니다</li>' +
+        '</ul>' +
+      '</div>' +
+      '<div class="point-history">' +
+        '<div class="point-history-head"><strong>적립 · 사용 내역</strong><span class="muted small">최근 ' + pointTxs.length + '건</span></div>' +
+        pointRows +
+      '</div>' +
+    '</section>';
 
   try {
     orgs = await listOrganizationsFiltered('active');
@@ -346,6 +393,8 @@ export async function render(ctx) {
         '<button type="button" class="quick-item" data-scroll="notifications">' + icon('bell', 20) + '<span>알림함' + (unread ? ' ' + unread : '') + '</span></button>' +
       '</div>' +
     '</section>' +
+
+    pointSection +
 
     '<section class="section">' +
       sectionHead('회원 등급', '<span class="muted small">현재 ' + esc(profile.member_grade || 'Welcome') + '</span>') +
@@ -462,6 +511,14 @@ export async function render(ctx) {
           if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
       }
+
+      /* 홈의 '내 포인트' 타일 → #/account?focus=points 로 들어오면 포인트 섹션으로 이동 */
+      try {
+        if (ctx.query && ctx.query.get('focus') === 'points') {
+          var pointTarget = el.querySelector('#points-section');
+          if (pointTarget) pointTarget.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }
+      } catch (err) { console.warn(err); }
 
       var notiButtons = el.querySelectorAll('[data-noti]');
       for (var n = 0; n < notiButtons.length; n++) {
