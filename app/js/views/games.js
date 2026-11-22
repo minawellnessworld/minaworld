@@ -5,11 +5,11 @@
    · 포인트 적립과 연결하지 않습니다. (체크인 하루 +5P 정책만 유지)
    · 타이머는 게임 종료·다른 화면 이동(destroy) 시 모두 정리합니다.
    ===================================================================== */
-import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.24';
+import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.25';
 import {
   state, listBrainGameLogs, saveBrainGameLog, computeBrainGameStats, friendlyError
-} from '../store.js?v=2.0.24';
-import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.24';
+} from '../store.js?v=2.0.25';
+import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.25';
 
 var WEEK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
 

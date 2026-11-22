@@ -1,7 +1,7 @@
 /* 더보기 — 커뮤니티 · 아카데미 · 마이페이지 · 관리자 · 앱 안내 */
-import { CONFIG, BRAND, MINA_MEANING, PRIVACY_POLICY, privacyPolicyHtml } from '../config.js?v=2.0.24';
-import { state, isStaff, isOrgWorker } from '../store.js?v=2.0.24';
-import { icon, esc, badge, sectionHead, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.24';
+import { CONFIG, BRAND, MINA_MEANING, PRIVACY_POLICY, privacyPolicyHtml } from '../config.js?v=2.0.25';
+import { state, isStaff, isOrgWorker } from '../store.js?v=2.0.25';
+import { icon, esc, badge, sectionHead, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.25';
 
 var LINKS = [
   { href: '#/games', ico: 'gamepad', title: 'BRAIN GAME', sub: '기억력 · 집중력 · 반응속도 4종 두뇌게임' },

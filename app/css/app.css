@@ -588,12 +588,13 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
   border-top: 1px solid var(--line);
 }
 .tab {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  padding: 4px 2px 2px;
+  padding: 4px 1px 2px;
   color: var(--muted-2);
   font-size: 10px;
   font-weight: 600;
@@ -601,10 +602,23 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
   border-radius: 12px;
   transition: color 0.2s var(--ease), transform 0.2s var(--ease);
   position: relative;
+  text-align: center;
+  overflow: hidden;
 }
 .tab:active { transform: scale(0.93); }
 .tab-ico { display: inline-flex; transition: transform 0.2s var(--ease); }
-.tab-label { font-size: 10px; letter-spacing: -0.02em; line-height: 1.2; }
+.tab-label {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  font-size: 10px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .tab.is-active { color: var(--navy); font-weight: 800; }
 .tab.is-active .tab-ico { transform: translateY(-1px); }
 .tab.is-active::after {
@@ -1924,6 +1938,16 @@ body.admin-mode #app-header { display: none; }
 }
 
 /* ------------------------------------------------------------ responsive */
+/* 하단 탭 6개(홈·브레인체크·MY BRAIN·두뇌게임·프로그램·더보기) 한 줄 보정 */
+@media (max-width: 380px) {
+  #tabbar { padding-left: 4px; padding-right: 4px; }
+  .tab { padding-left: 0; padding-right: 0; gap: 2px; }
+  .tab-label { font-size: 9.2px; letter-spacing: -0.05em; }
+}
+@media (max-width: 340px) {
+  .tab-label { font-size: 8.6px; letter-spacing: -0.06em; }
+}
+
 @media (max-width: 360px) {
   .page-title { font-size: 24px; }
   .hero-title { font-size: 22px; }
