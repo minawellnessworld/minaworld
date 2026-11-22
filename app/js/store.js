@@ -6,9 +6,9 @@
      · 프로그램·기수·쿠폰·기본 게시글만 시드로 보관
      · 개인 측정 데이터는 절대 임의 생성하지 않음 (빈 상태 표시)
    ===================================================================== */
-import { CONFIG, POINT_DEFAULTS } from './config.js?v=2.0.23';
-import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.23';
-import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.23';
+import { CONFIG, POINT_DEFAULTS } from './config.js?v=2.0.24';
+import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.24';
+import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.24';
 
 export var state = {
   mode: 'local',
@@ -147,6 +147,7 @@ export function friendlyError(err) {
   if (/duplicate key/i.test(msg) || code === '23505') return '이미 등록된 값입니다.';
   if (/function .* does not exist|Could not find the function/i.test(msg)) return 'DB v2 마이그레이션(supabase_schema_v2.sql)이 아직 적용되지 않았습니다. 적용 후 다시 시도해 주세요.';
   if (/point_settings|point_transactions|admin_adjust_points/i.test(msg) && /does not exist|Could not find/i.test(msg)) return '포인트 기능 DB 마이그레이션(supabase_points_v4.sql)이 아직 적용되지 않았습니다. 적용 후 다시 시도해 주세요.';
+  if (/brain_game_logs/i.test(msg) && /does not exist|Could not find/i.test(msg)) return '두뇌게임 기록 DB 마이그레이션(supabase_brain_games_v5.sql)이 아직 적용되지 않았습니다. 적용 후 다시 시도해 주세요.';
   if (/보유 포인트가 부족합니다/.test(msg)) return msg;
   if (/최소 [0-9]+P 이상부터/.test(msg)) return msg;
   if (/관리자만 포인트를 조정할 수 있습니다/.test(msg)) return '포인트 조정은 총괄 관리자만 할 수 있습니다.';
@@ -175,6 +176,7 @@ function seedLocal() {
     neuro_packages: [],
     neuro_sessions: [],
     wellness_logs: [],
+    brain_game_logs: [],
     academy_enrollments: [],
     academy_materials: [],
     consultation_notes: [],
@@ -1200,6 +1202,180 @@ export async function deleteWellness(id) {
     }
   }
   throw new Error('삭제할 기록을 찾지 못했습니다.');
+}
+
+/* ------------------------------------------------------------ 두뇌게임
+   로그인 회원은 public.brain_game_logs 에 저장합니다.
+   비로그인 방문자도 4종 게임을 바로 체험할 수 있도록
+   이 기기의 localStorage(mina_brain_game_guest_v1)에만 기록합니다.
+   두뇌게임은 포인트 적립과 연결하지 않습니다. */
+var BRAIN_GAME_GUEST_KEY = 'mina_brain_game_guest_v1';
+var BRAIN_GAME_LOWER_IS_BETTER = { number_grid: true, reaction_speed: true };
+
+function readGuestBrainGameLogs() {
+  try {
+    var raw = localStorage.getItem(BRAIN_GAME_GUEST_KEY);
+    if (!raw) return [];
+    var rows = JSON.parse(raw);
+    return Array.isArray(rows) ? rows : [];
+  } catch (err) {
+    console.warn('[MINA] 게스트 두뇌게임 기록을 읽지 못했습니다.', err);
+    return [];
+  }
+}
+
+function writeGuestBrainGameLogs(rows) {
+  try {
+    localStorage.setItem(BRAIN_GAME_GUEST_KEY, JSON.stringify(rows));
+  } catch (err) {
+    console.warn('[MINA] 게스트 두뇌게임 기록을 저장하지 못했습니다.', err);
+  }
+}
+
+function guestBrainGameId() {
+  return 'guest-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+}
+
+function brainLogDate(row) {
+  if (!row) return '';
+  if (row.played_date) return String(row.played_date).slice(0, 10);
+  return String(row.created_at || '').slice(0, 10);
+}
+
+function isBetterBrainScore(gameKey, nextScore, prevScore) {
+  var a = Number(nextScore);
+  var b = Number(prevScore);
+  if (!isFinite(a)) return false;
+  if (prevScore === null || prevScore === undefined || !isFinite(b)) return a > 0;
+  return BRAIN_GAME_LOWER_IS_BETTER[gameKey] ? a < b : a > b;
+}
+
+/* 본인 플레이 기록 조회 — 최신순 */
+export async function listBrainGameLogs(userId, limit) {
+  var max = limit || 300;
+  if (!state.session) {
+    var guest = readGuestBrainGameLogs().slice();
+    guest.sort(function (a, b) { return String(b.created_at || '').localeCompare(String(a.created_at || '')); });
+    return guest.slice(0, max);
+  }
+  if (state.mode === 'live') {
+    var q = clientSync().from('brain_game_logs').select('*')
+      .order('played_date', { ascending: false })
+      .order('created_at', { ascending: false });
+    var uidValue = userId || (state.session.user ? state.session.user.id : '');
+    if (uidValue) q = q.eq('user_id', uidValue);
+    var res = await q.limit(max);
+    if (res.error) throw new Error(friendlyError(res.error));
+    return res.data || [];
+  }
+  var rows = clone(local().brain_game_logs || []);
+  var id = userId || (state.session.user ? state.session.user.id : '');
+  if (id) rows = rows.filter(function (r) { return r.user_id === id; });
+  rows.sort(function (a, b) {
+    var da = brainLogDate(a);
+    var db = brainLogDate(b);
+    if (da !== db) return da < db ? 1 : -1;
+    return String(b.created_at || '').localeCompare(String(a.created_at || ''));
+  });
+  return rows.slice(0, max);
+}
+
+/* 한 판 기록 저장 — 로그인 회원은 DB, 비로그인은 이 기기 */
+export async function saveBrainGameLog(entry) {
+  var row = {
+    game_key: String(entry.game_key || ''),
+    score: Math.max(0, Math.round(Number(entry.score || 0))),
+    metric_ms: entry.metric_ms === null || entry.metric_ms === undefined ? null : Math.max(0, Math.round(Number(entry.metric_ms))),
+    accuracy: entry.accuracy === null || entry.accuracy === undefined ? null : Math.min(100, Math.max(0, Math.round(Number(entry.accuracy)))),
+    played_date: entry.played_date || todayStr()
+  };
+  if (!row.game_key) throw new Error('게임 정보를 찾지 못했습니다.');
+
+  if (state.session) {
+    row.user_id = state.session.user.id;
+    if (state.mode === 'live') {
+      var res = await clientSync().from('brain_game_logs').insert(row).select().maybeSingle();
+      if (res.error) throw new Error(friendlyError(res.error));
+      return res.data || row;
+    }
+    return localInsert('brain_game_logs', row);
+  }
+
+  var saved = Object.assign({ id: guestBrainGameId(), created_at: nowIso() }, row);
+  var guest = readGuestBrainGameLogs();
+  guest.push(saved);
+  if (guest.length > 300) guest = guest.slice(guest.length - 300);
+  writeGuestBrainGameLogs(guest);
+  return saved;
+}
+
+/* 요약 통계 — 스트릭 · 오늘 완료 · 누적 · 최근 7일 · 게임별 최고/최근 기록
+   모든 계산은 Asia/Seoul 기준 날짜(todayStr)로 합니다. */
+export function computeBrainGameStats(logs) {
+  var rows = (Array.isArray(logs) ? logs : []).filter(function (r) { return r && r.game_key; });
+  var played = {};
+  rows.forEach(function (r) {
+    var d = brainLogDate(r);
+    if (d) played[d] = true;
+  });
+
+  var today = todayStr();
+  var cursor = played[today] ? today : null;
+  if (!cursor) {
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    var yKey = dateKey(yesterday);
+    if (played[yKey]) cursor = yKey; /* 오늘 아직 안 했어도 어제 했으면 스트릭 유지 */
+  }
+  var streakDays = 0;
+  var guard = 0;
+  while (cursor && played[cursor] && guard < 4000) {
+    streakDays += 1;
+    var prev = new Date(cursor + 'T00:00:00');
+    prev.setDate(prev.getDate() - 1);
+    cursor = dateKey(prev);
+    guard += 1;
+  }
+
+  var sorted = rows.slice().sort(function (a, b) {
+    return String(b.created_at || '').localeCompare(String(a.created_at || ''));
+  });
+  var bestByGame = {};
+  var latestByGame = {};
+  var playsByGame = {};
+  var todayGames = {};
+  sorted.forEach(function (r) {
+    var key = r.game_key;
+    playsByGame[key] = (playsByGame[key] || 0) + 1;
+    if (!latestByGame[key]) latestByGame[key] = r;
+    var prevBest = bestByGame[key];
+    if (!prevBest || isBetterBrainScore(key, r.score, prevBest.score)) {
+      /* 첫 기록이 0점이면 최고기록으로 표시하지 않음 */
+      if (!prevBest && Number(r.score) <= 0) { /* keep empty */ }
+      else bestByGame[key] = r;
+    }
+    if (brainLogDate(r) === today) todayGames[key] = todayGames[key] || r;
+  });
+
+  var last7Days = [];
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date();
+    d.setDate(d.getDate() - i);
+    var k = dateKey(d);
+    last7Days.push({ date: k, played: Boolean(played[k]), day: d.getDate(), weekday: d.getDay() });
+  }
+
+  return {
+    rows: rows,
+    streakDays: streakDays,
+    todayGames: todayGames,
+    todayCount: Object.keys(todayGames).length,
+    totalPlays: rows.length,
+    last7Days: last7Days,
+    bestByGame: bestByGame,
+    latestByGame: latestByGame,
+    playsByGame: playsByGame
+  };
 }
 
 /* ------------------------------------------------------------ community */

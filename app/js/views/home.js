@@ -1,19 +1,19 @@
 /* S01. 홈 — 개인 회원 메인 대시보드(PART 2-2) + 오늘의 뇌 컨디션 체크인 */
-import { BRAND, MINA_MEANING, GOAL_OPTIONS } from '../config.js?v=2.0.23';
+import { BRAND, MINA_MEANING, GOAL_OPTIONS, BRAIN_GAMES } from '../config.js?v=2.0.24';
 import {
   state, listWellness, addWellness, listBookings, listPosts, listResults, listPackages,
   listSessions, getPrograms, getPointSettings, isStaff, isOrgWorker,
-  friendlyError, dateKey, todayStr
-} from '../store.js?v=2.0.23';
+  friendlyError, dateKey, todayStr, listBrainGameLogs, computeBrainGameStats
+} from '../store.js?v=2.0.24';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listMyMemberships, setShareBrainResults
-} from '../store-org.js?v=2.0.23';
-import { recordConsents, logAudit } from '../store-security.js?v=2.0.23';
+} from '../store-org.js?v=2.0.24';
+import { recordConsents, logAudit } from '../store-security.js?v=2.0.24';
 import {
   icon, esc, fmtKRW, fmtDate, todayLabel, toast, emptyState, setBusy, sectionHead, go, track, noticeBox
-} from '../ui.js?v=2.0.23';
-import { requireLoginSheet } from '../booking.js?v=2.0.23';
-import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.23';
+} from '../ui.js?v=2.0.24';
+import { requireLoginSheet } from '../booking.js?v=2.0.24';
+import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.24';
 
 var MENU = [
   { key: 'brain_check', title: 'BRAIN CHECK', sub: '뇌파측정 · 뇌기능검사 예약', ico: 'pulse', href: '#/brain-check', tone: 'navy' },
@@ -67,6 +67,7 @@ export async function render(ctx) {
   var memberships = [];
   var branches = [];
   var pointSettings = null;
+  var gameStats = computeBrainGameStats([]);
 
   try {
     var jobs = [listPosts({ category: 'notice' }), listPosts({ category: 'event' })];
@@ -95,6 +96,14 @@ export async function render(ctx) {
     } catch (err) { branches = []; }
   } catch (err) {
     console.warn('[MINA] 홈 데이터 조회 실패', err);
+  }
+
+  try {
+    var gameLogs = await listBrainGameLogs(state.session ? state.session.user.id : null, 300);
+    gameStats = computeBrainGameStats(gameLogs);
+  } catch (err) {
+    console.warn('[MINA] 두뇌게임 기록 조회 실패', err);
+    gameStats = computeBrainGameStats([]);
   }
 
   var todayStrValue = todayStr();
@@ -255,6 +264,8 @@ export async function render(ctx) {
             latestWellness ? ('집중 ' + (latestWellness.focus_level || '-') + ' · 스트레스 ' + (latestWellness.stress_level || '-')) : '오늘 체크인해 보세요', '#/my-brain') +
           dashTile('coin', '내 포인트', myPoints + 'P',
             myPoints > 0 ? fmtKRW(myPoints * krwPerPoint) + ' 상당' : '체크인으로 적립', '#/account?focus=points') +
+          dashTile('gamepad', '두뇌 게임', gameStats.streakDays > 0 ? gameStats.streakDays + '일 연속' : gameStats.todayCount + '/4 완료',
+            gameStats.totalPlays > 0 ? '누적 ' + gameStats.totalPlays + '판' : '오늘 한 판 시작', '#/games') +
           dashTile('chat', '공지 · 이벤트', String(notices.length + events.length) + '건', topNotice ? topNotice.title : '새 소식 없음', '#/community') +
         '</div>' +
         (shareRequests.length
@@ -284,6 +295,26 @@ export async function render(ctx) {
       '<p class="hero-welcome">' + (state.session ? 'BRAIN WELLNESS DAILY' : BRAND.welcome) + '</p>' +
       '<h1 class="hero-title">' + BRAND.question + '</h1>' +
       checkinCard +
+    '</section>' +
+
+    '<section class="section">' +
+      '<a class="bg-home-banner" href="#/games" data-menu="brain_game">' +
+        '<span class="bg-home-top">' +
+          '<span class="bg-home-ico">' + icon('gamepad', 20) + '</span>' +
+          '<span class="bg-home-eyebrow">BRAIN GAME · 오늘의 두뇌 워밍업</span>' +
+          (gameStats.streakDays > 0
+            ? '<span class="bg-home-streak">' + icon('flame', 12) + gameStats.streakDays + '일 연속</span>'
+            : '<span class="bg-home-streak is-new">오늘 첫 판</span>') +
+        '</span>' +
+        '<strong class="bg-home-title">' +
+          (gameStats.streakDays > 0 ? '오늘도 두뇌 워밍업 한 판!' : '1~2분이면 끝나는 두뇌 워밍업') +
+        '</strong>' +
+        '<span class="bg-home-sub">오늘 챌린지 ' + gameStats.todayCount + '/4 완료 · 누적 ' + gameStats.totalPlays + '판</span>' +
+        '<span class="bg-home-chips">' + BRAIN_GAMES.map(function (g) {
+          return '<span class="bg-home-chip' + (gameStats.todayGames[g.key] ? ' is-on' : '') + '">' + esc(g.title) + '</span>';
+        }).join('') + '</span>' +
+        '<span class="bg-home-cta">지금 한 판 하기' + icon('chevronRight', 14) + '</span>' +
+      '</a>' +
     '</section>' +
 
     spoonSection +

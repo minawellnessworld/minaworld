@@ -1,9 +1,10 @@
 /* 더보기 — 커뮤니티 · 아카데미 · 마이페이지 · 관리자 · 앱 안내 */
-import { CONFIG, BRAND, MINA_MEANING, PRIVACY_POLICY, privacyPolicyHtml } from '../config.js?v=2.0.23';
-import { state, isStaff, isOrgWorker } from '../store.js?v=2.0.23';
-import { icon, esc, badge, sectionHead, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.23';
+import { CONFIG, BRAND, MINA_MEANING, PRIVACY_POLICY, privacyPolicyHtml } from '../config.js?v=2.0.24';
+import { state, isStaff, isOrgWorker } from '../store.js?v=2.0.24';
+import { icon, esc, badge, sectionHead, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.24';
 
 var LINKS = [
+  { href: '#/games', ico: 'gamepad', title: 'BRAIN GAME', sub: '기억력 · 집중력 · 반응속도 4종 두뇌게임' },
   { href: '#/community', ico: 'chat', title: 'MINA COMMUNITY', sub: '공지 · 뇌과학 정보 · 후기 · Q&A' },
   { href: '#/academy', ico: 'file', title: 'MINA ACADEMY', sub: '뇌교육상담사 전문가 과정 (40시간 · 5주)' },
   { href: '#/neuro', ico: 'sparkle', title: 'NEURO TRAINING', sub: '뉴로피드백 패키지 · 훈련 기록' },

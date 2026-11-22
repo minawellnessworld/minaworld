@@ -43,7 +43,7 @@ export var CONFIG = {
   SUPABASE_SCHEMA: 'public',
   STORAGE_BUCKET: 'brain-results',
   GA_MEASUREMENT_ID: 'G-TTMVKBHNZM',
-  APP_VERSION: '2.0.23',
+  APP_VERSION: '2.0.24',
   SCHEMA_VERSION: 'v2',
   SITE_URL: 'https://www.minaworld.co.kr',
   CONTACT_EMAIL: 'minawellnessworld@gmail.com',
@@ -109,6 +109,82 @@ export var POINT_REASONS = {
 
 /* 포인트 사용이 가능한 예약 카테고리 (뇌파검사 · 뉴로피드백) */
 export var POINT_USE_CATEGORIES = ['brain_check', 'neuro_training'];
+
+/* =====================================================================
+   두뇌게임 4종 (BRAIN GAME)
+   - 매일 한 판씩 즐기는 웰니스 두뇌게임입니다. 포인트 적립과는 연결하지 않습니다.
+   - 저장·표시하는 값은 본인이 실제로 플레이한 기록뿐입니다.
+     (최고기록 · 최근기록 · 오늘 완료 · 연속 플레이 일수 / 타인 비교·뇌나이 없음)
+   - direction: 'higher' = 클수록 좋은 기록, 'lower' = 작을수록 좋은 기록(ms)
+   ===================================================================== */
+export var BRAIN_GAMES = [
+  {
+    key: 'memory_seq',
+    title: '순서 기억',
+    en: 'MEMORY SEQUENCE',
+    area: '해마 · 작업기억',
+    desc: '불빛이 켜진 순서를 기억해 그대로 따라 누르기',
+    howto: '3칸부터 시작해 성공할 때마다 1칸씩 늘어납니다. 불빛 순서를 기억한 뒤 순서대로 눌러 주세요.',
+    direction: 'higher',
+    unit: '단계',
+    ico: 'grid',
+    tone: 'navy'
+  },
+  {
+    key: 'stroop_color',
+    title: '색깔 vs 글자',
+    en: 'COLOR & WORD',
+    area: '전두엽 · 집중/인지억제',
+    desc: '글자 뜻에 속지 않고 실제 색깔 빠르게 고르기',
+    howto: '30초 동안 화면에 나오는 글자의 뜻이 아니라 글자 색깔을 고르세요. 맞힌 개수와 정답률이 기록됩니다.',
+    direction: 'higher',
+    unit: '점',
+    ico: 'target',
+    tone: 'gold'
+  },
+  {
+    key: 'number_grid',
+    title: '1→25 숫자 터치',
+    en: 'NUMBER GRID',
+    area: '주의전환 · 처리속도',
+    desc: '흩어진 1~25를 순서대로 최대한 빠르게 터치',
+    howto: '5×5 격자에 흩어진 숫자를 1부터 25까지 순서대로 누르세요. 25를 누르는 순간 걸린 시간이 기록됩니다.',
+    direction: 'lower',
+    unit: 'ms',
+    ico: 'grid',
+    tone: 'ivory'
+  },
+  {
+    key: 'reaction_speed',
+    title: '순발력 터치',
+    en: 'REACTION',
+    area: '반응속도 · 각성 조율',
+    desc: '신호가 바뀌는 순간 얼마나 빠르게 반응하는지',
+    howto: '3라운드 측정입니다. “지금 터치!”로 바뀌는 순간 바로 터치하세요. 신호 전에 누르면 그 라운드를 다시 측정합니다.',
+    direction: 'lower',
+    unit: 'ms',
+    ico: 'bolt',
+    tone: 'yellow'
+  }
+];
+
+export function brainGameMeta(key) {
+  for (var i = 0; i < BRAIN_GAMES.length; i++) {
+    if (BRAIN_GAMES[i].key === key) return BRAIN_GAMES[i];
+  }
+  return null;
+}
+
+/* 게임별 기록 표기 — 순서 기억은 '단계', 스트룹은 '점',
+   숫자 터치는 초(0.01초), 순발력은 ms 로 보여 줍니다. */
+export function brainGameScoreText(key, score) {
+  var n = Number(score);
+  if (score === null || score === undefined || !isFinite(n) || n < 0) return '-';
+  if (key === 'number_grid') return (n / 1000).toFixed(2) + '초';
+  if (key === 'reaction_speed') return Math.round(n) + 'ms';
+  if (key === 'memory_seq') return n + '단계';
+  return n + '점';
+}
 
 export var BOOKING_STATUS = {
   pending: '예약 대기',
