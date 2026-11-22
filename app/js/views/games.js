@@ -1,15 +1,17 @@
-/* S11. BRAIN GAME — 두뇌게임 4종 + 최고기록·연속 출석(스트릭)
+/* S11. BRAIN GAME — 두뇌게임 5종 + 최고기록·연속 출석(스트릭)
    ---------------------------------------------------------------------
    · 저장·표시하는 값은 본인이 실제로 플레이한 기록뿐입니다.
      (최고기록 · 최근기록 · 오늘 완료 · 연속 플레이 일수 / 타인 비교·뇌나이 없음)
    · 포인트 적립과 연결하지 않습니다. (체크인 하루 +5P 정책만 유지)
-   · 타이머는 게임 종료·다른 화면 이동(destroy) 시 모두 정리합니다.
+   · 타이머(setTimeout/setInterval)와 애니메이션(requestAnimationFrame)은
+     게임 종료·다른 화면 이동(destroy) 시 모두 정리합니다.
+   · 게임 개수는 config.js 의 BRAIN_GAMES 길이를 그대로 따릅니다.
    ===================================================================== */
-import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.25';
+import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.26';
 import {
   state, listBrainGameLogs, saveBrainGameLog, computeBrainGameStats, friendlyError
-} from '../store.js?v=2.0.25';
-import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.25';
+} from '../store.js?v=2.0.26';
+import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.26';
 
 var WEEK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -22,6 +24,7 @@ var STROOP_COLORS = [
 
 /* ---------------------------------------------------------------- timers */
 var timers = [];
+var rafId = 0;
 
 function later(fn, ms) {
   var id = setTimeout(function () {
@@ -38,12 +41,26 @@ function every(fn, ms) {
   return id;
 }
 
+/* requestAnimationFrame 루프 — 한 프레임만 예약하고, 끝나면 스스로 다시 예약합니다. */
+function frame(fn) {
+  rafId = requestAnimationFrame(fn);
+  return rafId;
+}
+
+function stopFrames() {
+  if (rafId) {
+    window.cancelAnimationFrame(rafId);
+    rafId = 0;
+  }
+}
+
 function clearAllTimers() {
   for (var i = 0; i < timers.length; i++) {
     clearTimeout(timers[i]);
     clearInterval(timers[i]);
   }
   timers = [];
+  stopFrames();
 }
 
 export function destroy() {
@@ -61,25 +78,26 @@ function weekHtml(stats) {
 }
 
 function boardHtml(stats) {
-  var pct = Math.round((stats.todayCount / 4) * 100);
-  var complete = stats.todayCount >= 4;
+  var total = stats.gameCount || BRAIN_GAMES.length;
+  var pct = total ? Math.round((stats.todayCount / total) * 100) : 0;
+  var complete = stats.todayCount >= total;
   return '<div class="bg-board-inner">' +
     '<div class="bg-streak">' +
       '<span class="bg-streak-ico">' + icon('flame', 22) + '</span>' +
       '<span class="bg-streak-body">' +
         '<strong>' + (stats.streakDays > 0 ? stats.streakDays + '일 연속 플레이' : '오늘 첫 판을 시작해 보세요') + '</strong>' +
-        '<span>' + (stats.streakDays > 0 ? '하루 한 판이면 기록이 이어집니다' : '4종 두뇌게임 · 1~2분이면 충분해요') + '</span>' +
+        '<span>' + (stats.streakDays > 0 ? '하루 한 판이면 기록이 이어집니다' : total + '종 두뇌게임 · 1~2분이면 충분해요') + '</span>' +
       '</span>' +
       '<span class="bg-streak-total">누적<strong>' + stats.totalPlays + '</strong>판</span>' +
     '</div>' +
     '<div class="bg-today">' +
-      '<div class="bg-today-head"><strong>오늘 챌린지</strong><span>' + stats.todayCount + '/4 완료</span></div>' +
+      '<div class="bg-today-head"><strong>오늘 챌린지</strong><span>' + stats.todayCount + '/' + total + ' 완료</span></div>' +
       '<div class="bg-progress"><span class="bg-progress-bar" style="width:' + pct + '%"></span></div>' +
       '<div class="bg-week" aria-label="최근 7일 플레이 기록">' + weekHtml(stats) + '</div>' +
     '</div>' +
     (complete
       ? '<div class="bg-complete">' + icon('trophy', 18) +
-          '<span><strong>오늘의 두뇌 워밍업 4종 완주!</strong><span>내일도 한 판씩 이어가면 연속 기록이 늘어납니다.</span></span>' +
+          '<span><strong>오늘의 두뇌 워밍업 ' + total + '종 완주!</strong><span>내일도 한 판씩 이어가면 연속 기록이 늘어납니다.</span></span>' +
         '</div>'
       : '') +
     (!state.session
@@ -113,15 +131,18 @@ function hubHtml(stats) {
     '</button>';
   }).join('');
 
-  return '<div class="section-head"><h2 class="section-title">4종 두뇌게임</h2>' +
+  var total = BRAIN_GAMES.length;
+  return '<div class="section-head"><h2 class="section-title">' + total + '종 두뇌게임</h2>' +
       '<div class="section-action"><span class="muted small">자유롭게 · 몇 번이든</span></div></div>' +
     '<div class="bg-games">' + cards + '</div>' +
-    '<p class="bg-guide">게임은 골라서 몇 번이든 즐길 수 있어요. 오늘 4종을 모두 하면 하루 챌린지가 완성됩니다.</p>';
+    '<p class="bg-guide">게임은 골라서 몇 번이든 즐길 수 있어요. 오늘 ' + total + '종을 모두 하면 하루 챌린지가 완성됩니다.</p>';
 }
 
 function resultHtml(key, meta, result, isRecord, stats, saveFailed) {
   var best = stats.bestByGame[key];
   var latest = stats.latestByGame[key];
+  var total = stats.gameCount || BRAIN_GAMES.length;
+  var accuracyLabel = key === 'stroop_color' ? '정답률' : '정확도';
   var note = saveFailed
     ? '기록 저장에 실패했습니다. 잠시 후 다시 시도해 주세요.'
     : (state.session ? '기록이 내 계정에 저장되었습니다.' : '게스트 기록으로 이 기기에 저장되었습니다 · 로그인하면 계정에 남습니다.');
@@ -137,8 +158,8 @@ function resultHtml(key, meta, result, isRecord, stats, saveFailed) {
       '<div class="bg-result-row"><span>최근 기록</span><strong>' + (latest ? brainGameScoreText(key, latest.score) : '-') + '</strong></div>' +
       (result.accuracy === null || result.accuracy === undefined
         ? ''
-        : '<div class="bg-result-row"><span>정답률</span><strong>' + Number(result.accuracy) + '%</strong></div>') +
-      '<div class="bg-result-row"><span>오늘 챌린지</span><strong>' + stats.todayCount + '/4 완료</strong></div>' +
+        : '<div class="bg-result-row"><span>' + accuracyLabel + '</span><strong>' + Number(result.accuracy) + '%</strong></div>') +
+      '<div class="bg-result-row"><span>오늘 챌린지</span><strong>' + stats.todayCount + '/' + total + ' 완료</strong></div>' +
       '<div class="bg-result-row"><span>연속 플레이</span><strong>' + stats.streakDays + '일</strong></div>' +
     '</div>' +
     '<p class="bg-save-note">' + esc(note) + '</p>' +
@@ -445,98 +466,387 @@ function runNumberGrid(playEl, done) {
   }
 }
 
-/* ---------------------------------- 4) 순발력 터치 (reaction_speed) */
-function runReaction(playEl, done) {
-  var results = [];
-  var phase = 'idle'; /* idle | wait | go | early */
-  var signalAt = 0;
+/* ----------------------- 4) 양궁 과녁 맞히기 (archery_target) */
+var ARC_TOTAL_SHOTS = 5;
+var ARC_MAX_SCORE = 50;
+
+/* 과녁판 한가운데를 0, 흰색(6점) 테두리를 1로 본 거리 비율 */
+function arcRingOf(dx, dy) {
+  var r = Math.sqrt(dx * dx + dy * dy) / 50;
+  if (r <= 0.2) return 10;
+  if (r <= 0.4) return 9;
+  if (r <= 0.6) return 8;
+  if (r <= 0.8) return 7;
+  if (r <= 1) return 6;
+  return 0;
+}
+
+function arcFeedback(score) {
+  if (score === 10) return '10점! 정중앙!';
+  if (score === 9) return '9점! 아주 좋아요';
+  if (score === 8) return '8점! 좋아요';
+  if (score === 7) return '7점 — 조금만 더 중앙으로';
+  if (score === 6) return '6점 — 과녁 끝이에요';
+  return '과녁 밖! 다음 발을 노려 보세요';
+}
+
+function runArchery(playEl, done) {
+  var shots = [];
+  var phase = 'wait';       /* wait | aim | feedback */
+  var activeT = 0;          /* 조준점이 실제로 움직인 시간(초) */
+  var lastTick = 0;
+  var speedUp = 1;
   var finished = false;
+  var aimX = 0;
+  var aimY = 0;
+
+  var ringHtml = ['6', '7', '8', '9', '10'].map(function (n) {
+    return '<span class="bg-arc-ring is-' + n + '" aria-hidden="true"></span>';
+  }).join('');
+
+  var badgeHtml = '';
+  for (var b = 0; b < ARC_TOTAL_SHOTS; b++) {
+    badgeHtml += '<span class="bg-arc-shot" data-shot="' + b + '">-</span>';
+  }
 
   playEl.innerHTML =
     '<div class="bg-hud">' +
-      '<span class="bg-hud-item">라운드<strong id="bg-react-round">1</strong>/3</span>' +
-      '<span class="bg-hud-item">기록<strong id="bg-react-list">-</strong></span>' +
+      '<span class="bg-hud-item">라운드<strong id="bg-arc-round">1</strong>/' + ARC_TOTAL_SHOTS + '</span>' +
+      '<span class="bg-hud-item">합계<strong id="bg-arc-total">0</strong>점</span>' +
     '</div>' +
-    '<button type="button" class="bg-react-pad is-idle" id="bg-react-pad">' +
-      '<span class="bg-react-label" id="bg-react-label">준비…</span>' +
-      '<span class="bg-react-hint" id="bg-react-hint">신호가 바뀌면 바로 터치하세요</span>' +
-    '</button>' +
-    '<p class="bg-status" id="bg-status">3라운드 평균 반응속도를 측정합니다.</p>';
+    '<div class="bg-archery">' +
+      '<div class="bg-archery-board" id="bg-arc-board" role="button" tabindex="0" aria-label="과녁판 — 누르면 화살을 쏩니다">' +
+        ringHtml +
+        '<span class="bg-arc-x" aria-hidden="true"></span>' +
+        '<span class="bg-arc-aim" id="bg-arc-aim" aria-hidden="true"></span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="bg-arc-shots" id="bg-arc-shots">' + badgeHtml + '</div>' +
+    '<button type="button" class="btn btn-primary btn-block bg-arc-shoot" id="bg-arc-shoot">화살 쏘기</button>' +
+    '<p class="bg-status" id="bg-status">조준점이 과녁 위를 흔들립니다. 중앙에 가까울 때 쏘세요!</p>';
 
-  var pad = playEl.querySelector('#bg-react-pad');
-  var labelEl = playEl.querySelector('#bg-react-label');
-  var hintEl = playEl.querySelector('#bg-react-hint');
-  var roundEl = playEl.querySelector('#bg-react-round');
-  var listEl = playEl.querySelector('#bg-react-list');
+  var boardEl = playEl.querySelector('#bg-arc-board');
+  var aimEl = playEl.querySelector('#bg-arc-aim');
+  var shotsEl = playEl.querySelector('#bg-arc-shots');
+  var roundEl = playEl.querySelector('#bg-arc-round');
+  var totalEl = playEl.querySelector('#bg-arc-total');
   var statusEl = playEl.querySelector('#bg-status');
+  var shootBtn = playEl.querySelector('#bg-arc-shoot');
 
-  function paint(cls) {
-    pad.className = 'bg-react-pad ' + cls;
+  function totalScore() {
+    var sum = 0;
+    for (var i = 0; i < shots.length; i++) sum += shots[i];
+    return sum;
   }
 
-  function listText() {
-    if (!results.length) return '-';
-    return results.map(function (ms) { return ms + 'ms'; }).join(' · ');
+  function updateAim() {
+    /* 리사주 궤적 — 두 축의 주기가 달라 과녁 안을 자연스럽게 흔들립니다.
+       발사할수록 조금씩 빨라지지만 5발 안에 충분히 맞힐 수 있는 속도입니다. */
+    var amp = 40;
+    var w = 1.7 * speedUp;
+    aimX = amp * Math.sin(activeT * w + 0.7);
+    aimY = amp * Math.sin(activeT * w * 1.41 + 2.1);
+    aimEl.style.left = (50 + aimX) + '%';
+    aimEl.style.top = (50 + aimY) + '%';
+  }
+
+  function loop() {
+    if (finished) return;
+    var now = Date.now();
+    var dt = lastTick ? (now - lastTick) / 1000 : 0;
+    lastTick = now;
+    if (phase === 'aim') {
+      activeT += dt;
+      updateAim();
+    }
+    frame(loop);
   }
 
   function finish() {
     if (finished) return;
     finished = true;
     clearAllTimers();
-    var sum = results.reduce(function (acc, ms) { return acc + ms; }, 0);
-    var avg = Math.round(sum / results.length);
-    paint('is-done');
-    labelEl.textContent = avg + 'ms';
-    hintEl.textContent = '3라운드 평균';
-    statusEl.textContent = '측정 완료 — 평균 ' + avg + 'ms (' + results.join('ms · ') + 'ms)';
-    done({ game_key: 'reaction_speed', score: avg, metric_ms: avg, accuracy: null });
+    var sum = totalScore();
+    var accuracy = Math.round((sum / ARC_MAX_SCORE) * 100);
+    statusEl.textContent = ARC_TOTAL_SHOTS + '발 완료 — 합계 ' + sum + '점 · 정확도 ' + accuracy + '%';
+    done({ game_key: 'archery_target', score: sum, metric_ms: null, accuracy: accuracy });
   }
 
-  function beginTrial() {
-    phase = 'wait';
-    paint('is-wait');
-    roundEl.textContent = String(Math.min(3, results.length + 1));
-    listEl.textContent = listText();
-    labelEl.textContent = '준비…';
-    hintEl.textContent = '신호가 바뀌면 바로 터치하세요';
-    statusEl.textContent = '아직 누르지 마세요.';
-    var delay = 1500 + Math.floor(Math.random() * 2000);
-    later(function () {
-      if (finished) return;
-      phase = 'go';
-      signalAt = Date.now();
-      paint('is-go');
-      labelEl.textContent = '지금 터치!';
-      hintEl.textContent = '';
-      statusEl.textContent = '';
-    }, delay);
-  }
+  function shoot() {
+    if (finished || phase !== 'aim') return;
+    phase = 'feedback';
+    speedUp += 0.12;
+    var score = arcRingOf(aimX, aimY);
+    shots.push(score);
 
-  pad.addEventListener('click', function () {
-    if (finished) return;
-    if (phase === 'wait') {
-      phase = 'early';
-      paint('is-early');
-      labelEl.textContent = '너무 빨랐어요';
-      hintEl.textContent = '신호 전에 터치했습니다';
-      statusEl.textContent = '이번 라운드를 다시 측정합니다.';
-      later(beginTrial, 1300);
-      return;
+    var pin = document.createElement('span');
+    pin.className = 'bg-arc-pin' + (score === 10 ? ' is-ten' : '') + (score === 0 ? ' is-out' : '');
+    pin.style.left = (50 + aimX) + '%';
+    pin.style.top = (50 + aimY) + '%';
+    boardEl.appendChild(pin);
+
+    var badge = shotsEl.querySelector('[data-shot="' + (shots.length - 1) + '"]');
+    if (badge) {
+      badge.textContent = score === 0 ? 'X' : String(score);
+      badge.className = 'bg-arc-shot is-filled' + (score === 10 ? ' is-ten' : '') + (score === 0 ? ' is-zero' : '');
     }
-    if (phase !== 'go') return;
-    var ms = Date.now() - signalAt;
-    results.push(ms);
-    phase = 'idle';
-    paint('is-done');
-    labelEl.textContent = ms + 'ms';
-    hintEl.textContent = results.length >= 3 ? '3라운드 완료' : '다음 라운드 준비';
-    statusEl.textContent = results.length >= 3 ? '잠시 후 기록을 저장합니다…' : '좋아요! 다음 신호를 기다리세요.';
-    listEl.textContent = listText();
-    if (results.length >= 3) later(finish, 700);
-    else later(beginTrial, 1000);
+    totalEl.textContent = String(totalScore());
+    roundEl.textContent = String(Math.min(ARC_TOTAL_SHOTS, shots.length + 1));
+    statusEl.textContent = arcFeedback(score);
+
+    if (shots.length >= ARC_TOTAL_SHOTS) {
+      later(finish, 1100);
+    } else {
+      later(function () {
+        if (finished) return;
+        phase = 'aim';
+        statusEl.textContent = '다음 발 — 중앙을 노려 보세요!';
+      }, 850);
+    }
+  }
+
+  boardEl.addEventListener('click', shoot);
+  shootBtn.addEventListener('click', shoot);
+  boardEl.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
+      ev.preventDefault();
+      shoot();
+    }
   });
 
-  later(beginTrial, 600);
+  later(function () {
+    if (finished) return;
+    phase = 'aim';
+    lastTick = Date.now();
+    updateAim();
+    loop();
+    statusEl.textContent = '시작! 조준점이 중앙에 올 때 과녁을 누르세요.';
+  }, 650);
+}
+
+/* ---------------------- 5) 브레인 주방 순서요리 (order_cooking) */
+var KITCHEN_ITEMS = {
+  oat: { e: '🥣', n: '오트밀' },
+  berry: { e: '🫐', n: '블루베리' },
+  strawberry: { e: '🍓', n: '딸기' },
+  milk: { e: '🥛', n: '우유' },
+  banana: { e: '🍌', n: '바나나' },
+  avocado: { e: '🥑', n: '아보카도' },
+  bread: { e: '🍞', n: '통밀빵' },
+  egg: { e: '🥚', n: '달걀' },
+  herb: { e: '🌿', n: '허브' },
+  lemon: { e: '🍋', n: '레몬' },
+  matcha: { e: '🍵', n: '말차' },
+  spinach: { e: '🥬', n: '시금치' },
+  honey: { e: '🍯', n: '꿀' },
+  grapefruit: { e: '🍊', n: '자몽' },
+  salmon: { e: '🍣', n: '연어' },
+  rice: { e: '🍚', n: '현미밥' },
+  cucumber: { e: '🥒', n: '오이' },
+  tomato: { e: '🍅', n: '방울토마토' },
+  nut: { e: '🥜', n: '견과' },
+  cacao: { e: '🍫', n: '카카오닙스' },
+  carrot: { e: '🥕', n: '당근' },
+  cheese: { e: '🧀', n: '치즈' }
+};
+
+var KITCHEN_MENUS = [
+  { name: '베리 오트 볼', emoji: '🥣', steps: ['oat', 'milk', 'berry', 'honey'] },
+  { name: '아보카도 토스트', emoji: '🥑', steps: ['bread', 'avocado', 'lemon'] },
+  { name: '그린 말차 스무디', emoji: '🍵', steps: ['spinach', 'banana', 'matcha'] },
+  { name: '연어 포케 볼', emoji: '🍣', steps: ['rice', 'salmon', 'cucumber', 'tomato', 'lemon'] },
+  { name: '꿀 자몽 샐러드', emoji: '🍊', steps: ['spinach', 'grapefruit', 'honey'] },
+  { name: '허브 오믈렛', emoji: '🍳', steps: ['egg', 'milk', 'herb', 'tomato'] },
+  { name: '바나나 팬케이크', emoji: '🥞', steps: ['banana', 'oat', 'nut', 'honey'] }
+];
+
+var KITCHEN_KEYS = Object.keys(KITCHEN_ITEMS);
+
+function shuffleArr(list) {
+  var arr = list.slice();
+  for (var i = arr.length - 1; i > 0; i--) {
+    var k = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i];
+    arr[i] = arr[k];
+    arr[k] = tmp;
+  }
+  return arr;
+}
+
+function runCooking(playEl, done) {
+  var TOTAL_MS = 45000;
+  var endAt = 0;
+  var finished = false;
+  var dishes = 0;
+  var correctTaps = 0;
+  var totalTaps = 0;
+  var order = null;
+  var step = 0;
+  var locked = false;
+  var lastMenu = -1;
+
+  playEl.innerHTML =
+    '<div class="bg-hud">' +
+      '<span class="bg-hud-item">남은 시간<strong id="bg-kit-time">45.0</strong>초</span>' +
+      '<span class="bg-hud-item">완성<strong id="bg-kit-dishes">0</strong>접시</span>' +
+      '<span class="bg-hud-item">정확도<strong id="bg-kit-acc">-</strong></span>' +
+    '</div>' +
+    '<div class="bg-timerbar"><span class="bg-timerbar-fill" id="bg-kit-bar"></span></div>' +
+    '<div class="bg-kit-order" id="bg-kit-order"></div>' +
+    '<div class="bg-kit-bowl" id="bg-kit-bowl"></div>' +
+    '<div class="bg-kit-tray" id="bg-kit-tray"></div>' +
+    '<p class="bg-status" id="bg-status">주문이 들어오면 순서대로 담아 주세요!</p>';
+
+  var orderEl = playEl.querySelector('#bg-kit-order');
+  var bowlEl = playEl.querySelector('#bg-kit-bowl');
+  var trayEl = playEl.querySelector('#bg-kit-tray');
+  var timeEl = playEl.querySelector('#bg-kit-time');
+  var barEl = playEl.querySelector('#bg-kit-bar');
+  var dishesEl = playEl.querySelector('#bg-kit-dishes');
+  var accEl = playEl.querySelector('#bg-kit-acc');
+  var statusEl = playEl.querySelector('#bg-status');
+
+  function accText() {
+    return totalTaps ? Math.round((correctTaps / totalTaps) * 100) + '%' : '-';
+  }
+
+  function chipsHtml() {
+    var steps = order.menu.steps;
+    var out = '';
+    for (var i = 0; i < steps.length; i++) {
+      var it = KITCHEN_ITEMS[steps[i]];
+      var cls = 'bg-kit-chip' + (i < step ? ' is-done' : (i === step ? ' is-next' : ''));
+      out += '<span class="' + cls + '">' +
+        '<span class="bg-kit-no">' + (i + 1) + '</span>' +
+        '<span class="bg-kit-emoji">' + it.e + '</span>' +
+        '<span class="bg-kit-name">' + esc(it.n) + '</span>' +
+      '</span>';
+    }
+    return out;
+  }
+
+  function renderOrder() {
+    orderEl.innerHTML =
+      '<div class="bg-kit-order-head">' +
+        '<span class="bg-kit-menu">' + order.menu.emoji + ' ' + esc(order.menu.name) + '</span>' +
+        '<span class="bg-kit-order-sub">주문서 · ' + order.menu.steps.length + '단계</span>' +
+      '</div>' +
+      '<div class="bg-kit-chips">' + chipsHtml() + '</div>';
+  }
+
+  function renderBowl() {
+    if (!step) {
+      bowlEl.className = 'bg-kit-bowl';
+      bowlEl.innerHTML = '<span class="bg-kit-bowl-label">조리 그릇</span>';
+      return;
+    }
+    var out = '';
+    for (var i = 0; i < step; i++) {
+      out += '<span class="bg-kit-in">' + KITCHEN_ITEMS[order.menu.steps[i]].e + '</span>';
+    }
+    bowlEl.className = 'bg-kit-bowl is-filled';
+    bowlEl.innerHTML = out;
+  }
+
+  function renderTray() {
+    var out = '';
+    for (var i = 0; i < order.tray.length; i++) {
+      var key = order.tray[i];
+      var it = KITCHEN_ITEMS[key];
+      out += '<button type="button" class="bg-kit-btn" data-item="' + key + '">' +
+        '<span class="bg-kit-btn-e">' + it.e + '</span>' +
+        '<span class="bg-kit-btn-n">' + esc(it.n) + '</span>' +
+      '</button>';
+    }
+    trayEl.innerHTML = out;
+    var btns = trayEl.querySelectorAll('.bg-kit-btn');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].addEventListener('click', onTray);
+    }
+  }
+
+  function buildTray(steps) {
+    var need = steps.slice();
+    var traps = [];
+    var pool = shuffleArr(KITCHEN_KEYS);
+    for (var i = 0; i < pool.length && traps.length < 5; i++) {
+      if (need.indexOf(pool[i]) === -1) traps.push(pool[i]);
+    }
+    var size = steps.length >= 4 ? 9 : 8;
+    var extra = Math.max(0, size - need.length);
+    return shuffleArr(need.concat(traps.slice(0, extra)));
+  }
+
+  function nextOrder() {
+    var idx = pickIndex(KITCHEN_MENUS.length, lastMenu);
+    lastMenu = idx;
+    var menu = KITCHEN_MENUS[idx];
+    order = { menu: menu, tray: buildTray(menu.steps) };
+    step = 0;
+    renderOrder();
+    renderBowl();
+    renderTray();
+    statusEl.textContent = '새 주문! ' + menu.steps.length + '단계를 순서대로 담아 주세요.';
+  }
+
+  function onTray() {
+    if (finished || locked || !order) return;
+    var btn = this;
+    var key = btn.getAttribute('data-item');
+    totalTaps += 1;
+    if (key === order.menu.steps[step]) {
+      correctTaps += 1;
+      step += 1;
+      btn.classList.add('is-used');
+      btn.disabled = true;
+      renderOrder();
+      renderBowl();
+      accEl.textContent = accText();
+      if (step >= order.menu.steps.length) {
+        dishes += 1;
+        dishesEl.textContent = String(dishes);
+        statusEl.textContent = '완성! +1접시 🍽️';
+        bowlEl.className = 'bg-kit-bowl is-filled is-complete';
+        locked = true;
+        later(function () {
+          if (finished) return;
+          locked = false;
+          nextOrder();
+        }, 720);
+      } else {
+        statusEl.textContent = '좋아요! 다음은 ' + KITCHEN_ITEMS[order.menu.steps[step]].n;
+      }
+    } else {
+      btn.classList.add('is-wrong');
+      later(function () { btn.classList.remove('is-wrong'); }, 320);
+      accEl.textContent = accText();
+      statusEl.textContent = '순서가 달라요! 다음은 ' + KITCHEN_ITEMS[order.menu.steps[step]].n;
+    }
+  }
+
+  function tick() {
+    var left = Math.max(0, endAt - Date.now());
+    timeEl.textContent = (left / 1000).toFixed(1);
+    barEl.style.width = Math.max(0, Math.min(100, (left / TOTAL_MS) * 100)) + '%';
+    if (left <= 0 && !finished) finish();
+  }
+
+  function finish() {
+    if (finished) return;
+    finished = true;
+    clearAllTimers();
+    var accuracy = totalTaps ? Math.round((correctTaps / totalTaps) * 100) : 0;
+    statusEl.textContent = '45초 완료 — ' + dishes + '접시 완성 · 정확도 ' + accuracy + '%';
+    done({ game_key: 'order_cooking', score: dishes, metric_ms: null, accuracy: accuracy });
+  }
+
+  later(function () {
+    if (finished) return;
+    endAt = Date.now() + TOTAL_MS;
+    nextOrder();
+    every(tick, 100);
+    tick();
+  }, 700);
 }
 
 /* ------------------------------------------------------------- 결과 저장 */
@@ -585,7 +895,7 @@ export async function render(ctx) {
     '<header class="page-head">' +
       '<span class="page-eyebrow">' + icon('gamepad', 16) + ' BRAIN GAME</span>' +
       '<h1 class="page-title">오늘의 두뇌 워밍업</h1>' +
-      '<p class="page-desc">기억력 · 집중력 · 주의전환 · 반응속도 4종을 1~2분씩 가볍게. 매일 한 판이면 기록이 이어집니다.</p>' +
+      '<p class="page-desc">기억력 · 집중력 · 주의전환 · 집중 조준 · 순서 처리 5종을 1~2분씩 가볍게. 매일 한 판이면 기록이 이어집니다.</p>' +
     '</header>' +
 
     '<div id="bg-board" class="bg-board"></div>' +
@@ -668,7 +978,8 @@ function mountGames(el, logs) {
     if (key === 'memory_seq') runMemory(playEl, done);
     else if (key === 'stroop_color') runStroop(playEl, done);
     else if (key === 'number_grid') runNumberGrid(playEl, done);
-    else if (key === 'reaction_speed') runReaction(playEl, done);
+    else if (key === 'archery_target') runArchery(playEl, done);
+    else if (key === 'order_cooking') runCooking(playEl, done);
   }
 
   renderHub();

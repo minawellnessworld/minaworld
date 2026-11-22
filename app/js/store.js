@@ -6,9 +6,9 @@
      · 프로그램·기수·쿠폰·기본 게시글만 시드로 보관
      · 개인 측정 데이터는 절대 임의 생성하지 않음 (빈 상태 표시)
    ===================================================================== */
-import { CONFIG, POINT_DEFAULTS } from './config.js?v=2.0.25';
-import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.25';
-import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.25';
+import { CONFIG, POINT_DEFAULTS, BRAIN_GAMES, brainGameMeta } from './config.js?v=2.0.26';
+import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.26';
+import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.26';
 
 export var state = {
   mode: 'local',
@@ -1210,7 +1210,6 @@ export async function deleteWellness(id) {
    이 기기의 localStorage(mina_brain_game_guest_v1)에만 기록합니다.
    두뇌게임은 포인트 적립과 연결하지 않습니다. */
 var BRAIN_GAME_GUEST_KEY = 'mina_brain_game_guest_v1';
-var BRAIN_GAME_LOWER_IS_BETTER = { number_grid: true, reaction_speed: true };
 
 function readGuestBrainGameLogs() {
   try {
@@ -1247,7 +1246,10 @@ function isBetterBrainScore(gameKey, nextScore, prevScore) {
   var b = Number(prevScore);
   if (!isFinite(a)) return false;
   if (prevScore === null || prevScore === undefined || !isFinite(b)) return a > 0;
-  return BRAIN_GAME_LOWER_IS_BETTER[gameKey] ? a < b : a > b;
+  /* 방향은 config.js 의 BRAIN_GAMES[].direction 하나만 봅니다.
+     → 새 게임을 추가할 때 store.js 를 고치지 않아도 됩니다. */
+  var meta = brainGameMeta(gameKey);
+  return meta && meta.direction === 'lower' ? a < b : a > b;
 }
 
 /* 본인 플레이 기록 조회 — 최신순 */
@@ -1365,11 +1367,20 @@ export function computeBrainGameStats(logs) {
     last7Days.push({ date: k, played: Boolean(played[k]), day: d.getDate(), weekday: d.getDay() });
   }
 
+  /* 오늘 챌린지 완료 수는 지금 운영 중인 게임(BRAIN_GAMES)만 셉니다.
+     게임을 개편·교체해도 지난 기록은 보존되고(누적 판수·최근 7일에는 그대로 반영),
+     사라진 게임 키가 완료 수를 부풀리지 않습니다. */
+  var todayCount = 0;
+  for (var gi = 0; gi < BRAIN_GAMES.length; gi++) {
+    if (todayGames[BRAIN_GAMES[gi].key]) todayCount += 1;
+  }
+
   return {
     rows: rows,
     streakDays: streakDays,
     todayGames: todayGames,
-    todayCount: Object.keys(todayGames).length,
+    todayCount: todayCount,
+    gameCount: BRAIN_GAMES.length,
     totalPlays: rows.length,
     last7Days: last7Days,
     bestByGame: bestByGame,

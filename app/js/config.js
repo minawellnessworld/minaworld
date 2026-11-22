@@ -43,7 +43,7 @@ export var CONFIG = {
   SUPABASE_SCHEMA: 'public',
   STORAGE_BUCKET: 'brain-results',
   GA_MEASUREMENT_ID: 'G-TTMVKBHNZM',
-  APP_VERSION: '2.0.25',
+  APP_VERSION: '2.0.26',
   SCHEMA_VERSION: 'v2',
   SITE_URL: 'https://www.minaworld.co.kr',
   CONTACT_EMAIL: 'minawellnessworld@gmail.com',
@@ -155,16 +155,28 @@ export var BRAIN_GAMES = [
     tone: 'ivory'
   },
   {
-    key: 'reaction_speed',
-    title: '순발력 터치',
-    en: 'REACTION',
-    area: '반응속도 · 각성 조율',
-    desc: '신호가 바뀌는 순간 얼마나 빠르게 반응하는지',
-    howto: '3라운드 측정입니다. “지금 터치!”로 바뀌는 순간 바로 터치하세요. 신호 전에 누르면 그 라운드를 다시 측정합니다.',
-    direction: 'lower',
-    unit: 'ms',
-    ico: 'bolt',
+    key: 'archery_target',
+    title: '양궁 과녁 맞히기',
+    en: 'ARCHERY TARGET',
+    area: '집중 조준 · 반응 타이밍',
+    desc: '과녁 위 흔들리는 조준점을 중앙에 맞춰 5발 쏘기',
+    howto: '과녁판 위를 조준점이 흔들립니다. 조준점이 중앙에 가장 가까운 순간 과녁판이나 [화살 쏘기]를 누르세요. 5발의 합계(최대 50점)로 기록됩니다.',
+    direction: 'higher',
+    unit: '점',
+    ico: 'target',
     tone: 'yellow'
+  },
+  {
+    key: 'order_cooking',
+    title: '브레인 주방 순서요리',
+    en: 'BRAIN KITCHEN',
+    area: '실행기능 · 순서 처리',
+    desc: '주문 레시피 순서대로 재료를 톡톡 담아 요리 완성하기',
+    howto: '45초 동안 주문서에 적힌 재료를 순서대로 담아 요리를 완성하세요. 순서가 틀리면 잠깐 흔들리고 다음 재료를 알려 줍니다. 완성한 접시 수가 기록됩니다.',
+    direction: 'higher',
+    unit: '접시',
+    ico: 'utensils',
+    tone: 'navy'
   }
 ];
 
@@ -175,15 +187,18 @@ export function brainGameMeta(key) {
   return null;
 }
 
-/* 게임별 기록 표기 — 순서 기억은 '단계', 스트룹은 '점',
-   숫자 터치는 초(0.01초), 순발력은 ms 로 보여 줍니다. */
+/* 게임별 기록 표기 — meta.unit 을 그대로 씁니다.
+   · ms 단위 게임은 그대로 ms, number_grid 는 저장값이 ms 이므로 초(0.01초)로 환산
+   · 나머지는 저장값 + unit ('단계' · '점' · '접시' …)
+   새 게임을 config 에 추가할 때 이 함수는 고치지 않아도 됩니다. */
 export function brainGameScoreText(key, score) {
   var n = Number(score);
   if (score === null || score === undefined || !isFinite(n) || n < 0) return '-';
+  var meta = brainGameMeta(key);
+  var unit = (meta && meta.unit) || '점';
   if (key === 'number_grid') return (n / 1000).toFixed(2) + '초';
-  if (key === 'reaction_speed') return Math.round(n) + 'ms';
-  if (key === 'memory_seq') return n + '단계';
-  return n + '점';
+  if (unit === 'ms') return Math.round(n) + 'ms';
+  return n + unit;
 }
 
 export var BOOKING_STATUS = {

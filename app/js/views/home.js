@@ -1,19 +1,19 @@
 /* S01. 홈 — 개인 회원 메인 대시보드(PART 2-2) + 오늘의 뇌 컨디션 체크인 */
-import { BRAND, MINA_MEANING, GOAL_OPTIONS, BRAIN_GAMES } from '../config.js?v=2.0.25';
+import { BRAND, MINA_MEANING, GOAL_OPTIONS, BRAIN_GAMES } from '../config.js?v=2.0.26';
 import {
   state, listWellness, addWellness, listBookings, listPosts, listResults, listPackages,
   listSessions, getPrograms, getPointSettings, isStaff, isOrgWorker,
   friendlyError, dateKey, todayStr, listBrainGameLogs, computeBrainGameStats
-} from '../store.js?v=2.0.25';
+} from '../store.js?v=2.0.26';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listMyMemberships, setShareBrainResults
-} from '../store-org.js?v=2.0.25';
-import { recordConsents, logAudit } from '../store-security.js?v=2.0.25';
+} from '../store-org.js?v=2.0.26';
+import { recordConsents, logAudit } from '../store-security.js?v=2.0.26';
 import {
   icon, esc, fmtKRW, fmtDate, todayLabel, toast, emptyState, setBusy, sectionHead, go, track, noticeBox
-} from '../ui.js?v=2.0.25';
-import { requireLoginSheet } from '../booking.js?v=2.0.25';
-import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.25';
+} from '../ui.js?v=2.0.26';
+import { requireLoginSheet } from '../booking.js?v=2.0.26';
+import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.26';
 
 var MENU = [
   { key: 'brain_check', title: 'BRAIN CHECK', sub: '뇌파측정 · 뇌기능검사 예약', ico: 'pulse', href: '#/brain-check', tone: 'navy' },
@@ -243,6 +243,7 @@ export async function render(ctx) {
       '</section>'
     : '';
   var dash = '';
+  var gameCount = gameStats.gameCount || BRAIN_GAMES.length;
   if (state.session) {
     var name = (state.profile && (state.profile.full_name || state.profile.email)) || '회원';
     dash =
@@ -264,7 +265,7 @@ export async function render(ctx) {
             latestWellness ? ('집중 ' + (latestWellness.focus_level || '-') + ' · 스트레스 ' + (latestWellness.stress_level || '-')) : '오늘 체크인해 보세요', '#/my-brain') +
           dashTile('coin', '내 포인트', myPoints + 'P',
             myPoints > 0 ? fmtKRW(myPoints * krwPerPoint) + ' 상당' : '체크인으로 적립', '#/account?focus=points') +
-          dashTile('gamepad', '두뇌 게임', gameStats.streakDays > 0 ? gameStats.streakDays + '일 연속' : gameStats.todayCount + '/4 완료',
+          dashTile('gamepad', '두뇌 게임', gameStats.streakDays > 0 ? gameStats.streakDays + '일 연속' : gameStats.todayCount + '/' + gameCount + ' 완료',
             gameStats.totalPlays > 0 ? '누적 ' + gameStats.totalPlays + '판' : '오늘 한 판 시작', '#/games') +
           dashTile('chat', '공지 · 이벤트', String(notices.length + events.length) + '건', topNotice ? topNotice.title : '새 소식 없음', '#/community') +
         '</div>' +
@@ -309,7 +310,7 @@ export async function render(ctx) {
         '<strong class="bg-home-title">' +
           (gameStats.streakDays > 0 ? '오늘도 두뇌 워밍업 한 판!' : '1~2분이면 끝나는 두뇌 워밍업') +
         '</strong>' +
-        '<span class="bg-home-sub">오늘 챌린지 ' + gameStats.todayCount + '/4 완료 · 누적 ' + gameStats.totalPlays + '판</span>' +
+        '<span class="bg-home-sub">오늘 챌린지 ' + gameStats.todayCount + '/' + gameCount + ' 완료 · 누적 ' + gameStats.totalPlays + '판</span>' +
         '<span class="bg-home-chips">' + BRAIN_GAMES.map(function (g) {
           return '<span class="bg-home-chip' + (gameStats.todayGames[g.key] ? ' is-on' : '') + '">' + esc(g.title) + '</span>';
         }).join('') + '</span>' +

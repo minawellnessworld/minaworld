@@ -2641,7 +2641,7 @@ body.portal-mode .mode-banner { display: none; }
 .list-points { color: var(--gold-dark); }
 
 /* =====================================================================
-   BRAIN GAME — 두뇌게임 4종 · 스트릭(연속 플레이)
+   BRAIN GAME — 두뇌게임 5종 · 스트릭(연속 플레이)
    ===================================================================== */
 .bg-board { padding: 0 18px; }
 .bg-board-inner { display: flex; flex-direction: column; gap: 10px; }
@@ -2768,26 +2768,82 @@ body.portal-mode .mode-banner { display: none; }
 .bg-num.is-done { background: var(--gold-soft); border-color: var(--gold); color: var(--gold-dark); }
 .bg-num.is-shake { background: var(--red-soft); border-color: var(--red); animation: bgShake 0.32s var(--ease); }
 
-/* 4) 순발력 터치 */
-.bg-react-pad {
-  width: 100%; min-height: 190px; margin-top: 14px; padding: 20px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-  border-radius: var(--radius-lg); border: 1px solid var(--line); background: var(--box);
-  font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+/* 4) 양궁 과녁 맞히기 */
+.bg-archery { display: flex; justify-content: center; margin-top: 14px; }
+.bg-archery-board {
+  position: relative; width: min(74vw, 292px); aspect-ratio: 1 / 1;
+  cursor: crosshair; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
 }
-.bg-react-label { font-size: 24px; font-weight: 900; letter-spacing: -0.03em; color: var(--navy); font-variant-numeric: tabular-nums; }
-.bg-react-hint { font-size: 11.5px; color: var(--muted); }
-.bg-react-pad.is-wait { background: var(--navy); border-color: var(--navy); }
-.bg-react-pad.is-wait .bg-react-label { color: rgba(255, 255, 255, 0.82); }
-.bg-react-pad.is-wait .bg-react-hint { color: rgba(255, 255, 255, 0.5); }
-.bg-react-pad.is-go { background: var(--yellow); border-color: var(--yellow-dark); box-shadow: 0 0 0 6px rgba(245, 184, 46, 0.18); }
-.bg-react-pad.is-go .bg-react-label { color: #241A02; }
-.bg-react-pad.is-early { background: var(--red-soft); border-color: var(--red); }
-.bg-react-pad.is-early .bg-react-label { font-size: 20px; color: var(--red); }
-.bg-react-pad.is-idle { background: var(--box); }
-.bg-react-pad.is-done { background: var(--green-soft); border-color: #CFE6DA; }
-.bg-react-pad.is-done .bg-react-label { color: var(--green); }
+.bg-archery-board:focus-visible { outline: 2px solid var(--gold); outline-offset: 8px; border-radius: 50%; }
+.bg-arc-ring { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border-radius: 50%; }
+.bg-arc-ring.is-6 { width: 100%; height: 100%; background: #FFFFFF; box-shadow: 0 0 0 2px #E6DCC9, inset 0 2px 10px rgba(7, 13, 30, 0.08); }
+.bg-arc-ring.is-7 { width: 80%; height: 80%; background: #23262E; }
+.bg-arc-ring.is-8 { width: 60%; height: 60%; background: #2C67B2; }
+.bg-arc-ring.is-9 { width: 40%; height: 40%; background: #C8483C; }
+.bg-arc-ring.is-10 { width: 20%; height: 20%; background: linear-gradient(160deg, #FFD969, #E8A81D); box-shadow: inset 0 0 0 1px rgba(140, 95, 5, 0.35); }
+.bg-arc-x { position: absolute; left: 50%; top: 50%; width: 9%; height: 9%; transform: translate(-50%, -50%); }
+.bg-arc-x::before, .bg-arc-x::after { content: ''; position: absolute; left: 50%; top: 50%; width: 2px; height: 130%; background: rgba(255, 255, 255, 0.9); transform: translate(-50%, -50%) rotate(45deg); }
+.bg-arc-x::after { transform: translate(-50%, -50%) rotate(-45deg); }
+.bg-arc-aim {
+  position: absolute; left: 50%; top: 50%; width: 34px; height: 34px;
+  transform: translate(-50%, -50%); border-radius: 50%; border: 2px solid var(--yellow);
+  box-shadow: 0 0 0 1.5px rgba(7, 13, 30, 0.55), inset 0 0 0 1.5px rgba(7, 13, 30, 0.35);
+  pointer-events: none;
+}
+.bg-arc-aim::before, .bg-arc-aim::after { content: ''; position: absolute; left: 50%; top: 50%; background: var(--yellow); box-shadow: 0 0 0 1px rgba(7, 13, 30, 0.45); }
+.bg-arc-aim::before { width: 2px; height: 46px; transform: translate(-50%, -50%); }
+.bg-arc-aim::after { width: 46px; height: 2px; transform: translate(-50%, -50%); }
+.bg-arc-pin {
+  position: absolute; width: 11px; height: 11px; transform: translate(-50%, -50%);
+  border-radius: 50%; background: #070D1E; border: 2px solid var(--yellow);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35); pointer-events: none;
+  animation: bgPinIn 0.3s var(--ease);
+}
+.bg-arc-pin.is-ten { background: var(--yellow); border-color: #070D1E; }
+.bg-arc-pin.is-out { background: #B4453F; border-color: rgba(255, 255, 255, 0.85); }
+.bg-arc-shots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+.bg-arc-shot { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--box); border: 1px dashed var(--line-strong); font-size: 11px; font-weight: 800; color: var(--muted-2); font-variant-numeric: tabular-nums; }
+.bg-arc-shot.is-filled { border-style: solid; border-color: var(--gold); background: var(--gold-soft); color: var(--gold-dark); animation: bgPopIn 0.28s var(--ease); }
+.bg-arc-shot.is-ten { background: var(--yellow); border-color: var(--yellow-dark); color: #241A02; }
+.bg-arc-shot.is-zero { background: var(--red-soft); border-color: #E4B4AF; color: var(--red); }
+.bg-arc-shoot { margin-top: 12px; }
+
+/* 5) 브레인 주방 순서요리 */
+.bg-kit-order { margin-top: 12px; padding: 12px 13px; border-radius: var(--radius-md); background: var(--ivory); border: 1px solid var(--line); }
+.bg-kit-order-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.bg-kit-menu { font-size: 14px; font-weight: 800; letter-spacing: -0.02em; }
+.bg-kit-order-sub { flex: 0 0 auto; font-size: 10px; color: var(--muted-2); }
+.bg-kit-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.bg-kit-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px 4px 5px; border-radius: 999px; background: var(--white); border: 1px solid var(--line); font-size: 11px; color: var(--muted); transition: background 0.15s var(--ease), border-color 0.15s var(--ease); }
+.bg-kit-no { display: grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; background: var(--box); font-size: 9px; font-weight: 800; color: var(--muted-2); }
+.bg-kit-emoji { font-size: 13px; }
+.bg-kit-chip.is-next { border-color: var(--gold); background: var(--gold-soft); color: #241A02; font-weight: 800; box-shadow: 0 0 0 3px rgba(200, 152, 48, 0.16); }
+.bg-kit-chip.is-next .bg-kit-no { background: var(--gold); color: var(--white); }
+.bg-kit-chip.is-done { opacity: 0.48; }
+.bg-kit-chip.is-done .bg-kit-name { text-decoration: line-through; }
+.bg-kit-bowl {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 6px;
+  min-height: 92px; margin-top: 10px; padding: 14px;
+  border-radius: 8px 8px 46% 46% / 8px 8px 30% 30%;
+  background: var(--white); border: 1px solid var(--line); border-top: 3px solid var(--line-strong);
+  transition: background 0.2s var(--ease);
+}
+.bg-kit-bowl-label { font-size: 11px; color: var(--muted-2); letter-spacing: 0.04em; }
+.bg-kit-in { font-size: 26px; line-height: 1.1; animation: bgPopIn 0.26s var(--ease); }
+.bg-kit-bowl.is-complete { background: var(--green-soft); border-color: #CFE6DA; }
+.bg-kit-tray { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 12px; }
+.bg-kit-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 6px;
+  border-radius: var(--radius-sm); border: 1px solid var(--line-strong); background: var(--white);
+  font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+.bg-kit-btn:active { transform: scale(0.96); background: var(--gold-soft); }
+.bg-kit-btn-e { font-size: 22px; line-height: 1.1; }
+.bg-kit-btn-n { font-size: 10.5px; font-weight: 700; color: var(--navy); }
+.bg-kit-btn.is-used { opacity: 0.32; }
+.bg-kit-btn.is-used:active { transform: none; }
+.bg-kit-btn.is-wrong { background: var(--red-soft); border-color: var(--red); animation: bgShake 0.32s var(--ease); }
 
 /* 결과 */
 .bg-result { display: flex; flex-direction: column; align-items: center; padding-top: 6px; text-align: center; }
@@ -2808,6 +2864,16 @@ body.portal-mode .mode-banner { display: none; }
   20% { transform: translateX(-4px); }
   55% { transform: translateX(4px); }
   80% { transform: translateX(-2px); }
+}
+
+@keyframes bgPinIn {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+@keyframes bgPopIn {
+  0% { transform: scale(0.55); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* 홈 배너 — 오늘의 두뇌 워밍업 */

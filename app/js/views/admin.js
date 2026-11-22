@@ -4,7 +4,7 @@
 import {
   CHECK_TYPES, BOOKING_STATUS, BOOKING_PAYMENT_STATUS, PAYMENT_STATUS, ROLES, GRADES,
   COMMUNITY_CATEGORIES, ENROLLMENT_STATUS, categoryLabel, POINT_REASONS
-} from '../config.js?v=2.0.25';
+} from '../config.js?v=2.0.26';
 import {
   state, isAdmin, isStaff, listProfiles, listPackages, adminSavePackage, adminUpdatePackage,
   listSessions, adminSaveSession, listAllPrograms, adminUpdateProgram,
@@ -12,22 +12,22 @@ import {
   listMaterials, adminCreateMaterial, listCoupons, adminCreateCoupon, adminUpdateCoupon,
   listNotes, adminCreateNote, listPayments, adminSetPaymentStatus, friendlyError, todayStr,
   getPointSettings, adminUpdatePointSettings, adminAdjustPoints, listAllPointTransactions
-} from '../store.js?v=2.0.25';
+} from '../store.js?v=2.0.26';
 import {
   icon, esc, fmtKRW, fmtDate, fmtDateTime, toast, emptyState, noticeBox, badge,
   openSheet, closeSheet, setBusy, go
-} from '../ui.js?v=2.0.25';
-import { logAudit } from '../store-security.js?v=2.0.25';
-import * as OverviewTab from './admin/overview.js?v=2.0.25';
-import * as BookingsTab from './admin/bookings.js?v=2.0.25';
-import * as MembersTab from './admin/members.js?v=2.0.25';
-import * as ResultsTab from './admin/results.js?v=2.0.25';
-import * as ContentTab from './admin/content.js?v=2.0.25';
-import * as OrgsTab from './admin/orgs.js?v=2.0.25';
-import * as SettlementsTab from './admin/settlements.js?v=2.0.25';
-import * as AuditTab from './admin/audit.js?v=2.0.25';
-import * as SecurityTab from './admin/security.js?v=2.0.25';
-import { captureSectionHtml, bindNeuroCapture } from './admin/neuro-capture.js?v=2.0.25';
+} from '../ui.js?v=2.0.26';
+import { logAudit } from '../store-security.js?v=2.0.26';
+import * as OverviewTab from './admin/overview.js?v=2.0.26';
+import * as BookingsTab from './admin/bookings.js?v=2.0.26';
+import * as MembersTab from './admin/members.js?v=2.0.26';
+import * as ResultsTab from './admin/results.js?v=2.0.26';
+import * as ContentTab from './admin/content.js?v=2.0.26';
+import * as OrgsTab from './admin/orgs.js?v=2.0.26';
+import * as SettlementsTab from './admin/settlements.js?v=2.0.26';
+import * as AuditTab from './admin/audit.js?v=2.0.26';
+import * as SecurityTab from './admin/security.js?v=2.0.26';
+import { captureSectionHtml, bindNeuroCapture } from './admin/neuro-capture.js?v=2.0.26';
 
 var TABS = [
   { id: 'overview', label: '운영 요약', ico: 'chart' },
