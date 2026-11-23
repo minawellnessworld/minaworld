@@ -7,12 +7,12 @@
      게임 종료·다른 화면 이동(destroy) 시 모두 정리합니다.
    · 게임 개수는 config.js 의 BRAIN_GAMES 길이를 그대로 따릅니다.
    ===================================================================== */
-import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.28';
+import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.29';
 import {
   state, listBrainGameLogs, saveBrainGameLog, computeBrainGameStats, friendlyError
-} from '../store.js?v=2.0.28';
-import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.28';
-import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.28';
+} from '../store.js?v=2.0.29';
+import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.29';
+import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.29';
 
 var WEEK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -1463,6 +1463,7 @@ function mountGames(el, logs) {
 
   function showHub() {
     clearAllTimers();
+    el.classList.remove('bg-playing');
     stageEl.hidden = true;
     stageEl.innerHTML = '';
     boardEl.hidden = false;
@@ -1475,6 +1476,7 @@ function mountGames(el, logs) {
     if (!meta) return;
     unlockSfx();
     clearAllTimers();
+    el.classList.add('bg-playing');
     boardEl.hidden = true;
     hubEl.hidden = true;
     stageEl.hidden = false;

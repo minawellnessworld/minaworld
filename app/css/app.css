@@ -2720,6 +2720,12 @@ body.portal-mode .mode-banner { display: none; }
 .bg-game-title { margin-top: 8px; font-size: 21px; font-weight: 800; letter-spacing: -0.03em; }
 .bg-game-desc { margin-top: 4px; font-size: 12px; line-height: 1.55; color: var(--muted); }
 .bg-play { margin-top: 4px; }
+/* 게임 플레이 중에는 페이지 인사말을 접어 조리대가 한눈에 들어오게 합니다 */
+.bg-playing .page-head { display: none; }
+.bg-playing .bg-stage { margin-top: 10px; }
+.bg-play .bg-hud { gap: 5px; }
+.bg-play .bg-hud-item { padding: 4px 8px; font-size: 10px; gap: 3px; }
+.bg-play .bg-hud-item strong { font-size: 12px; }
 .bg-hud { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .bg-hud-item { display: inline-flex; align-items: baseline; gap: 4px; padding: 5px 10px; border-radius: 999px; background: var(--box); font-size: 10.5px; color: var(--muted); }
 .bg-hud-item strong { font-size: 13px; font-weight: 800; color: var(--navy); font-variant-numeric: tabular-nums; }
