@@ -1,16 +1,16 @@
 /* S04. MY BRAIN — 나의 뇌 관리 대시보드 (PART 2-3)
    실제 측정 데이터만 표시합니다. 값이 없으면 빈 상태이며 임의 수치를 만들지 않습니다. */
-import { BRAND, GOAL_OPTIONS, GRADES, CHECK_TYPES, CHECK_ITEM_LABELS } from '../config.js?v=2.0.27';
+import { BRAND, GOAL_OPTIONS, GRADES, CHECK_TYPES, CHECK_ITEM_LABELS } from '../config.js?v=2.0.28';
 import {
   state, updateProfile, listResults, listPackages, listSessions, listBookings, listWellness,
   getSignedResultUrl, friendlyError, todayStr, deleteWellness
-} from '../store.js?v=2.0.27';
-import { listMyMemberships } from '../store-org.js?v=2.0.27';
+} from '../store.js?v=2.0.28';
+import { listMyMemberships } from '../store-org.js?v=2.0.28';
 import {
   icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead,
   loadingBlock, badge, bookingStatusTone, setBusy, confirmDialog, go
-} from '../ui.js?v=2.0.27';
-import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.27';
+} from '../ui.js?v=2.0.28';
+import { bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.28';
 
 function summaryTile(ico, label, value, sub) {
   return '<div class="summary-tile">' +

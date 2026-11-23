@@ -1,12 +1,12 @@
 /* 관리자 → 보안: 2단계 인증(TOTP) 등록·검증·해제 + 동의 이력 확인 */
-import { state, friendlyError } from '../../store.js?v=2.0.27';
+import { state, friendlyError } from '../../store.js?v=2.0.28';
 import {
   getMfaStatus, enrollTotp, verifyTotp, unenrollTotp, listConsentLogs, logAudit
-} from '../../store-security.js?v=2.0.27';
-import { CONSENT_LABELS } from '../../config.js?v=2.0.27';
+} from '../../store-security.js?v=2.0.28';
+import { CONSENT_LABELS } from '../../config.js?v=2.0.28';
 import {
   icon, esc, fmtDateTime, toast, badge, setBusy, confirmDialog, noticeBox, emptyState
-} from '../../ui.js?v=2.0.27';
+} from '../../ui.js?v=2.0.28';
 
 function table(headers, rows) {
   return '<div class="table-scroll"><table class="data-table"><thead><tr>' +

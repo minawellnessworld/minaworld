@@ -7,11 +7,12 @@
      게임 종료·다른 화면 이동(destroy) 시 모두 정리합니다.
    · 게임 개수는 config.js 의 BRAIN_GAMES 길이를 그대로 따릅니다.
    ===================================================================== */
-import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.27';
+import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.28';
 import {
   state, listBrainGameLogs, saveBrainGameLog, computeBrainGameStats, friendlyError
-} from '../store.js?v=2.0.27';
-import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.27';
+} from '../store.js?v=2.0.28';
+import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.28';
+import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.28';
 
 var WEEK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -133,7 +134,8 @@ function hubHtml(stats) {
 
   var total = BRAIN_GAMES.length;
   return '<div class="section-head"><h2 class="section-title">' + total + '종 두뇌게임</h2>' +
-      '<div class="section-action"><span class="muted small">자유롭게 · 몇 번이든</span></div></div>' +
+      '<div class="section-action bg-hub-tools"><span class="muted small">자유롭게 · 몇 번이든</span>' +
+        sfxToggleHtml('bg-sfx-hub') + '</div></div>' +
     '<div class="bg-games">' + cards + '</div>' +
     '<p class="bg-guide">게임은 골라서 몇 번이든 즐길 수 있어요. 오늘 ' + total + '종을 모두 하면 하루 챌린지가 완성됩니다.</p>';
 }
@@ -245,6 +247,7 @@ function runMemory(playEl, done) {
       }
       var idx = seq[i];
       tileBtns[idx].classList.add('is-lit');
+      sfx.note(idx);
       later(function () {
         tileBtns[idx].classList.remove('is-lit');
         i += 1;
@@ -272,6 +275,7 @@ function runMemory(playEl, done) {
     if (idx === seq[pos]) {
       var self = this;
       self.classList.add('is-tap');
+      sfx.note(idx);
       later(function () { self.classList.remove('is-tap'); }, 180);
       pos += 1;
       if (pos >= seq.length) {
@@ -280,11 +284,13 @@ function runMemory(playEl, done) {
         clearEl.textContent = String(completed);
         tilesEl.classList.remove('is-input');
         statusEl.textContent = '좋아요! ' + completed + '단계 성공 — 다음 라운드로 이어집니다.';
+        sfx.correct();
         later(startRound, 800);
       }
     } else {
       locked = true;
       this.classList.add('is-wrong');
+      sfx.wrong();
       tilesEl.classList.remove('is-input');
       statusEl.textContent = '앗, 순서가 달라요. ' + completed + '단계에서 기록이 저장됩니다.';
       later(function () {
@@ -356,6 +362,7 @@ function runStroop(playEl, done) {
     var accuracy = attempts > 0 ? Math.round((correct / attempts) * 100) : 0;
     wordEl.textContent = '끝!';
     wordEl.style.color = '#070D1E';
+    sfx.chime();
     statusEl.textContent = '30초 완료 — 맞힌 개수 ' + correct + '개 · 정답률 ' + accuracy + '%';
     done({ game_key: 'stroop_color', score: correct, metric_ms: null, accuracy: accuracy });
   }
@@ -366,10 +373,12 @@ function runStroop(playEl, done) {
     attempts += 1;
     if (picked === answerName) {
       correct += 1;
+      sfx.correct();
       scoreEl.textContent = String(correct);
       wordEl.classList.add('is-correct');
       later(function () { wordEl.classList.remove('is-correct'); }, 160);
     } else {
+      sfx.nope();
       wordEl.classList.add('is-miss');
       later(function () { wordEl.classList.remove('is-miss'); }, 180);
     }
@@ -430,6 +439,7 @@ function runNumberGrid(playEl, done) {
     var elapsed = Math.max(1, Date.now() - startAt);
     timeEl.textContent = (elapsed / 1000).toFixed(2);
     nextEl.textContent = '완료';
+    sfx.chime();
     statusEl.textContent = '25까지 완료! 걸린 시간 ' + (elapsed / 1000).toFixed(2) + '초 · 실수 ' + mistakes + '회';
     done({ game_key: 'number_grid', score: elapsed, metric_ms: elapsed, accuracy: null });
   }
@@ -440,6 +450,7 @@ function runNumberGrid(playEl, done) {
     if (value !== next) {
       var self = this;
       self.classList.add('is-shake');
+      sfx.nope();
       later(function () { self.classList.remove('is-shake'); }, 320);
       mistakes += 1;
       missEl.textContent = String(mistakes);
@@ -453,6 +464,7 @@ function runNumberGrid(playEl, done) {
     }
     this.classList.add('is-done');
     this.disabled = true;
+    sfx.pop(value);
     next += 1;
     if (next > 25) {
       finish();
@@ -578,6 +590,8 @@ function runArchery(playEl, done) {
     speedUp += 0.12;
     var score = arcRingOf(aimX, aimY);
     shots.push(score);
+    sfx.bow();
+    later(function () { sfx.hit(score); }, 90);
 
     var pin = document.createElement('span');
     pin.className = 'bg-arc-pin' + (score === 10 ? ' is-ten' : '') + (score === 0 ? ' is-out' : '');
@@ -624,18 +638,69 @@ function runArchery(playEl, done) {
   }, 650);
 }
 
-/* ------------- 5) 브레인 주방 매드니스 (order_cooking · 타임 매니지먼트) */
+/* ------------- 5) 브레인 주방 매드니스 (order_cooking · 타임 매니지먼트)
+   · 손님이 카운터로 걸어 들어와 주문하고, 서빙받으면 웃으며 걸어 나갑니다.
+   · 조리대(음료 머신 · 도자기 접시 · 철판 그릴)와 재료 바구니를 직접 눌러 요리합니다.
+   · 슬롯 DOM은 한 번만 만들고, 상태가 바뀐 슬롯만 다시 그려 입장·퇴장 애니메이션이 끊기지 않습니다. */
 var RUSH_DURATION = 60000;
 var RUSH_PATTY_MS = 2200;      /* 패티 익는 시간 */
 var RUSH_BURN_MS = 4500;       /* 다 익은 뒤 태우기까지 */
 var RUSH_DRINK_MS = 1500;      /* 음료 채우는 시간 */
 var RUSH_COMBO_WINDOW = 3500;  /* 연속 서빙 콤보 인정 시간 */
+var RUSH_LEAVE_MS = 720;       /* 웃으며/화나서 걸어 나가는 연출 길이 */
+var RUSH_RESPAWN_MS = 380;     /* 빈 자리에 다음 손님이 오기까지 */
 var RUSH_ITEM = {
   basic: { e: '🍔', n: '기본 버거' },
   special: { e: '🥗', n: '스페셜 버거' },
   drink: { e: '🥤', n: '음료' }
 };
-var RUSH_FACES = ['😊', '😐', '😟', '😡'];
+
+/* 손님 캐릭터 풀 — 머리·옷·피부·소품이 모두 다른 6종 */
+var RUSH_GUESTS = [
+  { skin: '#F6CEAA', hair: '#2C2C35', shirt: '#41587C', style: 'short' },
+  { skin: '#F2C39B', hair: '#5A3524', shirt: '#C46A5B', style: 'bob', glasses: true },
+  { skin: '#EFC9B0', hair: '#1F1F27', shirt: '#4F8A6B', style: 'long' },
+  { skin: '#F7D2B2', hair: '#7A4A2C', shirt: '#E0A93C', style: 'cap' },
+  { skin: '#EBC0A0', hair: '#3A3A44', shirt: '#6F5EA8', style: 'bun' },
+  { skin: '#F0CBB3', hair: '#B9B4AE', shirt: '#8E6A5A', style: 'elder', glasses: true }
+];
+
+function guestSvg(g) {
+  var hair = '<path d="M9.6 17.2a10.4 10.4 0 0 1 20.8 0c-1.8-3.2-5.6-4.8-10.4-4.8s-8.6 1.6-10.4 4.8Z" fill="' + g.hair + '"/>';
+  if (g.style === 'bob') {
+    hair += '<path d="M9.4 16.6c-1.2 3.6-1 7.8.3 10.6 1.3-.5 2-1.6 2.2-3.3-.8-2.4-.8-5.2 0-7.3Zm21.2 0c1.2 3.6 1 7.8-.3 10.6-1.3-.5-2-1.6-2.2-3.3.8-2.4.8-5.2 0-7.3Z" fill="' + g.hair + '"/>';
+  } else if (g.style === 'long') {
+    hair += '<path d="M9.2 16.2c-1.6 4.8-1.4 10.2.4 13.8 1.6-.4 2.5-1.7 2.7-3.7-1-3.6-1-7.4-.2-10.1Zm21.6 0c1.6 4.8 1.4 10.2-.4 13.8-1.6-.4-2.5-1.7-2.7-3.7 1-3.6 1-7.4.2-10.1Z" fill="' + g.hair + '"/>';
+  } else if (g.style === 'bun') {
+    hair += '<circle cx="20" cy="5.6" r="3.2" fill="' + g.hair + '"/>';
+  } else if (g.style === 'cap') {
+    hair = '<path d="M9.8 14.6c.5-5.2 4.5-8.8 10.2-8.8s9.7 3.6 10.2 8.8Z" fill="' + g.shirt + '"/>' +
+      '<path d="M28.6 13.2h6.6c1 0 1.5 1 1 1.8-.9 1.2-2.8 1.8-4.9 1.5-1.4-.2-2.4-1.3-2.7-3.3Z" fill="' + g.shirt + '"/>';
+  } else if (g.style === 'elder') {
+    hair = '<path d="M9.6 17.4a10.4 10.4 0 0 1 20.8 0c-2-2.8-5.6-4.2-10.4-4.2s-8.4 1.4-10.4 4.2Z" fill="' + g.hair + '"/>' +
+      '<path d="M12.4 9.4c1.6-1.6 4.2-2.6 7.6-2.6" stroke="rgba(255,255,255,.8)" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+  }
+  var glasses = g.glasses
+    ? '<g fill="none" stroke="#54545F" stroke-width="1.1"><circle cx="15.9" cy="17.6" r="3.3"/><circle cx="24.1" cy="17.6" r="3.3"/><path d="M19.2 17.6h1.6"/></g>'
+    : '';
+  return '<svg viewBox="0 0 40 42" class="bg-rush-av" aria-hidden="true">' +
+    '<path d="M5.2 42c0-6.8 6.7-11.2 14.8-11.2S34.8 35.2 34.8 42Z" fill="' + g.shirt + '"/>' +
+    '<path d="M16.2 31.4 20 34.5l3.8-3.1" stroke="rgba(255,255,255,.6)" stroke-width="1.3" fill="none" stroke-linecap="round"/>' +
+    '<rect x="16.8" y="25.2" width="6.4" height="7" rx="3" fill="' + g.skin + '"/>' +
+    '<circle cx="20" cy="17.6" r="10.2" fill="' + g.skin + '"/>' +
+    '<circle cx="9.7" cy="18.4" r="1.9" fill="' + g.skin + '"/><circle cx="30.3" cy="18.4" r="1.9" fill="' + g.skin + '"/>' +
+    hair +
+    '<circle cx="16.1" cy="17.6" r="1.3" fill="#2B2B33"/><circle cx="23.9" cy="17.6" r="1.3" fill="#2B2B33"/>' +
+    glasses +
+    '<g class="av-brow" stroke="#2B2B33" stroke-width="1.1" stroke-linecap="round"><path d="M13.6 14 18 15.4"/><path d="M26.4 14 22 15.4"/></g>' +
+    '<g class="av-blush"><ellipse cx="13.4" cy="20.6" rx="1.7" ry="1" fill="#F09A8E" opacity=".6"/><ellipse cx="26.6" cy="20.6" rx="1.7" ry="1" fill="#F09A8E" opacity=".6"/></g>' +
+    '<g class="av-m av-m-calm"><path d="M17 21.2c1 2 5 2 6 0" stroke="#B4736B" stroke-width="1.4" fill="none" stroke-linecap="round"/></g>' +
+    '<g class="av-m av-m-neutral"><path d="M17.8 21.9h4.4" stroke="#B4736B" stroke-width="1.4" stroke-linecap="round"/></g>' +
+    '<g class="av-m av-m-warn"><path d="M17.2 22.6c1.2-1.5 4.4-1.5 5.6 0" stroke="#B4736B" stroke-width="1.4" fill="none" stroke-linecap="round"/></g>' +
+    '<g class="av-m av-m-angry"><path d="M16.9 22.8c1.5-1.5 4.7-1.5 6.2 0" stroke="#A2564E" stroke-width="1.5" fill="none" stroke-linecap="round"/></g>' +
+    '<g class="av-m av-m-joy"><path d="M16.3 20.7a4.6 3.4 0 0 0 7.4 0Z" fill="#B4736B"/></g>' +
+  '</svg>';
+}
 
 function runCooking(playEl, done) {
   var endAt = 0;
@@ -649,7 +714,6 @@ function runCooking(playEl, done) {
   var nextId = 1;
   var customers = [null, null, null];
   var nextSpawnAt = [0, 0, 0];
-  var flash = [null, null, null];
   var grill = [
     { state: 'empty', startAt: 0, readyAt: 0 },
     { state: 'empty', startAt: 0, readyAt: 0 }
@@ -662,7 +726,14 @@ function runCooking(playEl, done) {
     { state: 'empty', startAt: 0, readyAt: 0 },
     { state: 'empty', startAt: 0, readyAt: 0 }
   ];
-  var dirty = true;
+  var slotEls = [];
+  var custEls = [null, null, null];
+  var grillEls = [];
+  var plateEls = [];
+  var drinkEls = [];
+  var sigG = [null, null];
+  var sigP = [null, null];
+  var sigD = [null, null];
 
   playEl.innerHTML =
     '<div class="bg-hud">' +
@@ -672,26 +743,31 @@ function runCooking(playEl, done) {
       '<span class="bg-hud-item">서빙<strong id="bg-rush-served">0</strong>명</span>' +
     '</div>' +
     '<div class="bg-timerbar"><span class="bg-timerbar-fill" id="bg-rush-bar"></span></div>' +
-    '<div class="bg-rush-custs" id="bg-rush-custs"></div>' +
-    '<div class="bg-rush-kitchen">' +
-      '<div class="bg-rush-station">' +
-        '<span class="bg-rush-station-label">🔥 그릴</span>' +
-        '<div class="bg-rush-slots" id="bg-rush-grill"></div>' +
-      '</div>' +
-      '<div class="bg-rush-station">' +
-        '<span class="bg-rush-station-label">🍽️ 접시</span>' +
-        '<div class="bg-rush-slots" id="bg-rush-plates"></div>' +
-      '</div>' +
-      '<div class="bg-rush-station">' +
-        '<span class="bg-rush-station-label">🥤 음료</span>' +
-        '<div class="bg-rush-slots" id="bg-rush-drinks"></div>' +
+    '<div class="bg-rush-floor">' +
+      '<div class="bg-rush-custs" id="bg-rush-custs">' +
+        '<div class="bg-rush-slotwrap is-empty" data-slot="0"><div class="bg-rush-seat"><span class="bg-rush-seat-e">💺</span><span>다음 손님…</span></div></div>' +
+        '<div class="bg-rush-slotwrap is-empty" data-slot="1"><div class="bg-rush-seat"><span class="bg-rush-seat-e">💺</span><span>다음 손님…</span></div></div>' +
+        '<div class="bg-rush-slotwrap is-empty" data-slot="2"><div class="bg-rush-seat"><span class="bg-rush-seat-e">💺</span><span>다음 손님…</span></div></div>' +
       '</div>' +
     '</div>' +
-    '<div class="bg-rush-actions">' +
-      '<button type="button" class="bg-rush-act" data-act="cook">🥩 패티 굽기</button>' +
-      '<button type="button" class="bg-rush-act" data-act="bun">🍞 빵 놓기</button>' +
-      '<button type="button" class="bg-rush-act" data-act="top">🥬 토핑 올리기</button>' +
-      '<button type="button" class="bg-rush-act" data-act="drink">🥤 음료 내리기</button>' +
+    '<div class="bg-rush-kitchen">' +
+      '<div class="bg-rush-station is-drink">' +
+        '<span class="bg-rush-station-label">음료 머신</span>' +
+        '<div class="bg-rush-machine" id="bg-rush-drinks"></div>' +
+      '</div>' +
+      '<div class="bg-rush-station is-plate">' +
+        '<span class="bg-rush-station-label">접시</span>' +
+        '<div class="bg-rush-slots" id="bg-rush-plates"></div>' +
+      '</div>' +
+      '<div class="bg-rush-station is-grill">' +
+        '<span class="bg-rush-station-label">철판 그릴</span>' +
+        '<div class="bg-rush-slots" id="bg-rush-grill"></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="bg-rush-tray">' +
+      '<button type="button" class="bg-rush-basket" data-act="bun" aria-label="번 바구니 — 빈 접시에 번 올리기"><span class="bk-ico">🍞</span><span class="bk-nm">번</span></button>' +
+      '<button type="button" class="bg-rush-basket" data-act="cook" aria-label="생패티 바구니 — 빈 그릴에 패티 올리기"><span class="bk-ico">🥩</span><span class="bk-nm">패티</span></button>' +
+      '<button type="button" class="bg-rush-basket" data-act="top" aria-label="토핑 바구니 — 버거에 토핑 올리기"><span class="bk-ico">🥬</span><span class="bk-nm">토핑</span></button>' +
     '</div>' +
     '<p class="bg-status" id="bg-status">곧 영업이 시작됩니다. 손님 주문을 확인하세요!</p>';
 
@@ -706,12 +782,25 @@ function runCooking(playEl, done) {
   var servedEl = playEl.querySelector('#bg-rush-served');
   var statusEl = playEl.querySelector('#bg-status');
 
-  function faceOf(ratio) {
-    if (ratio > 0.66) return RUSH_FACES[0];
-    if (ratio > 0.33) return RUSH_FACES[1];
-    if (ratio > 0.12) return RUSH_FACES[2];
-    return RUSH_FACES[3];
+  for (var s = 0; s < 3; s++) {
+    slotEls.push(custsEl.querySelector('[data-slot="' + s + '"]'));
   }
+
+  /* ---- 슬롯 래퍼는 한 번만 만들어 두고 안쪽만 갈아 끼웁니다 ---- */
+  function makeSlot(host, cls, act, idx, list) {
+    var el = document.createElement('div');
+    el.className = cls;
+    el.setAttribute('data-act', act);
+    el.setAttribute('data-idx', String(idx));
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    host.appendChild(el);
+    list.push(el);
+    return el;
+  }
+  for (var g0 = 0; g0 < 2; g0++) makeSlot(grillEl, 'bg-rush-gslot is-empty', 'gs', g0, grillEls);
+  for (var p0 = 0; p0 < 2; p0++) makeSlot(platesEl, 'bg-rush-plate is-empty', 'ps', p0, plateEls);
+  for (var d0 = 0; d0 < 2; d0++) makeSlot(drinksEl, 'bg-rush-drink is-empty', 'ds', d0, drinkEls);
 
   function dishOfPlate(p) {
     if (!p.bun || !p.patty) return '';
@@ -725,6 +814,219 @@ function runCooking(playEl, done) {
     return true;
   }
 
+  /* --------------------------------------------------------- 손님 그리기 */
+  function orderHtml(c) {
+    var out = '';
+    for (var j = 0; j < c.items.length; j++) {
+      var it = RUSH_ITEM[c.items[j]];
+      out += '<span class="bg-rush-order' + (c.done[j] ? ' is-done' : '') + '">' +
+        '<span class="bg-rush-order-e">' + it.e + '</span>' +
+        '<span class="bg-rush-order-n">' + it.n + '</span>' +
+      '</span>';
+    }
+    return out;
+  }
+
+  function buildCustEl(c) {
+    var el = document.createElement('div');
+    el.className = 'bg-rush-cust mood-calm is-entering from-' + (c.slot % 2 === 0 ? 'left' : 'right');
+    el.setAttribute('data-cid', String(c.id));
+    el.innerHTML =
+      '<span class="bg-rush-avatar">' + guestSvg(RUSH_GUESTS[c.guest]) + '</span>' +
+      '<span class="bg-rush-bubble">' + orderHtml(c) + '</span>' +
+      '<span class="bg-rush-pat"><i class="bg-rush-pat-fill" style="width:100%"></i></span>';
+    return el;
+  }
+
+  function paintCust(i) {
+    var c = customers[i];
+    var el = custEls[i];
+    if (!c || !el) return;
+    var ratio = Math.max(0, Math.min(1, c.patienceLeft / c.patienceMax));
+    var fill = el.querySelector('.bg-rush-pat-fill');
+    if (fill) {
+      fill.style.width = (ratio * 100) + '%';
+      fill.className = 'bg-rush-pat-fill' + (ratio <= 0.25 ? ' is-low' : (ratio <= 0.5 ? ' is-warn' : ''));
+    }
+    if (c.phase === 'wait') {
+      var mood = ratio > 0.62 ? 'calm' : (ratio > 0.32 ? 'neutral' : (ratio > 0.12 ? 'warn' : 'angry'));
+      el.classList.remove('mood-calm', 'mood-neutral', 'mood-warn', 'mood-angry', 'mood-joy');
+      el.classList.add('mood-' + mood);
+    }
+    var items = el.querySelectorAll('.bg-rush-order');
+    for (var j = 0; j < items.length && j < c.done.length; j++) {
+      if (c.done[j]) items[j].classList.add('is-done');
+      else items[j].classList.remove('is-done');
+    }
+  }
+
+  function syncCustomers() {
+    for (var i = 0; i < 3; i++) {
+      var c = customers[i];
+      var el = custEls[i];
+      if (c && !el) {
+        el = buildCustEl(c);
+        custEls[i] = el;
+        slotEls[i].classList.remove('is-empty');
+        slotEls[i].appendChild(el);
+        paintCust(i);
+        continue;
+      }
+      if (!c && el) {
+        if (el.parentNode) el.parentNode.removeChild(el);
+        custEls[i] = null;
+        slotEls[i].classList.add('is-empty');
+        continue;
+      }
+      if (!c || !el) continue;
+      if (c.phase === 'happy' && !el.classList.contains('is-leaving-happy')) {
+        el.classList.remove('is-entering', 'from-left', 'from-right');
+        el.classList.remove('mood-calm', 'mood-neutral', 'mood-warn', 'mood-angry');
+        el.classList.add('mood-joy', 'is-leaving-happy');
+        el.insertAdjacentHTML('beforeend', '<span class="bg-rush-say is-happy">맛있어요! 👍</span>');
+        var b1 = el.querySelector('.bg-rush-bubble');
+        if (b1) b1.classList.add('is-faded');
+      } else if (c.phase === 'angry' && !el.classList.contains('is-leaving-angry')) {
+        el.classList.remove('is-entering', 'from-left', 'from-right');
+        el.classList.remove('mood-calm', 'mood-neutral', 'mood-warn', 'mood-joy');
+        el.classList.add('mood-angry', 'is-leaving-angry');
+        el.insertAdjacentHTML('beforeend', '<span class="bg-rush-say is-angry">너무 늦었어요 😤</span>');
+        var b2 = el.querySelector('.bg-rush-bubble');
+        if (b2) b2.classList.add('is-faded');
+      }
+      paintCust(i);
+    }
+  }
+
+  /* 점수 팝업 (+10! · COMBO x2 +20!) */
+  function popScore(slot, text, tone) {
+    var host = slotEls[slot];
+    if (!host) return;
+    var el = document.createElement('span');
+    el.className = 'bg-rush-float' + (tone ? ' ' + tone : '');
+    el.textContent = text;
+    el.style.marginLeft = (Math.random() * 16 - 8) + 'px';
+    host.appendChild(el);
+    later(function () {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    }, 950);
+  }
+
+  /* --------------------------------------------------------- 주방 그리기 */
+  function grillInner(i) {
+    var st = grill[i];
+    var body;
+    if (st.state === 'empty') {
+      body = '<span class="bg-rush-gslot-plus">＋</span><span class="bg-rush-slot-n">패티</span>';
+    } else if (st.state === 'cooking') {
+      body = '<span class="bg-rush-grill-lines"></span><span class="bg-rush-patty is-cooking"></span>' +
+        '<span class="bg-rush-heat"></span><span class="bg-rush-gbar"><i></i></span>' +
+        '<span class="bg-rush-slot-n is-light">지글지글…</span>';
+    } else if (st.state === 'ready') {
+      body = '<span class="bg-rush-grill-lines"></span><span class="bg-rush-patty is-ready"></span>' +
+        '<span class="bg-rush-slot-n is-gold">완성! 접시로</span>';
+    } else {
+      body = '<span class="bg-rush-grill-lines"></span><span class="bg-rush-patty is-burnt"></span>' +
+        '<span class="bg-rush-smoke"></span><span class="bg-rush-slot-n">탄 패티</span>';
+    }
+    var trash = (st.state === 'ready' || st.state === 'burnt')
+      ? '<span class="bg-rush-trash" data-trash="g' + i + '">🗑️</span>'
+      : '';
+    return body + trash;
+  }
+
+  function plateInner(i) {
+    var p = plates[i];
+    var dish = dishOfPlate(p);
+    var layers = '';
+    if (dish) layers += '<span class="bg-rush-layer is-top"></span>';
+    if (p.special) layers += '<span class="bg-rush-layer is-lettuce"></span>';
+    if (p.patty) layers += '<span class="bg-rush-layer is-patty"></span>';
+    if (p.bun) layers += '<span class="bg-rush-layer is-bun"></span>';
+    if (!layers) layers = '<span class="bg-rush-plate-plus">＋</span>';
+    var label = dish ? '서빙 →' : (p.bun ? '패티 올리기' : '빈 접시');
+    var trash = (p.bun || p.patty || p.special)
+      ? '<span class="bg-rush-trash" data-trash="p' + i + '">🗑️</span>'
+      : '';
+    return '<span class="bg-rush-stack">' + layers + '</span>' +
+      '<span class="bg-rush-plate-base"></span>' +
+      '<span class="bg-rush-slot-n' + (dish ? ' is-gold' : '') + '">' + label + '</span>' + trash;
+  }
+
+  function drinkInner(i) {
+    var ds = drinks[i];
+    var label = ds.state === 'ready' ? '서빙 →' : (ds.state === 'brewing' ? '따르는 중' : '컵');
+    return '<span class="bg-rush-nozzle"></span>' +
+      '<span class="bg-rush-cup">' +
+        (ds.state === 'empty' ? '' : '<i class="bg-rush-cup-fill"></i>') +
+        (ds.state === 'brewing' ? '<span class="bg-rush-stream"></span>' : '') +
+      '</span>' +
+      '<span class="bg-rush-slot-n' + (ds.state === 'ready' ? ' is-gold' : '') + '">' + label + '</span>' +
+      (ds.state === 'ready' ? '<span class="bg-rush-trash" data-trash="d' + i + '">🗑️</span>' : '');
+  }
+
+  function paintGrill(i) {
+    var el = grillEls[i];
+    if (!el) return;
+    var st = grill[i];
+    if (sigG[i] !== st.state) {
+      sigG[i] = st.state;
+      el.className = 'bg-rush-gslot is-' + st.state;
+      el.innerHTML = grillInner(i);
+    }
+    if (st.state === 'cooking') {
+      var f = el.querySelector('.bg-rush-gbar > i');
+      if (f) f.style.width = Math.max(0, Math.min(100, ((Date.now() - st.startAt) / RUSH_PATTY_MS) * 100)) + '%';
+    }
+  }
+
+  function paintPlate(i) {
+    var el = plateEls[i];
+    if (!el) return;
+    var p = plates[i];
+    var dish = dishOfPlate(p);
+    var sig = (p.bun ? '1' : '0') + (p.patty ? '1' : '0') + (p.special ? '1' : '0') + (dish ? 'D' : '');
+    if (sigP[i] !== sig) {
+      sigP[i] = sig;
+      el.className = 'bg-rush-plate' + (dish ? ' is-dish' : (p.bun || p.patty ? ' is-started' : ' is-empty'));
+      el.innerHTML = plateInner(i);
+    }
+  }
+
+  function paintDrink(i) {
+    var el = drinkEls[i];
+    if (!el) return;
+    var ds = drinks[i];
+    if (sigD[i] !== ds.state) {
+      sigD[i] = ds.state;
+      el.className = 'bg-rush-drink is-' + (ds.state === 'ready' ? 'ready' : (ds.state === 'brewing' ? 'filling' : 'empty'));
+      el.innerHTML = drinkInner(i);
+    }
+    if (ds.state === 'brewing') {
+      var f = el.querySelector('.bg-rush-cup-fill');
+      if (f) f.style.height = Math.max(0, Math.min(100, ((Date.now() - ds.startAt) / RUSH_DRINK_MS) * 100)) + '%';
+    }
+  }
+
+  function paintKitchen() {
+    for (var g = 0; g < 2; g++) paintGrill(g);
+    for (var p = 0; p < 2; p++) paintPlate(p);
+    for (var d = 0; d < 2; d++) paintDrink(d);
+  }
+
+  function paintHud() {
+    scoreEl.textContent = String(score);
+    comboEl.textContent = 'x' + comboStreak;
+    servedEl.textContent = String(servedCustomers);
+  }
+
+  function paintAll() {
+    paintHud();
+    syncCustomers();
+    paintKitchen();
+  }
+
+  /* ------------------------------------------------------------- 손님 흐름 */
   function spawn(slot) {
     var pool = ['basic', 'special', 'drink'];
     var a = pool[Math.floor(Math.random() * pool.length)];
@@ -741,133 +1043,16 @@ function runCooking(playEl, done) {
     var max = 16000 + Math.floor(Math.random() * 9000);
     customers[slot] = {
       id: nextId,
+      slot: slot,
+      guest: Math.floor(Math.random() * RUSH_GUESTS.length),
       items: items,
       done: items.map(function () { return false; }),
       patienceMax: max,
-      patienceLeft: max
+      patienceLeft: max,
+      phase: 'wait',
+      leaveAt: 0
     };
     nextId += 1;
-    flash[slot] = null;
-  }
-
-  function renderCustomers() {
-    var now = Date.now();
-    var out = '';
-    for (var i = 0; i < 3; i++) {
-      var c = customers[i];
-      if (c) {
-        var ratio = Math.max(0, c.patienceLeft / c.patienceMax);
-        var order = '';
-        for (var j = 0; j < c.items.length; j++) {
-          var it = RUSH_ITEM[c.items[j]];
-          order += '<span class="bg-rush-order' + (c.done[j] ? ' is-done' : '') + '">' +
-            '<span class="bg-rush-order-e">' + it.e + '</span>' +
-            '<span class="bg-rush-order-n">' + it.n + '</span>' +
-          '</span>';
-        }
-        out += '<div class="bg-rush-cust">' +
-          '<span class="bg-rush-face">' + faceOf(ratio) + '</span>' +
-          '<span class="bg-rush-bubble">' + order + '</span>' +
-          '<span class="bg-rush-pat"><i class="bg-rush-pat-fill' +
-            (ratio <= 0.25 ? ' is-low' : (ratio <= 0.5 ? ' is-warn' : '')) +
-            '" id="pat-' + i + '" style="width:' + (ratio * 100) + '%"></i></span>' +
-        '</div>';
-      } else {
-        var f = flash[i];
-        var show = f && now < f.until;
-        out += '<div class="bg-rush-cust is-empty">' +
-          '<span class="bg-rush-face">' + (show ? f.face : '💺') + '</span>' +
-          '<span class="bg-rush-bubble is-empty">' + (show ? f.text : '다음 손님…') + '</span>' +
-        '</div>';
-      }
-    }
-    custsEl.innerHTML = out;
-  }
-
-  function renderKitchen() {
-    var gh = '';
-    for (var g = 0; g < grill.length; g++) {
-      var st = grill[g];
-      var cls = 'bg-rush-slot is-' + st.state;
-      var inner = '';
-      var trash = '';
-      if (st.state === 'empty') {
-        inner = '<span class="bg-rush-slot-e">＋</span><span class="bg-rush-slot-n">패티 굽기</span>';
-      } else if (st.state === 'cooking') {
-        inner = '<span class="bg-rush-slot-e">🥩</span>' +
-          '<span class="bg-rush-slot-bar"><i class="bg-rush-fill" id="fill-g' + g + '" style="width:0%"></i></span>' +
-          '<span class="bg-rush-slot-n">굽는 중</span>';
-      } else if (st.state === 'ready') {
-        inner = '<span class="bg-rush-slot-e">🍖</span><span class="bg-rush-slot-n">완성! 탭해서 접시로</span>';
-        trash = 'g' + g;
-      } else {
-        inner = '<span class="bg-rush-slot-e">🔥</span><span class="bg-rush-slot-n">탄 패티 · 탭해서 비우기</span>';
-      }
-      gh += '<div class="' + cls + '" data-act="gs" data-idx="' + g + '" role="button" tabindex="0">' +
-        inner + (trash ? '<span class="bg-rush-trash" data-trash="' + trash + '">🗑️</span>' : '') +
-      '</div>';
-    }
-    grillEl.innerHTML = gh;
-
-    var ph = '';
-    for (var p = 0; p < plates.length; p++) {
-      var pl = plates[p];
-      var dish = dishOfPlate(pl);
-      var icons = '';
-      if (pl.bun) icons += '<span class="bg-rush-slot-e">🍞</span>';
-      if (pl.patty) icons += '<span class="bg-rush-slot-e">🍖</span>';
-      if (pl.special) icons += '<span class="bg-rush-slot-e">🥬</span>';
-      var pcls = 'bg-rush-slot' + (dish ? ' is-dish' : (pl.bun ? ' is-cooking' : ' is-empty'));
-      var pn = dish
-        ? (RUSH_ITEM[dish].e + ' ' + RUSH_ITEM[dish].n + ' · 탭 서빙')
-        : (pl.bun ? '빵 위에 패티를' : '빈 접시');
-      ph += '<div class="' + pcls + '" data-act="ps" data-idx="' + p + '" role="button" tabindex="0">' +
-        (icons || '<span class="bg-rush-slot-e">＋</span>') +
-        '<span class="bg-rush-slot-n">' + pn + '</span>' +
-        (pl.bun || pl.patty ? '<span class="bg-rush-trash" data-trash="p' + p + '">🗑️</span>' : '') +
-      '</div>';
-    }
-    platesEl.innerHTML = ph;
-
-    var dh = '';
-    for (var d = 0; d < drinks.length; d++) {
-      var ds = drinks[d];
-      var dcls = 'bg-rush-slot is-' + (ds.state === 'ready' ? 'ready' : (ds.state === 'brewing' ? 'cooking' : 'empty'));
-      var dinner = '';
-      if (ds.state === 'empty') {
-        dinner = '<span class="bg-rush-slot-e">＋</span><span class="bg-rush-slot-n">음료 내리기</span>';
-      } else if (ds.state === 'brewing') {
-        dinner = '<span class="bg-rush-slot-e">🥤</span>' +
-          '<span class="bg-rush-slot-bar"><i class="bg-rush-fill" id="fill-d' + d + '" style="width:0%"></i></span>' +
-          '<span class="bg-rush-slot-n">내리는 중</span>';
-      } else {
-        dinner = '<span class="bg-rush-slot-e">🥤</span><span class="bg-rush-slot-n">완성! 탭 서빙</span>';
-      }
-      dh += '<div class="' + dcls + '" data-act="ds" data-idx="' + d + '" role="button" tabindex="0">' +
-        dinner + (ds.state === 'ready' ? '<span class="bg-rush-trash" data-trash="d' + d + '">🗑️</span>' : '') +
-      '</div>';
-    }
-    drinksEl.innerHTML = dh;
-  }
-
-  function renderAll() {
-    renderCustomers();
-    renderKitchen();
-    scoreEl.textContent = String(score);
-    comboEl.textContent = 'x' + comboStreak;
-    servedEl.textContent = String(servedCustomers);
-  }
-
-  function paintPatience() {
-    for (var i = 0; i < 3; i++) {
-      var c = customers[i];
-      if (!c) continue;
-      var fill = custsEl.querySelector('#pat-' + i);
-      if (!fill) continue;
-      var ratio = Math.max(0, c.patienceLeft / c.patienceMax);
-      fill.style.width = (ratio * 100) + '%';
-      fill.className = 'bg-rush-pat-fill' + (ratio <= 0.25 ? ' is-low' : (ratio <= 0.5 ? ' is-warn' : ''));
-    }
   }
 
   function findTarget(dishKey) {
@@ -875,7 +1060,7 @@ function runCooking(playEl, done) {
     var bestLeft = Infinity;
     for (var i = 0; i < customers.length; i++) {
       var c = customers[i];
-      if (!c) continue;
+      if (!c || c.phase !== 'wait') continue;
       for (var j = 0; j < c.items.length; j++) {
         if (c.items[j] === dishKey && !c.done[j] && c.patienceLeft < bestLeft) {
           bestLeft = c.patienceLeft;
@@ -890,6 +1075,7 @@ function runCooking(playEl, done) {
     var idx = findTarget(dishKey);
     if (idx < 0) {
       statusEl.textContent = '지금은 ' + RUSH_ITEM[dishKey].n + '을 기다리는 손님이 없어요.';
+      sfx.nope();
       return;
     }
     var c = customers[idx];
@@ -907,44 +1093,56 @@ function runCooking(playEl, done) {
     lastServeAt = now;
     score += 10 + bonus;
     clearFn();
+    popScore(idx, '+' + (10 + bonus) + (bonus ? ' COMBO!' : ''));
+    sfx.serve(comboStreak);
     if (allDone(c)) {
       servedCustomers += 1;
       score += 15;
-      customers[idx] = null;
-      nextSpawnAt[idx] = now + 800;
-      flash[idx] = { face: '😄', text: '맛있어요!', until: now + 700 };
-      statusEl.textContent = '서빙 완료! +' + (25 + bonus) + '점' + (bonus ? ' (COMBO +' + bonus + ')' : '');
+      c.phase = 'happy';
+      c.leaveAt = now;
+      popScore(idx, '+25!');
+      statusEl.textContent = '서빙 완료! +' + (25 + bonus) + '점' + (bonus ? ' (COMBO +' + bonus + ')' : '') + ' — 손님이 좋아하며 나갑니다.';
+      sfx.happy();
     } else {
       statusEl.textContent = RUSH_ITEM[dishKey].n + ' 서빙! +' + (10 + bonus) + '점' + (bonus ? ' (COMBO +' + bonus + ')' : '');
     }
-    dirty = true;
+    paintAll();
   }
 
-  function startPatty() {
-    for (var i = 0; i < grill.length; i++) {
-      if (grill[i].state === 'empty') {
-        var now = Date.now();
-        grill[i].state = 'cooking';
-        grill[i].startAt = now;
-        grill[i].readyAt = now + RUSH_PATTY_MS;
-        statusEl.textContent = '패티를 굽기 시작했어요.';
-        dirty = true;
-        return;
+  /* --------------------------------------------------------------- 조리 */
+  function startPatty(idx) {
+    var target = -1;
+    if (idx >= 0 && grill[idx] && grill[idx].state === 'empty') {
+      target = idx;
+    } else {
+      for (var i = 0; i < grill.length; i++) {
+        if (grill[i].state === 'empty') { target = i; break; }
       }
     }
-    statusEl.textContent = '그릴이 꽉 찼어요 — 다 익은 패티를 접시로 옮겨 주세요.';
+    if (target < 0) {
+      statusEl.textContent = '그릴이 꽉 찼어요 — 다 익은 패티를 접시로 옮겨 주세요.';
+      sfx.nope();
+      return;
+    }
+    var now = Date.now();
+    grill[target] = { state: 'cooking', startAt: now, readyAt: now + RUSH_PATTY_MS };
+    statusEl.textContent = '철판에 생패티를 올렸어요. 지글지글…';
+    sfx.sizzle();
+    paintAll();
   }
 
   function putBun() {
     for (var i = 0; i < plates.length; i++) {
       if (!plates[i].bun) {
         plates[i].bun = true;
-        statusEl.textContent = '접시에 빵을 올렸어요. 이제 패티를 올리세요.';
-        dirty = true;
+        statusEl.textContent = '접시에 번을 올렸어요. 이제 패티를 올리세요.';
+        sfx.topping();
+        paintAll();
         return;
       }
     }
     statusEl.textContent = '접시가 모두 사용 중이에요 — 완성된 버거를 서빙하거나 비워 주세요.';
+    sfx.nope();
   }
 
   function addTopping() {
@@ -952,53 +1150,63 @@ function runCooking(playEl, done) {
       var p = plates[i];
       if (p.bun && p.patty && !p.special) {
         p.special = true;
-        statusEl.textContent = '토핑을 올려 스페셜 버거로 업그레이드!';
-        dirty = true;
+        statusEl.textContent = '토핑을 올려 스페셜 버거 완성!';
+        sfx.topping();
+        paintAll();
         return;
       }
     }
     statusEl.textContent = '버거가 완성된 접시에만 토핑을 올릴 수 있어요.';
+    sfx.nope();
   }
 
-  function startDrink() {
-    for (var i = 0; i < drinks.length; i++) {
-      if (drinks[i].state === 'empty') {
-        var now = Date.now();
-        drinks[i].state = 'brewing';
-        drinks[i].startAt = now;
-        drinks[i].readyAt = now + RUSH_DRINK_MS;
-        statusEl.textContent = '음료를 내리고 있어요.';
-        dirty = true;
-        return;
+  function startDrink(idx) {
+    var target = -1;
+    if (idx >= 0 && drinks[idx] && drinks[idx].state === 'empty') target = idx;
+    else {
+      for (var i = 0; i < drinks.length; i++) {
+        if (drinks[i].state === 'empty') { target = i; break; }
       }
     }
-    statusEl.textContent = '음료 머신이 꽉 찼어요 — 완성된 음료를 서빙해 주세요.';
+    if (target < 0) {
+      statusEl.textContent = '음료 머신이 꽉 찼어요 — 완성된 음료를 서빙해 주세요.';
+      sfx.nope();
+      return;
+    }
+    var now = Date.now();
+    drinks[target] = { state: 'brewing', startAt: now, readyAt: now + RUSH_DRINK_MS };
+    statusEl.textContent = '음료 머신에서 컵에 음료를 따르고 있어요.';
+    sfx.drink();
+    paintAll();
   }
 
   function tapGrill(idx) {
     var st = grill[idx];
     if (!st) return;
-    if (st.state === 'empty') { startPatty(); return; }
+    if (st.state === 'empty') { startPatty(idx); return; }
     if (st.state === 'burnt') {
       grill[idx] = { state: 'empty', startAt: 0, readyAt: 0 };
       statusEl.textContent = '탄 패티를 버렸어요.';
-      dirty = true;
+      sfx.push();
+      paintAll();
       return;
     }
     if (st.state !== 'ready') {
-      statusEl.textContent = '아직 익는 중이에요.';
+      statusEl.textContent = '아직 지글지글 익는 중이에요.';
       return;
     }
     for (var i = 0; i < plates.length; i++) {
       if (plates[i].bun && !plates[i].patty) {
         plates[i].patty = true;
         grill[idx] = { state: 'empty', startAt: 0, readyAt: 0 };
-        statusEl.textContent = '접시에 패티를 올렸어요. 완성된 버거를 손님에게 서빙하세요!';
-        dirty = true;
+        statusEl.textContent = '구운 패티를 접시에 올렸어요. 완성하면 접시를 눌러 서빙하세요!';
+        sfx.topping();
+        paintAll();
         return;
       }
     }
-    statusEl.textContent = '패티를 올릴 접시가 없어요 — 빵을 먼저 놓아 주세요.';
+    statusEl.textContent = '패티를 올릴 접시가 없어요 — 번 바구니로 빵을 먼저 놓아 주세요.';
+    sfx.nope();
   }
 
   function tapPlate(idx) {
@@ -1006,7 +1214,15 @@ function runCooking(playEl, done) {
     if (!p) return;
     var dish = dishOfPlate(p);
     if (!dish) {
-      statusEl.textContent = p.bun ? '패티를 올려야 버거가 완성됩니다.' : '빈 접시예요. [빵 놓기]로 시작하세요.';
+      if (!p.bun && !p.patty) {
+        p.bun = true;
+        statusEl.textContent = '빈 접시에 번을 올렸어요.';
+        sfx.topping();
+      } else {
+        statusEl.textContent = '패티를 올려야 버거가 완성됩니다.';
+        sfx.nope();
+      }
+      paintAll();
       return;
     }
     serveItem(dish, function () {
@@ -1017,7 +1233,7 @@ function runCooking(playEl, done) {
   function tapDrink(idx) {
     var ds = drinks[idx];
     if (!ds) return;
-    if (ds.state === 'empty') { startDrink(); return; }
+    if (ds.state === 'empty') { startDrink(idx); return; }
     if (ds.state !== 'ready') {
       statusEl.textContent = '음료가 아직 채워지는 중이에요.';
       return;
@@ -1034,7 +1250,8 @@ function runCooking(playEl, done) {
     else if (kind === 'p') plates[idx] = { bun: false, patty: false, special: false };
     else if (kind === 'd') drinks[idx] = { state: 'empty', startAt: 0, readyAt: 0 };
     statusEl.textContent = '버렸어요.';
-    dirty = true;
+    sfx.push();
+    paintAll();
   }
 
   function onClick(ev) {
@@ -1051,15 +1268,15 @@ function runCooking(playEl, done) {
     if (!el) return;
     var act = el.getAttribute('data-act');
     var idx = Number(el.getAttribute('data-idx') || 0);
-    if (act === 'cook') startPatty();
+    if (act === 'cook') startPatty(-1);
     else if (act === 'bun') putBun();
     else if (act === 'top') addTopping();
-    else if (act === 'drink') startDrink();
     else if (act === 'gs') tapGrill(idx);
     else if (act === 'ps') tapPlate(idx);
     else if (act === 'ds') tapDrink(idx);
   }
 
+  /* --------------------------------------------------------------- 진행 */
   function tick() {
     var now = Date.now();
     var dt = lastNow ? Math.min(400, now - lastNow) : 0;
@@ -1067,63 +1284,55 @@ function runCooking(playEl, done) {
     var left = Math.max(0, endAt - now);
     timeEl.textContent = (left / 1000).toFixed(1);
     barEl.style.width = Math.max(0, Math.min(100, (left / RUSH_DURATION) * 100)) + '%';
+    paintHud();
 
     for (var i = 0; i < customers.length; i++) {
       var c = customers[i];
+      if (c && (c.phase === 'happy' || c.phase === 'angry')) {
+        if (now - c.leaveAt >= RUSH_LEAVE_MS) {
+          customers[i] = null;
+          nextSpawnAt[i] = now + RUSH_RESPAWN_MS;
+        }
+        continue;
+      }
       if (c) {
         c.patienceLeft -= dt;
         if (c.patienceLeft <= 0) {
+          c.patienceLeft = 0;
           lostCustomers += 1;
           comboStreak = 0;
           lastServeAt = 0;
-          customers[i] = null;
-          nextSpawnAt[i] = now + 900;
-          flash[i] = { face: '😞', text: '너무 늦었어요', until: now + 700 };
-          statusEl.textContent = '손님이 기다리다 떠났어요…';
-          dirty = true;
+          c.phase = 'angry';
+          c.leaveAt = now;
+          popScore(i, '😤', 'is-bad');
+          sfx.sad();
+          statusEl.textContent = '손님이 기다리다 화나서 떠났어요…';
         }
       } else if (now >= nextSpawnAt[i] && left > 0) {
         spawn(i);
-        dirty = true;
+        sfx.door();
       }
     }
+    syncCustomers();
 
     for (var g = 0; g < grill.length; g++) {
       var st = grill[g];
       if (st.state === 'cooking' && now >= st.readyAt) {
         st.state = 'ready';
         st.readyAt = now;
-        dirty = true;
+        sfx.ready();
       } else if (st.state === 'ready' && now - st.readyAt >= RUSH_BURN_MS) {
         st.state = 'burnt';
-        dirty = true;
-      }
-      var gfill = playEl.querySelector('#fill-g' + g);
-      if (gfill) {
-        var gp = st.state === 'cooking' ? Math.min(100, ((now - st.startAt) / RUSH_PATTY_MS) * 100) : 100;
-        gfill.style.width = Math.max(0, Math.min(100, gp)) + '%';
       }
     }
 
     for (var d = 0; d < drinks.length; d++) {
       var ds = drinks[d];
-      if (ds.state === 'brewing' && now >= ds.readyAt) {
-        ds.state = 'ready';
-        dirty = true;
-      }
-      var dfill = playEl.querySelector('#fill-d' + d);
-      if (dfill) {
-        var dp = ds.state === 'brewing' ? Math.min(100, ((now - ds.startAt) / RUSH_DRINK_MS) * 100) : 100;
-        dfill.style.width = Math.max(0, Math.min(100, dp)) + '%';
-      }
+      if (ds.state === 'brewing' && now >= ds.readyAt) ds.state = 'ready';
     }
 
-    paintPatience();
+    paintKitchen();
 
-    if (dirty) {
-      dirty = false;
-      renderAll();
-    }
     if (left <= 0 && !finished) finish();
   }
 
@@ -1134,6 +1343,7 @@ function runCooking(playEl, done) {
     var total = servedCustomers + lostCustomers;
     var accuracy = total ? Math.round((servedCustomers / total) * 100) : 0;
     statusEl.textContent = '영업 종료 — ' + score + '점 · 서빙 ' + servedCustomers + '명';
+    sfx.close();
     done({ game_key: 'order_cooking', score: score, metric_ms: null, accuracy: accuracy });
   }
 
@@ -1145,8 +1355,9 @@ function runCooking(playEl, done) {
     endAt = now + RUSH_DURATION;
     lastNow = now;
     nextSpawnAt = [now, now + 1100, now + 2200];
-    renderAll();
-    statusEl.textContent = '영업 시작! 손님 주문을 보고 패티를 구우세요.';
+    paintAll();
+    statusEl.textContent = '영업 시작! 손님이 왔어요 — 바구니·그릴·접시를 눌러 요리하세요.';
+    sfx.start();
     every(tick, 80);
     tick();
   }, 700);
@@ -1177,6 +1388,8 @@ function finishGame(playEl, key, meta, result, logs, refreshBoard, showHub, rest
   function showResult(saveFailed) {
     var stats = computeBrainGameStats(logs);
     playEl.innerHTML = resultHtml(key, meta, result, isRecord, stats, saveFailed);
+    sfx.finish();
+    if (isRecord) later(function () { sfx.record(); }, 560);
     var again = playEl.querySelector('[data-again]');
     if (again) again.addEventListener('click', function () { restart(key); });
     var hub = playEl.querySelector('[data-hub]');
@@ -1245,6 +1458,7 @@ function mountGames(el, logs) {
         startGame(this.getAttribute('data-game'));
       });
     }
+    bindSfxToggles(hubEl);
   }
 
   function showHub() {
@@ -1259,6 +1473,7 @@ function mountGames(el, logs) {
   function startGame(key) {
     var meta = brainGameMeta(key);
     if (!meta) return;
+    unlockSfx();
     clearAllTimers();
     boardEl.hidden = true;
     hubEl.hidden = true;
@@ -1266,13 +1481,15 @@ function mountGames(el, logs) {
     stageEl.innerHTML =
       '<div class="bg-game-head">' +
         '<button type="button" class="bg-back" id="bg-back">' + icon('chevronLeft', 16) + '게임 목록</button>' +
-        '<span class="bg-game-area">' + esc(meta.area) + '</span>' +
+        '<span class="bg-head-right"><span class="bg-game-area">' + esc(meta.area) + '</span>' +
+          sfxToggleHtml('bg-sfx-play') + '</span>' +
       '</div>' +
       '<h2 class="bg-game-title">' + esc(meta.title) + '</h2>' +
       '<p class="bg-game-desc">' + esc(meta.howto) + '</p>' +
       '<div class="bg-play" id="bg-play"></div>';
     var back = stageEl.querySelector('#bg-back');
     back.addEventListener('click', showHub);
+    bindSfxToggles(stageEl);
 
     var playEl = stageEl.querySelector('#bg-play');
     function done(result) {
@@ -1285,5 +1502,6 @@ function mountGames(el, logs) {
     else if (key === 'order_cooking') runCooking(playEl, done);
   }
 
+  el.addEventListener('pointerdown', function () { unlockSfx(); }, { once: true });
   renderHub();
 }
