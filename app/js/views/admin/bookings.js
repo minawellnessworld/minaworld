@@ -1,10 +1,10 @@
 /* 관리자 → 예약 관리: 일별 / 주별 / 월별 전환 + 지점·담당자 필터 + 상태 5종 + 직접 등록 */
-import { BOOKING_STATUS } from '../../config.js?v=2.0.34';
-import { state, listBookings, listProfiles, adminSetBookingStatus, friendlyError, todayStr } from '../../store.js?v=2.0.34';
-import { listOrganizationsFiltered, listBranchesForOrg } from '../../store-org.js?v=2.0.34';
-import { logAudit } from '../../store-security.js?v=2.0.34';
-import { openAdminBookingModal } from '../../booking.js?v=2.0.34';
-import { icon, esc, fmtKRW, toast, badge, noticeBox, emptyState } from '../../ui.js?v=2.0.34';
+import { BOOKING_STATUS } from '../../config.js?v=2.0.35';
+import { state, listBookings, listProfiles, adminSetBookingStatus, friendlyError, todayStr } from '../../store.js?v=2.0.35';
+import { listOrganizationsFiltered, listBranchesForOrg } from '../../store-org.js?v=2.0.35';
+import { logAudit } from '../../store-security.js?v=2.0.35';
+import { openAdminBookingModal } from '../../booking.js?v=2.0.35';
+import { icon, esc, fmtKRW, toast, badge, noticeBox, emptyState } from '../../ui.js?v=2.0.35';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';

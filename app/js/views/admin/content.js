@@ -1,10 +1,10 @@
 /* 관리자 → 콘텐츠: 공지 · 이벤트 · 뇌과학 · 웰니스 · FAQ · 교육 안내 등록/수정/삭제 */
-import { COMMUNITY_CATEGORIES, categoryLabel } from '../../config.js?v=2.0.34';
-import { state, listPosts, createPost, updatePost, deletePost, friendlyError } from '../../store.js?v=2.0.34';
-import { logAudit } from '../../store-security.js?v=2.0.34';
+import { COMMUNITY_CATEGORIES, categoryLabel } from '../../config.js?v=2.0.35';
+import { state, listPosts, createPost, updatePost, deletePost, friendlyError } from '../../store.js?v=2.0.35';
+import { logAudit } from '../../store-security.js?v=2.0.35';
 import {
   icon, esc, fmtDate, toast, badge, openSheet, closeSheet, confirmDialog, setBusy, noticeBox
-} from '../../ui.js?v=2.0.34';
+} from '../../ui.js?v=2.0.35';
 
 function opt(value, label, selected) {
   return '<option value="' + esc(value) + '"' + (selected === value ? ' selected' : '') + '>' + esc(label) + '</option>';

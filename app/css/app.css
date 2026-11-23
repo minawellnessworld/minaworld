@@ -2815,6 +2815,17 @@ body.portal-mode .mode-banner { display: none; }
 .bg-game-title { margin-top: 8px; font-size: 21px; font-weight: 800; letter-spacing: -0.03em; }
 .bg-game-desc { margin-top: 4px; font-size: 12px; line-height: 1.55; color: var(--muted); }
 .bg-play { margin-top: 4px; }
+/* 빠른 연타(더블탭) 시 화면 확대·텍스트 선택·콜아웃 방지.
+   드래그가 필요한 블록 블라스트(.bg-bb-board·.bg-bb-slot)는 파일 뒤쪽에서
+   touch-action: none 을 선언해 이 규칙을 덮어씁니다(같은 특이성 → 뒤 선언 우선). */
+.bg-play {
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+.bg-play * {
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
 /* 게임 플레이 중에는 페이지 인사말을 접어 조리대가 한눈에 들어오게 합니다 */
 .bg-playing .page-head { display: none; }
 .bg-playing .bg-stage { margin-top: 10px; }
@@ -3004,18 +3015,22 @@ body.portal-mode .mode-banner { display: none; }
 }
 .bg-rush-float.is-bad { background: rgba(180,69,63,0.92); color: #fff; }
 
-/* 조리대 */
+/* 조리대 — 음료 머신 | 접시 | 철판 그릴 | 토핑 4열 */
 .bg-rush-kitchen {
-  display: grid; grid-template-columns: 0.92fr 1.06fr 1fr; gap: 5px; margin-top: 8px; padding: 6px;
+  display: grid; grid-template-columns: 0.84fr 1.12fr 1.06fr 0.84fr; gap: 4px; margin-top: 8px; padding: 5px;
   border-radius: 14px; border: 1px solid #E6D7BB;
   background: linear-gradient(180deg, #FCF6E9, #F1E5CE);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 6px rgba(90,70,35,0.08);
 }
 .bg-rush-station { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.bg-rush-station.is-topping { align-items: stretch; }
+.bg-rush-station.is-drink,
+.bg-rush-station.is-plate,
+.bg-rush-station.is-grill { touch-action: manipulation; }
 .bg-rush-station-label { font-size: 7.5px; font-weight: 800; letter-spacing: 0.02em; color: #9A7A45; text-align: center; }
-.bg-rush-slots { display: flex; flex-direction: column; gap: 4px; }
+.bg-rush-slots { display: flex; flex-direction: column; gap: 4px; flex: 1; }
 .bg-rush-machine {
-  display: flex; flex-direction: column; gap: 4px; padding: 4px; border-radius: 11px;
+  display: flex; flex-direction: column; gap: 4px; padding: 4px; border-radius: 11px; flex: 1;
   background: linear-gradient(180deg, #454F62, #26303F);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), inset 0 -2px 6px rgba(0,0,0,0.35);
 }
@@ -3070,7 +3085,6 @@ body.portal-mode .mode-banner { display: none; }
 .bg-rush-layer.is-lettuce { width: 32px; height: 4px; border-radius: 4px; background: linear-gradient(180deg, #8ACB95, #4E9A61); }
 .bg-rush-layer.is-top { width: 29px; height: 8px; border-radius: 12px 12px 3px 3px; background: linear-gradient(180deg, #F6C97D, #E0A445); box-shadow: inset 0 -1px 0 rgba(150,90,20,0.2); }
 .bg-rush-plate-base { display: block; width: 38px; height: 4px; border-radius: 50%; background: linear-gradient(180deg, #FFFFFF, #D9D2C4); box-shadow: 0 1px 2px rgba(60,45,20,0.2); }
-.bg-rush-plate-plus { font-size: 13px; line-height: 1; color: rgba(150,122,80,0.55); }
 
 .bg-rush-gslot {
   position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
@@ -3122,27 +3136,28 @@ body.portal-mode .mode-banner { display: none; }
   border: 1px solid rgba(120,100,70,0.35); font-size: 9px; box-shadow: 0 1px 3px rgba(60,45,20,0.18);
 }
 
-/* 재료 트레이 — 실제 바구니처럼 */
-.bg-rush-tray { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
-.bg-rush-basket {
-  position: relative; display: flex; flex-direction: column; align-items: center; gap: 1px;
-  padding: 7px 3px 6px; border-radius: 12px; border: 1px solid #DFCBA6;
-  background: radial-gradient(circle at 50% 20%, #FFFDF6, #F4E6C9 68%, #E6D0A8);
-  color: #5A4423; font-family: inherit; cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.92), 0 2px 4px rgba(90,70,35,0.14);
+/* 토핑 스테이션 — 스텐 바트에 담긴 양상추·토마토·치즈 (옆 2단 슬롯 전체 높이) */
+.bg-rush-topping {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  flex: 1 1 auto; width: 100%; min-height: 96px; padding: 4px 2px 3px; border-radius: 11px;
+  border: 1px solid #D8C7A4; cursor: pointer; overflow: hidden;
+  background: radial-gradient(circle at 50% 18%, #FFFFFF, #F6EEDC 62%, #E9DBBE);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 1px 3px rgba(90,70,35,0.14);
+  -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+  font: inherit; color: #8A6F45;
   transition: transform 0.09s ease, box-shadow 0.09s ease;
-  -webkit-tap-highlight-color: transparent;
 }
-.bg-rush-basket::after {
-  content: ''; position: absolute; left: 12%; right: 12%; bottom: 2px; height: 3px; border-radius: 999px;
-  background: rgba(150,120,70,0.22);
+.bg-rush-topping:active { transform: translateY(2px) scale(0.97); box-shadow: inset 0 3px 7px rgba(90,70,35,0.2); }
+.bg-rush-topping.is-on { border-color: #E4B860; box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 0 0 2px rgba(245,184,46,0.2); }
+.bg-rush-topping-art { display: block; width: 100%; max-width: 52px; height: auto; filter: drop-shadow(0 1px 2px rgba(90,70,35,0.22)); }
+.bg-rush-topping-n { font-size: 7px; line-height: 1.2; text-align: center; color: #8A6F45; font-weight: 800; }
+
+/* 빈 접시 빵 힌트 */
+.bg-rush-bun-hint {
+  display: block; width: 26px; height: 8px; border-radius: 9px 9px 3px 3px;
+  background: linear-gradient(180deg, #F3D9A6, #E2BC78); opacity: 0.55;
+  box-shadow: inset 0 -1px 0 rgba(150,110,40,0.25);
 }
-.bg-rush-basket:active {
-  transform: translateY(2px) scale(0.97);
-  box-shadow: inset 0 3px 6px rgba(90,70,35,0.24), 0 1px 2px rgba(90,70,35,0.12);
-}
-.bg-rush-basket .bk-ico { font-size: 18px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(90,70,35,0.25)); }
-.bg-rush-basket .bk-nm { font-size: 9px; font-weight: 800; letter-spacing: 0.02em; }
 
 /* 사운드 토글 · 게임 헤드 우측 */
 .bg-hub-tools { display: flex; align-items: center; gap: 8px; }
@@ -3207,7 +3222,6 @@ body.portal-mode .mode-banner { display: none; }
 @media (max-width: 359px) {
   .bg-rush-avatar { width: 34px; height: 36px; }
   .bg-rush-order-n { font-size: 7px; }
-  .bg-rush-basket .bk-ico { font-size: 16px; }
   .bg-rush-slot-n { font-size: 6.5px; }
 }
 

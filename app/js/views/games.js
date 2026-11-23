@@ -8,12 +8,12 @@
    · 게임 개수는 config.js 의 BRAIN_GAMES 길이를 그대로 따릅니다.
    · '오늘 챌린지' 완주 목표는 Math.min(4, 게임 수) — 게임이 늘어도 하루 부담은 4종.
    ===================================================================== */
-import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.34';
+import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.35';
 import {
   state, listBrainGameLogs, saveBrainGameLog, computeBrainGameStats, friendlyError
-} from '../store.js?v=2.0.34';
-import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.34';
-import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.34';
+} from '../store.js?v=2.0.35';
+import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.35';
+import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.35';
 
 var WEEK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -846,6 +846,38 @@ function guestSvg(g) {
   '</svg>';
 }
 
+/* 토핑 스테이션 그림 — 스텐 바트에 담긴 양상추·토마토·치즈 */
+function toppingSvg() {
+  return '<svg viewBox="0 0 56 44" class="bg-rush-topping-art" aria-hidden="true">' +
+    '<defs>' +
+      '<linearGradient id="bgTopSteel" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#F5F8FC"/><stop offset=".52" stop-color="#CBD4DF"/><stop offset="1" stop-color="#87919F"/>' +
+      '</linearGradient>' +
+      '<linearGradient id="bgTopLeaf" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#9FDFA8"/><stop offset="1" stop-color="#3C8B56"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    '<g>' +
+      '<path d="M7.5 23c-1.4-5.2 1.6-9.6 6.6-10.6 2.6-.5 5.2.3 6.8 2.2-4.6.5-7.6 3.6-8.4 8.4Z" fill="url(#bgTopLeaf)"/>' +
+      '<path d="M15 24c-1-5.4 1.8-10 6.8-11 2.6-.5 5.2.4 6.8 2.4-4.8.4-8 3.8-8.8 8.6Z" fill="#7ACB8B"/>' +
+      '<path d="M30 22.5c-.6-5 2.4-9.2 7.2-10 2.4-.4 4.8.4 6.2 2.2-4.4.6-7.2 3.6-7.8 8Z" fill="url(#bgTopLeaf)"/>' +
+      '<path d="M41 23.5c.6-4.2 3.4-7.2 7.4-7.4 1.6 0 3.2.6 4.2 1.8-3.6.6-5.8 2.8-6.2 5.8Z" fill="#6FBF80"/>' +
+      '<circle cx="20.5" cy="18.6" r="5.4" fill="#E2564A"/>' +
+      '<circle cx="20.5" cy="18.6" r="3.5" fill="#F0806F"/>' +
+      '<circle cx="20.5" cy="18.6" r="1.5" fill="#F9B6A6" opacity=".85"/>' +
+      '<circle cx="34.5" cy="17.4" r="4.6" fill="#D94C42"/>' +
+      '<circle cx="34.5" cy="17.4" r="2.9" fill="#EF7A68"/>' +
+      '<circle cx="34.5" cy="17.4" r="1.2" fill="#F9B6A6" opacity=".85"/>' +
+      '<path d="M25 12.4 31.6 9.4l6.1 3.2-6.5 3.2Z" fill="#F7C948"/>' +
+      '<path d="M27.7 12 31.6 10.3l3.4 1.8-3.6 1.9Z" fill="#FFE07A"/>' +
+    '</g>' +
+    '<path d="M6 22h44c0 11-9.6 18-22 18S6 33 6 22Z" fill="url(#bgTopSteel)"/>' +
+    '<ellipse cx="28" cy="22" rx="22" ry="5.6" fill="#E9EEF4" stroke="#96A1B0" stroke-width="1.1"/>' +
+    '<ellipse cx="28" cy="22" rx="19" ry="4.1" fill="#BCC5D1" opacity=".5"/>' +
+    '<path d="M9 24.4c1.4 7.4 8.6 13 19 13" stroke="rgba(255,255,255,.75)" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+  '</svg>';
+}
+
 function runCooking(playEl, done) {
   var endAt = 0;
   var lastNow = 0;
@@ -907,11 +939,13 @@ function runCooking(playEl, done) {
         '<span class="bg-rush-station-label">철판 그릴</span>' +
         '<div class="bg-rush-slots" id="bg-rush-grill"></div>' +
       '</div>' +
-    '</div>' +
-    '<div class="bg-rush-tray">' +
-      '<button type="button" class="bg-rush-basket" data-act="bun" aria-label="번 바구니 — 빈 접시에 번 올리기"><span class="bk-ico">🍞</span><span class="bk-nm">번</span></button>' +
-      '<button type="button" class="bg-rush-basket" data-act="cook" aria-label="생패티 바구니 — 빈 그릴에 패티 올리기"><span class="bk-ico">🥩</span><span class="bk-nm">패티</span></button>' +
-      '<button type="button" class="bg-rush-basket" data-act="top" aria-label="토핑 바구니 — 버거에 토핑 올리기"><span class="bk-ico">🥬</span><span class="bk-nm">토핑</span></button>' +
+      '<div class="bg-rush-station is-topping">' +
+        '<span class="bg-rush-station-label">토핑</span>' +
+        '<button type="button" class="bg-rush-topping" data-act="top" aria-label="토핑 올리기 — 버거에 양상추·토마토·치즈 올리기">' +
+          toppingSvg() +
+          '<span class="bg-rush-topping-n">토핑 올리기</span>' +
+        '</button>' +
+      '</div>' +
     '</div>' +
     '<p class="bg-status" id="bg-status">곧 영업이 시작됩니다. 손님 주문을 확인하세요!</p>';
 
@@ -1061,7 +1095,7 @@ function runCooking(playEl, done) {
     var st = grill[i];
     var body;
     if (st.state === 'empty') {
-      body = '<span class="bg-rush-gslot-plus">＋</span><span class="bg-rush-slot-n">패티</span>';
+      body = '<span class="bg-rush-gslot-plus">＋</span><span class="bg-rush-slot-n">패티 굽기</span>';
     } else if (st.state === 'cooking') {
       body = '<span class="bg-rush-grill-lines"></span><span class="bg-rush-patty is-cooking"></span>' +
         '<span class="bg-rush-heat"></span><span class="bg-rush-gbar"><i></i></span>' +
@@ -1087,8 +1121,8 @@ function runCooking(playEl, done) {
     if (p.special) layers += '<span class="bg-rush-layer is-lettuce"></span>';
     if (p.patty) layers += '<span class="bg-rush-layer is-patty"></span>';
     if (p.bun) layers += '<span class="bg-rush-layer is-bun"></span>';
-    if (!layers) layers = '<span class="bg-rush-plate-plus">＋</span>';
-    var label = dish ? '서빙 →' : (p.bun ? '패티 올리기' : '빈 접시');
+    if (!layers) layers = '<span class="bg-rush-bun-hint"></span>';
+    var label = dish ? '서빙 →' : (!p.bun ? '번 올리기' : '패티 올리기');
     var trash = (p.bun || p.patty || p.special)
       ? '<span class="bg-rush-trash" data-trash="p' + i + '">🗑️</span>'
       : '';
@@ -1099,7 +1133,7 @@ function runCooking(playEl, done) {
 
   function drinkInner(i) {
     var ds = drinks[i];
-    var label = ds.state === 'ready' ? '서빙 →' : (ds.state === 'brewing' ? '따르는 중' : '컵');
+    var label = ds.state === 'ready' ? '서빙 →' : (ds.state === 'brewing' ? '따르는 중' : '음료 붓기');
     return '<span class="bg-rush-nozzle"></span>' +
       '<span class="bg-rush-cup">' +
         (ds.state === 'empty' ? '' : '<i class="bg-rush-cup-fill"></i>') +
@@ -1275,32 +1309,20 @@ function runCooking(playEl, done) {
     paintAll();
   }
 
-  function putBun() {
-    for (var i = 0; i < plates.length; i++) {
-      if (!plates[i].bun) {
-        plates[i].bun = true;
-        statusEl.textContent = '접시에 번을 올렸어요. 이제 패티를 올리세요.';
-        sfx.topping();
-        paintAll();
-        return;
-      }
-    }
-    statusEl.textContent = '접시가 모두 사용 중이에요 — 완성된 버거를 서빙하거나 비워 주세요.';
-    sfx.nope();
-  }
-
   function addTopping() {
     for (var i = 0; i < plates.length; i++) {
       var p = plates[i];
-      if (p.bun && p.patty && !p.special) {
+      if (p.bun && !p.special) {
         p.special = true;
-        statusEl.textContent = '토핑을 올려 스페셜 버거 완성!';
+        statusEl.textContent = p.patty
+          ? '토핑을 올려 스페셜 버거 완성!'
+          : '토핑을 올렸어요. 이제 구운 패티를 올리면 스페셜 버거 완성!';
         sfx.topping();
         paintAll();
         return;
       }
     }
-    statusEl.textContent = '버거가 완성된 접시에만 토핑을 올릴 수 있어요.';
+    statusEl.textContent = '번이 올라간 접시에만 토핑을 올릴 수 있어요 — 빈 접시를 눌러 번을 먼저 올려 주세요.';
     sfx.nope();
   }
 
@@ -1349,7 +1371,7 @@ function runCooking(playEl, done) {
         return;
       }
     }
-    statusEl.textContent = '패티를 올릴 접시가 없어요 — 번 바구니로 빵을 먼저 놓아 주세요.';
+    statusEl.textContent = '패티를 올릴 접시가 없어요 — 빈 접시를 눌러 번을 먼저 올려 주세요.';
     sfx.nope();
   }
 
@@ -1360,7 +1382,7 @@ function runCooking(playEl, done) {
     if (!dish) {
       if (!p.bun && !p.patty) {
         p.bun = true;
-        statusEl.textContent = '빈 접시에 번을 올렸어요.';
+        statusEl.textContent = '빈 접시에 번을 올렸어요. 이제 철판 그릴을 눌러 패티를 구우세요.';
         sfx.topping();
       } else {
         statusEl.textContent = '패티를 올려야 버거가 완성됩니다.';
@@ -1412,9 +1434,7 @@ function runCooking(playEl, done) {
     if (!el) return;
     var act = el.getAttribute('data-act');
     var idx = Number(el.getAttribute('data-idx') || 0);
-    if (act === 'cook') startPatty(-1);
-    else if (act === 'bun') putBun();
-    else if (act === 'top') addTopping();
+    if (act === 'top') addTopping();
     else if (act === 'gs') tapGrill(idx);
     else if (act === 'ps') tapPlate(idx);
     else if (act === 'ds') tapDrink(idx);
@@ -1492,6 +1512,8 @@ function runCooking(playEl, done) {
   }
 
   playEl.addEventListener('click', onClick);
+  /* 더블클릭(더블탭) 기본동작 차단 — 화면 확대·텍스트 선택 방지 */
+  playEl.addEventListener('dblclick', function (ev) { ev.preventDefault(); });
 
   later(function () {
     if (finished) return;
@@ -1500,7 +1522,7 @@ function runCooking(playEl, done) {
     lastNow = now;
     nextSpawnAt = [now, now + 1100, now + 2200];
     paintAll();
-    statusEl.textContent = '영업 시작! 손님이 왔어요 — 바구니·그릴·접시를 눌러 요리하세요.';
+    statusEl.textContent = '영업 시작! 손님이 왔어요 — 접시·그릴·토핑·음료를 눌러 요리하세요.';
     sfx.start();
     every(tick, 80);
     tick();

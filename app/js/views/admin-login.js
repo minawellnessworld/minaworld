@@ -2,10 +2,10 @@
    전체 관리자 · 제휴 기관 관리자 · 기관 직원 공용 로그인.
    일반 회원이 들어오면 권한 구분을 안내하고 마이페이지로 보냅니다.
    2단계 인증(TOTP)이 등록된 계정은 로그인 직후 6자리 코드 검증을 요구합니다. */
-import { BRAND, ROLES, STAFF_PERMISSIONS } from '../config.js?v=2.0.34';
-import { state, signIn, signOut, refreshProfile, homeRouteForRole, friendlyError } from '../store.js?v=2.0.34';
-import { getMfaStatus, verifyTotp, needsMfaChallenge } from '../store-security.js?v=2.0.34';
-import { icon, esc, toast, setBusy, go, openSheet, closeSheet, noticeBox } from '../ui.js?v=2.0.34';
+import { BRAND, ROLES, STAFF_PERMISSIONS } from '../config.js?v=2.0.35';
+import { state, signIn, signOut, refreshProfile, homeRouteForRole, friendlyError } from '../store.js?v=2.0.35';
+import { getMfaStatus, verifyTotp, needsMfaChallenge } from '../store-security.js?v=2.0.35';
+import { icon, esc, toast, setBusy, go, openSheet, closeSheet, noticeBox } from '../ui.js?v=2.0.35';
 
 function roleBadge(profile) {
   var role = profile ? profile.role : 'member';
