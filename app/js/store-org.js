@@ -11,9 +11,9 @@ import {
   state, isAdmin, isOrgWorker, myOrgId, friendlyError, nowIso, todayStr,
   localRows, localInsertRow, localUpdateRow, localDeleteRow, saveLocalNow, currentUser,
   listPublicDirectory, shapePublicDirectory, passwordIssue
-} from './store.js?v=2.0.33';
-import { clientSync, createSecondaryClient } from './supabase.js?v=2.0.33';
-import { CONFIG } from './config.js?v=2.0.33';
+} from './store.js?v=2.0.34';
+import { clientSync, createSecondaryClient } from './supabase.js?v=2.0.34';
+import { CONFIG } from './config.js?v=2.0.34';
 
 function uid() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();

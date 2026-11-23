@@ -1,30 +1,47 @@
 /* S07. MINA COMMUNITY — 7개 카테고리 · 게시글 · 댓글 + 하루 한 스푼, 뇌과학 연재 */
-import { COMMUNITY_CATEGORIES, categoryLabel, BRAND } from '../config.js?v=2.0.33';
+import { COMMUNITY_CATEGORIES, categoryLabel, BRAND } from '../config.js?v=2.0.34';
 import {
   state, listPosts, getPost, createPost, updatePost, deletePost,
   listComments, addComment, deleteComment, isStaff, isAdmin, friendlyError
-} from '../store.js?v=2.0.33';
+} from '../store.js?v=2.0.34';
 import {
   listSpoonArticles, getSpoonArticle, spoonDateLabel, spoonWeekday
-} from '../spoon.js?v=2.0.33';
+} from '../spoon.js?v=2.0.34';
 import {
   icon, esc, timeAgo, fmtDateTime, toast, emptyState, noticeBox, sectionHead,
   badge, openSheet, closeSheet, setBusy, confirmDialog, go, track
-} from '../ui.js?v=2.0.33';
+} from '../ui.js?v=2.0.34';
+import { shareBar, shareChipButton, shareIconButton } from '../share.js?v=2.0.34';
 
 var SPOON_TAG = '하루 한 스푼';
 
+function spoonSharePayload(article) {
+  return {
+    id: article.id,
+    kicker: 'MINA WORLD ' + SPOON_TAG,
+    title: article.title,
+    summary: article.summary,
+    url: article.url
+  };
+}
+
 function spoonCard(article) {
-  return '<a class="spoon-card" href="#/community/spoon/' + esc(article.id) + '">' +
-    '<div class="spoon-card-top">' +
-      '<span class="pill pill-gold">' + esc(SPOON_TAG) + '</span>' +
-      '<span class="spoon-date">' + esc(spoonDateLabel(article.date)) + '</span>' +
-    '</div>' +
-    '<h3 class="spoon-title">' + esc(article.title) + '</h3>' +
-    (article.summary ? '<p class="spoon-preview">' + esc(article.summary) + '</p>' : '') +
+  var href = '#/community/spoon/' + esc(article.id);
+  return '<article class="spoon-card">' +
+    '<a class="spoon-card-main" href="' + href + '">' +
+      '<div class="spoon-card-top">' +
+        '<span class="pill pill-gold">' + esc(SPOON_TAG) + '</span>' +
+        '<span class="spoon-date">' + esc(spoonDateLabel(article.date)) + '</span>' +
+      '</div>' +
+      '<h3 class="spoon-title">' + esc(article.title) + '</h3>' +
+      (article.summary ? '<p class="spoon-preview">' + esc(article.summary) + '</p>' : '') +
+    '</a>' +
     '<div class="spoon-meta"><span>' + esc(article.categoryLabel) + '</span>' +
-      '<span class="spoon-more">읽기' + icon('chevronRight', 12) + '</span></div>' +
-  '</a>';
+      '<span class="spoon-meta-actions">' +
+        shareChipButton(spoonSharePayload(article), '공유') +
+        '<a class="spoon-more" href="' + href + '">읽기' + icon('chevronRight', 12) + '</a>' +
+      '</span></div>' +
+  '</article>';
 }
 
 /* 본문 평탄화 텍스트 → 읽기 좋은 문단/불릿 HTML */
@@ -155,6 +172,8 @@ async function renderSpoonDetail(ctx, articleId) {
     };
   }
 
+  var sharePayload = spoonSharePayload(article);
+
   var tldrHtml = '';
   if (article.tldr && article.tldr.length) {
     tldrHtml =
@@ -183,7 +202,10 @@ async function renderSpoonDetail(ctx, articleId) {
   var html =
     '<div class="detail-nav">' +
       '<a class="btn btn-ghost btn-xs" href="#/community?c=neuroscience">' + icon('chevronLeft', 15) + '뇌과학 정보</a>' +
-      '<span class="muted small">' + esc(SPOON_TAG) + '</span>' +
+      '<div class="detail-nav-right">' +
+        '<span class="muted small">' + esc(SPOON_TAG) + '</span>' +
+        shareIconButton(sharePayload) +
+      '</div>' +
     '</div>' +
 
     '<article class="spoon-reader">' +
@@ -199,11 +221,15 @@ async function renderSpoonDetail(ctx, articleId) {
         '</div>' +
       '</div>' +
 
+      shareBar(sharePayload, { variant: 'top' }) +
+
       tldrHtml +
 
       '<div class="spoon-body">' + sectionsHtml + '</div>' +
 
       noticeBox(esc(BRAND.nonMedical), 'neutral') +
+
+      shareBar(sharePayload, { variant: 'bottom' }) +
 
       '<div class="spoon-actions">' +
         '<a class="btn btn-primary btn-block" href="#/brain-check">' + icon('pulse', 16) + 'BRAIN CHECK 바로 예약</a>' +
@@ -265,10 +291,23 @@ async function renderDetail(ctx, postId) {
       '</div>'
     : '';
 
+  var postShareBtn = (post.category === 'neuroscience' && !post.is_hidden)
+    ? shareIconButton({
+        id: 'post-' + post.id,
+        kicker: 'MINA WORLD 커뮤니티 · 뇌과학 정보',
+        title: post.title,
+        summary: String(post.body || '').replace(/\n/g, ' ').slice(0, 90),
+        url: 'https://www.minaworld.co.kr/app/#/community/post/' + post.id
+      })
+    : '';
+
   var html =
     '<div class="detail-nav">' +
       '<a class="btn btn-ghost btn-xs" href="#/community?c=' + esc(post.category) + '">' + icon('chevronLeft', 15) + '목록</a>' +
-      '<span class="muted small">' + esc(categoryLabel(post.category)) + '</span>' +
+      '<div class="detail-nav-right">' +
+        '<span class="muted small">' + esc(categoryLabel(post.category)) + '</span>' +
+        postShareBtn +
+      '</div>' +
     '</div>' +
     '<article class="post-detail">' +
       '<div class="post-detail-head">' +

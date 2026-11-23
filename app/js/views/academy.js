@@ -1,8 +1,8 @@
 /* S06. MINA ACADEMY — 뇌교육상담사 전문가 과정 */
-import { state, listCohorts, createEnrollment, listEnrollments, listMaterials, friendlyError } from '../store.js?v=2.0.33';
-import { icon, esc, fmtDate, toast, emptyState, noticeBox, sectionHead, badge, openSheet, closeSheet, setBusy } from '../ui.js?v=2.0.33';
-import { FALLBACK_ACADEMY_CURRICULUM } from '../catalog.js?v=2.0.33';
-import { requireLoginSheet } from '../booking.js?v=2.0.33';
+import { state, listCohorts, createEnrollment, listEnrollments, listMaterials, friendlyError } from '../store.js?v=2.0.34';
+import { icon, esc, fmtDate, toast, emptyState, noticeBox, sectionHead, badge, openSheet, closeSheet, setBusy } from '../ui.js?v=2.0.34';
+import { FALLBACK_ACADEMY_CURRICULUM } from '../catalog.js?v=2.0.34';
+import { requireLoginSheet } from '../booking.js?v=2.0.34';
 
 var COHORT_STATUS = { recruiting: '모집 중', ongoing: '진행 중', closed: '마감' };
 

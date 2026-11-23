@@ -1,8 +1,8 @@
 /* S05. NEURO TRAINING · MIND CARE · BRAIN WELLNESS — 뉴로피드백 4종 + 10종 프로그램 */
-import { BRAND } from '../config.js?v=2.0.33';
-import { getPrograms, friendlyError } from '../store.js?v=2.0.33';
-import { icon, esc, fmtKRW, emptyState, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.33';
-import { openBookingFlow } from '../booking.js?v=2.0.33';
+import { BRAND } from '../config.js?v=2.0.34';
+import { getPrograms, friendlyError } from '../store.js?v=2.0.34';
+import { icon, esc, fmtKRW, emptyState, noticeBox, openSheet, closeSheet } from '../ui.js?v=2.0.34';
+import { openBookingFlow } from '../booking.js?v=2.0.34';
 
 var FILTERS = [
   { id: 'all', label: '전체' },

@@ -1,8 +1,8 @@
 /* 관리자 → 운영 요약: 기간 필터 + 10대 실제 집계 + 월별 매출 차트 */
-import { BOOKING_STATUS, ROLES } from '../../config.js?v=2.0.33';
-import { state, friendlyError, todayStr } from '../../store.js?v=2.0.33';
-import { getPeriodMetrics, fetchMetricSource, monthlyRevenue, rangeFor } from '../../store-security.js?v=2.0.33';
-import { icon, esc, fmtKRW, fmtDate, badge, chartBaseOptions, noticeBox } from '../../ui.js?v=2.0.33';
+import { BOOKING_STATUS, ROLES } from '../../config.js?v=2.0.34';
+import { state, friendlyError, todayStr } from '../../store.js?v=2.0.34';
+import { getPeriodMetrics, fetchMetricSource, monthlyRevenue, rangeFor } from '../../store-security.js?v=2.0.34';
+import { icon, esc, fmtKRW, fmtDate, badge, chartBaseOptions, noticeBox } from '../../ui.js?v=2.0.34';
 
 function statCard(label, value, sub, tone) {
   return '<div class="stat-card tone-' + (tone || 'ivory') + '">' +
