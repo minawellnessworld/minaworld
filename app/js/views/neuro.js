@@ -1,7 +1,7 @@
 /* S03. NEURO TRAINING — 뉴로피드백 패키지 · 훈련 기록 */
-import { state, getPrograms, listPackages, listSessions, listBookings, friendlyError } from '../store.js?v=2.0.36';
-import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, chartBaseOptions } from '../ui.js?v=2.0.36';
-import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.36';
+import { state, getPrograms, listPackages, listSessions, listBookings, friendlyError } from '../store.js?v=2.0.37';
+import { icon, esc, fmtKRW, fmtDate, toast, emptyState, noticeBox, sectionHead, chartBaseOptions } from '../ui.js?v=2.0.37';
+import { openBookingFlow, bookingItemHtml, bindBookingActions } from '../booking.js?v=2.0.37';
 
 function packageCard(program) {
   var isSingle = program.id === 'neuro_1';

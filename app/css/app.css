@@ -3128,6 +3128,7 @@ body.portal-mode .mode-banner { display: none; }
 .bg-rush-gslot-plus { font-size: 13px; line-height: 1; color: rgba(150,122,80,0.6); }
 
 .bg-rush-slot-n { font-size: 7px; line-height: 1.2; text-align: center; color: #8A6F45; font-weight: 700; }
+.bg-rush-drink .bg-rush-slot-n { color: rgba(255,255,255,0.88); }
 .bg-rush-slot-n.is-light { color: rgba(255,255,255,0.86); }
 .bg-rush-slot-n.is-gold { color: #8A6208; font-weight: 800; }
 .bg-rush-trash {

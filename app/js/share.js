@@ -12,7 +12,7 @@
      달아 두면 문서 단위 위임 리스너가 처리합니다(카드·상세 어디서든 동작).
    · 취소(AbortError)는 조용히 무시하고, 미지원 환경은 앱 내 시트로 안내합니다.
    ===================================================================== */
-import { esc, icon, openSheet, toast, track } from './ui.js?v=2.0.36';
+import { esc, icon, openSheet, toast, track } from './ui.js?v=2.0.37';
 
 var SITE = 'https://www.minaworld.co.kr';
 var DEFAULT_KICKER = 'MINA WORLD 하루 한 스푼';
