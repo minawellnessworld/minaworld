@@ -11,7 +11,7 @@
    · 새 주간 게임에서도 sfx.start() · sfx.correct() · sfx.wrong() ·
      sfx.finish() · sfx.record() 를 그대로 호출하면 됩니다.
    ===================================================================== */
-import { icon, toast } from './ui.js?v=2.0.32';
+import { icon, toast } from './ui.js?v=2.0.33';
 
 var LS_KEY = 'mina_game_sfx_v1';
 var ctx = null;

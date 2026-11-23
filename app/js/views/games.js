@@ -8,12 +8,12 @@
    · 게임 개수는 config.js 의 BRAIN_GAMES 길이를 그대로 따릅니다.
    · '오늘 챌린지' 완주 목표는 Math.min(4, 게임 수) — 게임이 늘어도 하루 부담은 4종.
    ===================================================================== */
-import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.32';
+import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.33';
 import {
   state, listBrainGameLogs, saveBrainGameLog, computeBrainGameStats, friendlyError
-} from '../store.js?v=2.0.32';
-import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.32';
-import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.32';
+} from '../store.js?v=2.0.33';
+import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.33';
+import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.33';
 
 var WEEK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -171,7 +171,7 @@ var GAME_PREVIEWS = {
       var x = 13 + c * 20;
       var y = 5 + r * 20;
       var hit = nums[i] <= 3;
-      out += '<rect x="' + x + '" y="' + y + '" width="16" height="16" rx="4.5" fill="' + (hit ? '#C9A96E' : '#FFFFFF') + '"/>' +
+      out += '<rect x="' + x + '" y="' + y + '" width="16" height="16" rx="4.5" fill="' + (hit ? '#C9A96E' : '#FFFFFF') + '" stroke="rgba(7,13,30,.1)" stroke-width="1"/>' +
         '<text x="' + (x + 8) + '" y="' + (y + 12) + '" text-anchor="middle" font-size="9.5" font-weight="800" fill="' + (hit ? '#FFFFFF' : '#8A93A6') + '">' + nums[i] + '</text>';
     }
     return out;
