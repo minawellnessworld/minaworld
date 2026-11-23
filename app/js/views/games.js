@@ -8,12 +8,12 @@
    · 게임 개수는 config.js 의 BRAIN_GAMES 길이를 그대로 따릅니다.
    · '오늘 챌린지' 완주 목표는 Math.min(4, 게임 수) — 게임이 늘어도 하루 부담은 4종.
    ===================================================================== */
-import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.31';
+import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.32';
 import {
   state, listBrainGameLogs, saveBrainGameLog, computeBrainGameStats, friendlyError
-} from '../store.js?v=2.0.31';
-import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.31';
-import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.31';
+} from '../store.js?v=2.0.32';
+import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.32';
+import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.32';
 
 var WEEK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -1537,11 +1537,10 @@ var BB_POOL = [
   { w: 3, h: 2, cells: [[0, 0], [0, 1], [0, 2], [1, 0]] },
   { w: 2, h: 3, cells: [[0, 0], [1, 0], [2, 0], [2, 1]] },
   { w: 2, h: 3, cells: [[0, 1], [1, 1], [2, 0], [2, 1]] },
-  { w: 3, h: 2, cells: [[0, 0], [0, 1], [1, 0], [2, 0]] },
-  { w: 3, h: 2, cells: [[0, 0], [0, 1], [1, 1], [2, 1]] },
-  { w: 2, h: 3, cells: [[0, 0], [1, 0], [1, 1], [1, 2]] },
-  { w: 2, h: 3, cells: [[0, 2], [1, 0], [1, 1], [1, 2]] },
-  /* T자 · S자 · Z자 */
+  { w: 2, h: 3, cells: [[0, 0], [0, 1], [1, 0], [2, 0]] },
+  { w: 2, h: 3, cells: [[0, 0], [0, 1], [1, 1], [2, 1]] },
+  { w: 3, h: 2, cells: [[0, 0], [1, 0], [1, 1], [1, 2]] },
+  { w: 3, h: 2, cells: [[0, 2], [1, 0], [1, 1], [1, 2]] },  /* T자 · S자 · Z자 */
   { w: 3, h: 2, cells: [[0, 0], [0, 1], [0, 2], [1, 1]] },
   { w: 3, h: 2, cells: [[0, 1], [1, 0], [1, 1], [1, 2]] },
   { w: 2, h: 3, cells: [[0, 0], [1, 0], [1, 1], [2, 1]] },
@@ -1612,7 +1611,10 @@ function runBlockBlast(playEl, done) {
   function fits(piece, r0, c0) {
     if (r0 < 0 || c0 < 0 || r0 + piece.h > BB_N || c0 + piece.w > BB_N) return false;
     for (var i = 0; i < piece.cells.length; i++) {
-      if (grid[at(r0 + piece.cells[i][0], c0 + piece.cells[i][1])]) return false;
+      var rr = r0 + piece.cells[i][0];
+      var cc = c0 + piece.cells[i][1];
+      if (rr < 0 || cc < 0 || rr >= BB_N || cc >= BB_N) return false;
+      if (grid[at(rr, cc)]) return false;
     }
     return true;
   }
