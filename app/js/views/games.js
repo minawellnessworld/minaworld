@@ -8,12 +8,12 @@
    · 게임 개수는 config.js 의 BRAIN_GAMES 길이를 그대로 따릅니다.
    · '오늘 챌린지' 완주 목표는 Math.min(4, 게임 수) — 게임이 늘어도 하루 부담은 4종.
    ===================================================================== */
-import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.30';
+import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.31';
 import {
   state, listBrainGameLogs, saveBrainGameLog, computeBrainGameStats, friendlyError
-} from '../store.js?v=2.0.30';
-import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.30';
-import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.30';
+} from '../store.js?v=2.0.31';
+import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.31';
+import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.31';
 
 var WEEK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -27,6 +27,17 @@ var STROOP_COLORS = [
 /* ---------------------------------------------------------------- timers */
 var timers = [];
 var rafId = 0;
+/* 드래그 앤 드롭처럼 게임 밖(window/document)에 붙인 리스너의 정리 함수 —
+   destroy()·게임 종료·화면 이동 시 확실히 떼어 냅니다. */
+var activeDragCancel = null;
+
+function cancelActiveDrag() {
+  if (typeof activeDragCancel === 'function') {
+    var fn = activeDragCancel;
+    activeDragCancel = null;
+    try { fn(); } catch (err) { /* 이미 정리된 경우 무시 */ }
+  }
+}
 
 function later(fn, ms) {
   var id = setTimeout(function () {
@@ -67,6 +78,7 @@ function clearAllTimers() {
 
 export function destroy() {
   clearAllTimers();
+  cancelActiveDrag();
 }
 
 /* ----------------------------------------------------------------- html */
@@ -1496,10 +1508,13 @@ function runCooking(playEl, done) {
 }
 
 /* ------------- 6) 블록 블라스트 (block_blast · 8×8 블록 퍼즐)
-   · 아래 3개 조각 중 하나를 골라 8×8 보드에 놓고, 가로·세로 8칸이 꽉 차면 줄이 지워집니다.
+   · 아래 3개 조각을 보드로 **끌어다 놓는 드래그 앤 드롭**이 기본 조작입니다.
+     (짧게 탭해 조각을 고른 뒤 보드 칸을 누르는 방법도 보조로 함께 동작합니다.)
+   · 가로·세로 8칸이 꽉 차면 줄이 지워집니다.
    · 점수 = 놓은 칸 수 × 2 + 줄 보너스(1줄 10 · 2줄 30 · 3줄 60 · 4줄 이상 100) + 콤보 보너스
    · 3조각을 모두 쓰면 새 조각 3개를 받고, 남은 조각 중 하나도 놓을 곳이 없으면 결과를 저장합니다. */
 var BB_N = 8;
+var BB_LIFT = 62;          /* 드래그 중 조각을 손가락보다 위로 띄우는 높이(px) */
 var BB_CELL_POINTS = 2;
 var BB_LINE_POINTS = [0, 10, 30, 60, 100];
 var BB_COLORS = ['c1', 'c2', 'c3', 'c4', 'c5'];
@@ -1565,6 +1580,8 @@ function runBlockBlast(playEl, done) {
   var finished = false;
   var clearing = {};
   var ghost = null;
+  var dragState = null;
+  var suppressTrayClick = 0;
 
   var cellsHtml = '';
   for (var b = 0; b < BB_N * BB_N; b++) {
@@ -1637,7 +1654,8 @@ function runBlockBlast(playEl, done) {
       var cls = 'bg-bb-cell';
       if (grid[i]) cls += ' is-filled ' + grid[i];
       if (clearing[i]) cls += ' is-clearing';
-      if (ghost && ghost.map[i]) cls += ghost.ok ? ' is-ghost' : ' is-ghost-bad';
+      if (ghost && ghost.map[i]) cls += ghost.ok ? ' is-ghost ' + ghost.color : ' is-ghost-bad';
+      if (ghost && ghost.lines && ghost.lines[i]) cls += ' is-ghost-line';
       cellEls[i].className = cls;
     }
   }
@@ -1816,7 +1834,7 @@ function runBlockBlast(playEl, done) {
     if (finished) return;
     finished = true;
     locked = true;
-    ghost = null;
+    cleanupDrag();
     paintBoard();
     clearAllTimers();
     statusEl.textContent = '더 이상 놓을 곳이 없어요! ' + score + '점으로 기록을 저장합니다.';
@@ -1828,13 +1846,14 @@ function runBlockBlast(playEl, done) {
 
   /* --------------------------------------------------------- 입력 */
   function onTray(ev) {
+    if (Date.now() < suppressTrayClick) return;
     var el = ev.target && ev.target.closest ? ev.target.closest('[data-piece]') : null;
     if (!el) return;
     selectPiece(Number(el.getAttribute('data-piece')));
   }
 
   function showGhost(idx) {
-    if (selected < 0 || locked || finished) return;
+    if (dragState || selected < 0 || locked || finished) return;
     var p = pieces[selected];
     if (!p || p.used) return;
     var r0 = Math.floor(idx / BB_N);
@@ -1845,7 +1864,7 @@ function runBlockBlast(playEl, done) {
       var c = c0 + p.cells[i][1];
       if (r < BB_N && c < BB_N) map[at(r, c)] = true;
     }
-    ghost = { map: map, ok: fits(p, r0, c0) };
+    ghost = { map: map, ok: fits(p, r0, c0), color: p.color };
     paintBoard();
   }
 
@@ -1856,14 +1875,14 @@ function runBlockBlast(playEl, done) {
   }
 
   function onBoard(ev) {
-    if (finished) return;
+    if (finished || dragState) return;
     var el = ev.target && ev.target.closest ? ev.target.closest('.bg-bb-cell') : null;
     if (!el) return;
     if (locked) return;
     var idx = Number(el.getAttribute('data-idx'));
     if (selected < 0) {
       sfx.nope();
-      statusEl.textContent = '아래 블록 조각을 먼저 골라 주세요.';
+      statusEl.textContent = '아래 블록 조각을 먼저 고르거나, 조각을 보드로 끌어다 놓아 주세요.';
       return;
     }
     var p = pieces[selected];
@@ -1881,9 +1900,220 @@ function runBlockBlast(playEl, done) {
     placePiece(p, r0, c0);
   }
 
+  /* ------------------------------------------- 드래그 앤 드롭 (기본 조작) */
+  function boardMetrics() {
+    var c0 = cellEls[0].getBoundingClientRect();
+    var c1 = cellEls[1].getBoundingClientRect();
+    var c8 = cellEls[8].getBoundingClientRect();
+    return {
+      cellW: c0.width,
+      cellH: c0.height,
+      strideX: c1.left - c0.left,
+      strideY: c8.top - c0.top,
+      originX: c0.left + c0.width / 2,
+      originY: c0.top + c0.height / 2
+    };
+  }
+
+  function buildDragNode(p, m) {
+    var gap = Math.max(1, m.strideX - m.cellW);
+    var el = document.createElement('div');
+    el.className = 'bg-bb-drag';
+    el.setAttribute('aria-hidden', 'true');
+    el.style.gridTemplateColumns = 'repeat(' + p.w + ', ' + m.cellW + 'px)';
+    el.style.gap = gap + 'px';
+    el.style.width = (p.w * m.cellW + (p.w - 1) * gap) + 'px';
+    el.style.height = (p.h * m.cellH + (p.h - 1) * gap) + 'px';
+    for (var r = 0; r < p.h; r++) {
+      for (var c = 0; c < p.w; c++) {
+        var on = false;
+        for (var i = 0; i < p.cells.length; i++) {
+          if (p.cells[i][0] === r && p.cells[i][1] === c) { on = true; break; }
+        }
+        var cell = document.createElement('span');
+        cell.className = 'bg-bb-cell' + (on ? ' is-filled ' + p.color : ' is-void');
+        cell.style.width = m.cellW + 'px';
+        cell.style.height = m.cellH + 'px';
+        el.appendChild(cell);
+      }
+    }
+    return el;
+  }
+
+  function positionDragNode(x, y, moved) {
+    var d = dragState;
+    if (!d) return;
+    var w = d.node.offsetWidth || 0;
+    var h = d.node.offsetHeight || 0;
+    var left = x - w / 2;
+    var top = y - BB_LIFT - h;
+    if (top < 4) top = 4;
+    d.left = left;
+    d.top = top;
+    d.node.style.left = Math.round(left) + 'px';
+    d.node.style.top = Math.round(top) + 'px';
+    if (moved) d.node.classList.add('is-moved');
+  }
+
+  /* 끌고 다니는 조각이 놓일 칸 + 그 배치로 지워질 줄을 미리 보여줍니다. */
+  function updateDragTarget() {
+    var d = dragState;
+    if (!d) return;
+    var p = pieces[d.idx];
+    if (!p || p.used) { ghost = null; paintBoard(); return; }
+    var m = boardMetrics();
+    var col = Math.round((d.left + m.cellW / 2 - m.originX) / m.strideX);
+    var row = Math.round((d.top + m.cellH / 2 - m.originY) / m.strideY);
+    if (!fits(p, row, col)) {
+      d.row = -1;
+      d.col = -1;
+      d.ok = false;
+      ghost = null;
+      if (row >= 0 && row < BB_N && col >= 0 && col < BB_N) {
+        var bad = {};
+        for (var i = 0; i < p.cells.length; i++) {
+          var rr = row + p.cells[i][0];
+          var cc = col + p.cells[i][1];
+          if (rr >= 0 && rr < BB_N && cc >= 0 && cc < BB_N) bad[at(rr, cc)] = true;
+        }
+        ghost = { map: bad, ok: false, color: p.color };
+      }
+      paintBoard();
+      return;
+    }
+
+    d.row = row;
+    d.col = col;
+    d.ok = true;
+    var map = {};
+    var sim = grid.slice();
+    for (var k = 0; k < p.cells.length; k++) {
+      var pr = row + p.cells[k][0];
+      var pc = col + p.cells[k][1];
+      map[at(pr, pc)] = true;
+      sim[at(pr, pc)] = p.color;
+    }
+    var lines = {};
+    var r2, c2;
+    for (r2 = 0; r2 < BB_N; r2++) {
+      var full = true;
+      for (c2 = 0; c2 < BB_N; c2++) { if (!sim[at(r2, c2)]) { full = false; break; } }
+      if (full) { for (c2 = 0; c2 < BB_N; c2++) lines[at(r2, c2)] = true; }
+    }
+    for (c2 = 0; c2 < BB_N; c2++) {
+      var fullC = true;
+      for (r2 = 0; r2 < BB_N; r2++) { if (!sim[at(r2, c2)]) { fullC = false; break; } }
+      if (fullC) { for (r2 = 0; r2 < BB_N; r2++) lines[at(r2, c2)] = true; }
+    }
+    ghost = { map: map, ok: true, color: p.color, lines: lines };
+    paintBoard();
+  }
+
+  function removeDragListeners() {
+    window.removeEventListener('pointermove', onDragMove);
+    window.removeEventListener('pointerup', onDragUp);
+    window.removeEventListener('pointercancel', onDragCancel);
+    window.removeEventListener('blur', onDragCancel);
+  }
+
+  function cleanupDrag() {
+    removeDragListeners();
+    if (dragState && dragState.node && dragState.node.parentNode) {
+      dragState.node.parentNode.removeChild(dragState.node);
+    }
+    dragState = null;
+    ghost = null;
+    if (activeDragCancel === cleanupDrag) activeDragCancel = null;
+  }
+
+  function onDragMove(ev) {
+    if (!dragState) return;
+    if (ev.cancelable) ev.preventDefault();
+    var dx = ev.clientX - dragState.startX;
+    var dy = ev.clientY - dragState.startY;
+    if (!dragState.moved && (dx * dx + dy * dy) > 36) {
+      dragState.moved = true;
+      statusEl.textContent = '손가락을 떼면 그 자리에 놓입니다. 빛나는 줄을 노려 보세요!';
+    }
+    positionDragNode(ev.clientX, ev.clientY, dragState.moved);
+    updateDragTarget();
+  }
+
+  function onDragUp() {
+    if (!dragState) return;
+    var d = dragState;
+    var wasMoved = d.moved;
+    var ok = d.ok;
+    var row = d.row;
+    var col = d.col;
+    var idx = d.idx;
+    cleanupDrag();
+    paintBoard();
+    if (!wasMoved) {
+      /* 거의 움직이지 않은 탭 — 조각 선택(탭 → 보드 칸 방법의 보조 조작) */
+      selectPiece(idx);
+      return;
+    }
+    suppressTrayClick = Date.now() + 450;
+    if (ok) {
+      var p = pieces[idx];
+      if (p && !p.used && fits(p, row, col)) placePiece(p, row, col);
+      return;
+    }
+    sfx.nope();
+    paintTray();
+    statusEl.textContent = '보드 안의 놓을 수 있는 칸에 놓아 주세요.';
+  }
+
+  function onDragCancel() {
+    if (!dragState) return;
+    cleanupDrag();
+    paintBoard();
+    paintTray();
+    suppressTrayClick = Date.now() + 450;
+    statusEl.textContent = '드래그를 취소했어요. 조각을 다시 끌어다 놓아 보세요.';
+  }
+
+  function onTrayPointerDown(ev) {
+    if (finished || locked || dragState) return;
+    if (typeof ev.button === 'number' && ev.button > 0) return;
+    var el = ev.target && ev.target.closest ? ev.target.closest('[data-piece]') : null;
+    if (!el) return;
+    var idx = Number(el.getAttribute('data-piece'));
+    var p = pieces[idx];
+    if (!p || p.used) return;
+    if (ev.cancelable) ev.preventDefault();
+    var m = boardMetrics();
+    var node = buildDragNode(p, m);
+    document.body.appendChild(node);
+    dragState = {
+      idx: idx,
+      node: node,
+      startX: ev.clientX,
+      startY: ev.clientY,
+      moved: false,
+      row: -1,
+      col: -1,
+      ok: false,
+      left: 0,
+      top: 0
+    };
+    activeDragCancel = cleanupDrag;
+    selectPiece(idx);
+    positionDragNode(ev.clientX, ev.clientY, false);
+    updateDragTarget();
+    window.addEventListener('pointermove', onDragMove, { passive: false });
+    window.addEventListener('pointerup', onDragUp);
+    window.addEventListener('pointercancel', onDragCancel);
+    window.addEventListener('blur', onDragCancel);
+    statusEl.textContent = '조각을 보드 위로 끌어다 놓아 보세요.';
+  }
+
   trayEl.addEventListener('click', onTray);
+  trayEl.addEventListener('pointerdown', onTrayPointerDown);
   boardEl.addEventListener('click', onBoard);
   boardEl.addEventListener('pointermove', function (ev) {
+    if (dragState) return;
     if (ev.pointerType && ev.pointerType !== 'mouse') return;
     var el = ev.target && ev.target.closest ? ev.target.closest('.bg-bb-cell') : null;
     if (el) showGhost(Number(el.getAttribute('data-idx')));
@@ -1898,13 +2128,14 @@ function runBlockBlast(playEl, done) {
   paintHud();
   later(function () {
     if (finished) return;
-    statusEl.textContent = '조각을 고르고 보드에 놓아 보세요. 가로·세로 8칸을 채우면 줄이 지워집니다!';
+    statusEl.textContent = '아래 조각을 보드로 끌어다 놓아 보세요. 가로·세로 8칸을 채우면 줄이 지워집니다!';
     sfx.start();
   }, 500);
 }
 
 /* ------------------------------------------------------------- 결과 저장 */
 function finishGame(playEl, key, meta, result, logs, refreshBoard, showHub, restart) {
+  cancelActiveDrag();
   var before = computeBrainGameStats(logs);
   var prevBest = before.bestByGame[key];
   var prevScore = prevBest ? Number(prevBest.score) : null;
@@ -2003,6 +2234,7 @@ function mountGames(el, logs) {
 
   function showHub() {
     clearAllTimers();
+    cancelActiveDrag();
     el.classList.remove('bg-playing');
     stageEl.hidden = true;
     stageEl.innerHTML = '';
