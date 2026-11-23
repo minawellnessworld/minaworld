@@ -1,4 +1,4 @@
-/* S11. BRAIN GAME — 두뇌게임 5종 + 최고기록·연속 출석(스트릭)
+/* S11. BRAIN GAME — 두뇌게임 6종 + 최고기록·연속 출석(스트릭)
    ---------------------------------------------------------------------
    · 저장·표시하는 값은 본인이 실제로 플레이한 기록뿐입니다.
      (최고기록 · 최근기록 · 오늘 완료 · 연속 플레이 일수 / 타인 비교·뇌나이 없음)
@@ -6,13 +6,14 @@
    · 타이머(setTimeout/setInterval)와 애니메이션(requestAnimationFrame)은
      게임 종료·다른 화면 이동(destroy) 시 모두 정리합니다.
    · 게임 개수는 config.js 의 BRAIN_GAMES 길이를 그대로 따릅니다.
+   · '오늘 챌린지' 완주 목표는 Math.min(4, 게임 수) — 게임이 늘어도 하루 부담은 4종.
    ===================================================================== */
-import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.29';
+import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.30';
 import {
   state, listBrainGameLogs, saveBrainGameLog, computeBrainGameStats, friendlyError
-} from '../store.js?v=2.0.29';
-import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.29';
-import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.29';
+} from '../store.js?v=2.0.30';
+import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.30';
+import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.30';
 
 var WEEK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -80,8 +81,10 @@ function weekHtml(stats) {
 
 function boardHtml(stats) {
   var total = stats.gameCount || BRAIN_GAMES.length;
-  var pct = total ? Math.round((stats.todayCount / total) * 100) : 0;
-  var complete = stats.todayCount >= total;
+  var goal = stats.todayGoal || Math.min(4, total);
+  var done = Math.min(stats.todayCount, goal);
+  var pct = goal ? Math.round((done / goal) * 100) : 0;
+  var complete = stats.todayCount >= goal;
   return '<div class="bg-board-inner">' +
     '<div class="bg-streak">' +
       '<span class="bg-streak-ico">' + icon('flame', 22) + '</span>' +
@@ -92,13 +95,13 @@ function boardHtml(stats) {
       '<span class="bg-streak-total">누적<strong>' + stats.totalPlays + '</strong>판</span>' +
     '</div>' +
     '<div class="bg-today">' +
-      '<div class="bg-today-head"><strong>오늘 챌린지</strong><span>' + stats.todayCount + '/' + total + ' 완료</span></div>' +
+      '<div class="bg-today-head"><strong>오늘 챌린지</strong><span>' + done + '/' + goal + ' 완료</span></div>' +
       '<div class="bg-progress"><span class="bg-progress-bar" style="width:' + pct + '%"></span></div>' +
       '<div class="bg-week" aria-label="최근 7일 플레이 기록">' + weekHtml(stats) + '</div>' +
     '</div>' +
     (complete
       ? '<div class="bg-complete">' + icon('trophy', 18) +
-          '<span><strong>오늘의 두뇌 워밍업 ' + total + '종 완주!</strong><span>내일도 한 판씩 이어가면 연속 기록이 늘어납니다.</span></span>' +
+          '<span><strong>오늘의 두뇌 워밍업 ' + goal + '종 완주!</strong><span>내일도 한 판씩 이어가면 연속 기록이 늘어납니다.</span></span>' +
         '</div>'
       : '') +
     (!state.session
@@ -110,40 +113,169 @@ function boardHtml(stats) {
   '</div>';
 }
 
+/* 게임 선택 카드의 예시 그림 — 게임별 미니 플레이 프리뷰 (인라인 SVG 84×68, 바깥 배경은 CSS 톤) */
+function previewSvg(inner) {
+  return '<svg class="bg-game-thumb-svg" viewBox="0 0 84 68" width="84" height="68" aria-hidden="true" focusable="false">' + inner + '</svg>';
+}
+
+var BB_PREVIEW_COLORS = { a: '#E4694F', b: '#F5B82E', c: '#3E9E8A', d: '#4A7BC4', e: '#8B6BC7' };
+
+var GAME_PREVIEWS = {
+  /* 1) 순서 기억 — 3×3 격자 + 켜진 불빛 1·2·3 + 연결선 */
+  memory_seq: function () {
+    var out = '';
+    for (var r = 0; r < 3; r++) {
+      for (var c = 0; c < 3; c++) {
+        out += '<rect x="' + (14 + c * 20) + '" y="' + (5 + r * 20) + '" width="16" height="16" rx="5" ' +
+          'fill="rgba(255,255,255,.13)" stroke="rgba(255,255,255,.2)"/>';
+      }
+    }
+    out += '<path d="M22 13 42 33 62 53" fill="none" stroke="#F5B82E" stroke-width="1.6" stroke-dasharray="3 2.4" stroke-linecap="round"/>';
+    var lit = [[22, 13, '1'], [42, 33, '2'], [62, 53, '3']];
+    for (var i = 0; i < lit.length; i++) {
+      out += '<rect x="' + (lit[i][0] - 8) + '" y="' + (lit[i][1] - 8) + '" width="16" height="16" rx="5" fill="#F5B82E"/>' +
+        '<text x="' + lit[i][0] + '" y="' + (lit[i][1] + 3.4) + '" text-anchor="middle" font-size="9" font-weight="800" fill="#241A02">' + lit[i][2] + '</text>';
+    }
+    return out;
+  },
+  /* 2) 색깔 vs 글자 — 파란 잉크 '빨강' + 색상 버튼 4개 */
+  stroop_color: function () {
+    var dots = [['#B4453F', 18], ['#1F4E9C', 34], ['#1F7A5A', 50], ['#C98A0B', 66]];
+    var out = '<rect x="8" y="6" width="68" height="33" rx="9" fill="#FFFFFF"/>' +
+      '<text x="42" y="29" text-anchor="middle" font-size="17" font-weight="900" letter-spacing="-0.6" fill="#1F4E9C">빨강</text>';
+    for (var i = 0; i < dots.length; i++) {
+      out += '<circle cx="' + dots[i][1] + '" cy="54" r="6.5" fill="' + dots[i][0] + '"' +
+        (i === 1 ? ' stroke="#FFFFFF" stroke-width="2"' : ' opacity=".88"') + '/>';
+    }
+    return out;
+  },
+  /* 3) 1→25 숫자 터치 — 1·2·3 이 골드로 눌린 미니 숫자판 */
+  number_grid: function () {
+    var out = '';
+    var nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    for (var i = 0; i < nums.length; i++) {
+      var r = Math.floor(i / 3);
+      var c = i % 3;
+      var x = 13 + c * 20;
+      var y = 5 + r * 20;
+      var hit = nums[i] <= 3;
+      out += '<rect x="' + x + '" y="' + y + '" width="16" height="16" rx="4.5" fill="' + (hit ? '#C9A96E' : '#FFFFFF') + '"/>' +
+        '<text x="' + (x + 8) + '" y="' + (y + 12) + '" text-anchor="middle" font-size="9.5" font-weight="800" fill="' + (hit ? '#FFFFFF' : '#8A93A6') + '">' + nums[i] + '</text>';
+    }
+    return out;
+  },
+  /* 4) 양궁 과녁 — 5중 동심원 + 중앙 조준점 + 화살 */
+  archery_target: function () {
+    return '<circle cx="42" cy="34" r="30" fill="#FAF7F2"/>' +
+      '<circle cx="42" cy="34" r="24" fill="#2B2B33"/>' +
+      '<circle cx="42" cy="34" r="18" fill="#3F6FB5"/>' +
+      '<circle cx="42" cy="34" r="12" fill="#B4453F"/>' +
+      '<circle cx="42" cy="34" r="6.5" fill="#F5B82E"/>' +
+      '<path d="M62 11 48 27" stroke="#4A5568" stroke-width="2" stroke-linecap="round"/>' +
+      '<path d="M62 11 58 12 61 15Z" fill="#B4453F"/>' +
+      '<circle cx="47.5" cy="28.5" r="7" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-opacity=".92"/>' +
+      '<circle cx="47.5" cy="28.5" r="1.6" fill="#FFFFFF"/>';
+  },
+  /* 5) 브레인 주방 매드니스 — 손님 + 주문 말풍선(버거·음료) + 조리대 */
+  order_cooking: function () {
+    return '<circle cx="20" cy="31" r="11" fill="#F6CEAA"/>' +
+      '<path d="M9.4 28.6a10.8 10.8 0 0 1 21.2 0c-2.6-3.4-6-5-10.6-5s-8 1.6-10.6 5Z" fill="#2C2C35"/>' +
+      '<circle cx="16.2" cy="31" r="1.3" fill="#2B2B33"/><circle cx="23.8" cy="31" r="1.3" fill="#2B2B33"/>' +
+      '<path d="M17 35.6c1 1.7 5 1.7 6 0" stroke="#B4736B" stroke-width="1.4" fill="none" stroke-linecap="round"/>' +
+      '<path d="M3.4 52c0-5.4 5.2-8.6 11.6-8.6S26.6 46.6 26.6 52Z" fill="#41587C"/>' +
+      '<rect x="34" y="5" width="44" height="30" rx="9" fill="#FFFFFF"/>' +
+      '<path d="M36 34 33 41 42.6 35.6Z" fill="#FFFFFF"/>' +
+      '<rect x="40" y="11" width="15" height="4.4" rx="2.2" fill="#E0A93C"/>' +
+      '<rect x="40" y="15.8" width="15" height="3.6" rx="1.6" fill="#7A4A2C"/>' +
+      '<rect x="40" y="19.8" width="15" height="3.4" rx="1.7" fill="#E0A93C"/>' +
+      '<path d="M43 16.4h9" stroke="#3E9E8A" stroke-width="1.6" stroke-linecap="round"/>' +
+      '<path d="M60 12h9l-1.4 13h-6.2Z" fill="#B4453F"/>' +
+      '<path d="M60 12h9l-.3 3h-8.4Z" fill="#FFFFFF" fill-opacity=".55"/>' +
+      '<path d="M66 12 69 6" stroke="#8A93A6" stroke-width="1.4" stroke-linecap="round"/>' +
+      '<rect x="6" y="54" width="72" height="9" rx="4.5" fill="rgba(255,255,255,.22)"/>' +
+      '<path d="M12 60.5h16M32 60.5h16M52 60.5h16" stroke="rgba(7,13,30,.35)" stroke-width="1.4" stroke-linecap="round"/>' +
+      '<ellipse cx="66" cy="57.5" rx="9" ry="2.6" fill="#FFFFFF" fill-opacity=".75"/>' +
+      '<circle cx="66" cy="56" r="3" fill="#7A4A2C"/>';
+  },
+  /* 6) 블록 블라스트 — 컬러 블록 격자 + 빛나는 클리어 줄 + 하단 3조각 */
+  block_blast: function () {
+    var map = [
+      ['a', '', '', 'b', ''],
+      ['a', 'a', '', 'b', 'c'],
+      ['', '', '', '', ''],
+      ['', 'd', 'd', 'c', 'c']
+    ];
+    var out = '';
+    for (var r = 0; r < 4; r++) {
+      for (var c = 0; c < 5; c++) {
+        var x = 15 + c * 11;
+        var y = 4 + r * 11;
+        var clearRow = r === 2;
+        var key = map[r][c];
+        var fill = clearRow ? '#FFF1C9' : (key ? BB_PREVIEW_COLORS[key] : 'rgba(255,255,255,.1)');
+        out += '<rect x="' + x + '" y="' + y + '" width="9" height="9" rx="2.4" fill="' + fill + '"' +
+          (clearRow ? ' stroke="#F5B82E" stroke-width="1"' : '') + '/>';
+      }
+    }
+    out += '<rect x="13" y="25" width="59" height="11" rx="4" fill="none" stroke="#F5B82E" stroke-opacity=".55" stroke-width="1.2"/>';
+    /* 하단 블록 조각 3개 */
+    out += '<rect x="16" y="52" width="9" height="9" rx="2.4" fill="#E4694F"/>' +
+      '<rect x="34" y="52" width="9" height="9" rx="2.4" fill="#F5B82E"/><rect x="45" y="52" width="9" height="9" rx="2.4" fill="#F5B82E"/>' +
+      '<rect x="63" y="52" width="9" height="9" rx="2.4" fill="#4A7BC4"/><rect x="63" y="63" width="9" height="9" rx="2.4" fill="#4A7BC4"/>' +
+      '<rect x="74" y="63" width="9" height="9" rx="2.4" fill="#4A7BC4"/>';
+    return out;
+  }
+};
+
+function gamePreviewHtml(key) {
+  var fn = GAME_PREVIEWS[key];
+  if (fn) return previewSvg(fn());
+  /* 앞으로 게임이 더 늘어도 그림이 비지 않도록 두는 기본 폴백 */
+  return previewSvg(
+    '<rect x="12" y="10" width="60" height="40" rx="11" fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.3)"/>' +
+    '<circle cx="30" cy="30" r="7" fill="#F5B82E"/>' +
+    '<circle cx="44" cy="30" r="7" fill="rgba(255,255,255,.4)"/>' +
+    '<circle cx="58" cy="30" r="7" fill="rgba(255,255,255,.22)"/>' +
+    '<text x="42" y="62" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,.6)">NEW GAME</text>'
+  );
+}
+
 function hubHtml(stats) {
+  var total = BRAIN_GAMES.length;
+  var goal = stats.todayGoal || Math.min(4, total);
   var cards = BRAIN_GAMES.map(function (g) {
     var best = stats.bestByGame[g.key];
     var latest = stats.latestByGame[g.key];
     var doneToday = Boolean(stats.todayGames[g.key]);
     return '<button type="button" class="bg-game-card' + (doneToday ? ' is-done' : '') + '" data-game="' + esc(g.key) + '">' +
-      '<span class="bg-game-ico tone-' + esc(g.tone) + '">' + icon(g.ico, 20) + '</span>' +
+      '<span class="bg-game-thumb tone-' + esc(g.tone) + '">' + gamePreviewHtml(g.key) + '</span>' +
       '<span class="bg-game-text">' +
         '<span class="bg-game-area">' + esc(g.area) + '</span>' +
-        '<strong>' + esc(g.title) + '</strong>' +
+        '<span class="bg-game-title-row"><strong>' + esc(g.title) + '</strong>' +
+          (doneToday ? '<span class="bg-done">' + icon('check', 11) + '오늘 완료</span>' : '') +
+        '</span>' +
         '<span class="bg-game-sub">' + esc(g.desc) + '</span>' +
         '<span class="bg-game-meta">' +
           '<span class="bg-game-best">' + (best ? '최고 ' + brainGameScoreText(g.key, best.score) : '첫 기록 도전') + '</span>' +
           (latest ? '<span class="bg-game-latest">최근 ' + brainGameScoreText(g.key, latest.score) + '</span>' : '') +
         '</span>' +
       '</span>' +
-      (doneToday
-        ? '<span class="bg-done">' + icon('check', 12) + '오늘 완료</span>'
-        : '<span class="bg-play-ico">' + icon('chevronRight', 16) + '</span>') +
+      '<span class="bg-play-ico">' + icon('chevronRight', 16) + '</span>' +
     '</button>';
   }).join('');
 
-  var total = BRAIN_GAMES.length;
   return '<div class="section-head"><h2 class="section-title">' + total + '종 두뇌게임</h2>' +
       '<div class="section-action bg-hub-tools"><span class="muted small">자유롭게 · 몇 번이든</span>' +
         sfxToggleHtml('bg-sfx-hub') + '</div></div>' +
     '<div class="bg-games">' + cards + '</div>' +
-    '<p class="bg-guide">게임은 골라서 몇 번이든 즐길 수 있어요. 오늘 ' + total + '종을 모두 하면 하루 챌린지가 완성됩니다.</p>';
+    '<p class="bg-guide">게임은 골라서 몇 번이든 즐길 수 있어요. 아무 게임이나 ' + goal + '종을 하면 오늘 챌린지가 완성됩니다.</p>';
 }
 
 function resultHtml(key, meta, result, isRecord, stats, saveFailed) {
   var best = stats.bestByGame[key];
   var latest = stats.latestByGame[key];
   var total = stats.gameCount || BRAIN_GAMES.length;
+  var goal = stats.todayGoal || Math.min(4, total);
   var accuracyLabel = key === 'stroop_color' ? '정답률' : '정확도';
   var note = saveFailed
     ? '기록 저장에 실패했습니다. 잠시 후 다시 시도해 주세요.'
@@ -161,7 +293,7 @@ function resultHtml(key, meta, result, isRecord, stats, saveFailed) {
       (result.accuracy === null || result.accuracy === undefined
         ? ''
         : '<div class="bg-result-row"><span>' + accuracyLabel + '</span><strong>' + Number(result.accuracy) + '%</strong></div>') +
-      '<div class="bg-result-row"><span>오늘 챌린지</span><strong>' + stats.todayCount + '/' + total + ' 완료</strong></div>' +
+      '<div class="bg-result-row"><span>오늘 챌린지</span><strong>' + Math.min(stats.todayCount, goal) + '/' + goal + ' 완료</strong></div>' +
       '<div class="bg-result-row"><span>연속 플레이</span><strong>' + stats.streakDays + '일</strong></div>' +
     '</div>' +
     '<p class="bg-save-note">' + esc(note) + '</p>' +
@@ -1363,6 +1495,414 @@ function runCooking(playEl, done) {
   }, 700);
 }
 
+/* ------------- 6) 블록 블라스트 (block_blast · 8×8 블록 퍼즐)
+   · 아래 3개 조각 중 하나를 골라 8×8 보드에 놓고, 가로·세로 8칸이 꽉 차면 줄이 지워집니다.
+   · 점수 = 놓은 칸 수 × 2 + 줄 보너스(1줄 10 · 2줄 30 · 3줄 60 · 4줄 이상 100) + 콤보 보너스
+   · 3조각을 모두 쓰면 새 조각 3개를 받고, 남은 조각 중 하나도 놓을 곳이 없으면 결과를 저장합니다. */
+var BB_N = 8;
+var BB_CELL_POINTS = 2;
+var BB_LINE_POINTS = [0, 10, 30, 60, 100];
+var BB_COLORS = ['c1', 'c2', 'c3', 'c4', 'c5'];
+var BB_POOL = [
+  { w: 1, h: 1, cells: [[0, 0]] },
+  { w: 2, h: 1, cells: [[0, 0], [0, 1]] },
+  { w: 1, h: 2, cells: [[0, 0], [1, 0]] },
+  { w: 3, h: 1, cells: [[0, 0], [0, 1], [0, 2]] },
+  { w: 1, h: 3, cells: [[0, 0], [1, 0], [2, 0]] },
+  { w: 4, h: 1, cells: [[0, 0], [0, 1], [0, 2], [0, 3]] },
+  { w: 1, h: 4, cells: [[0, 0], [1, 0], [2, 0], [3, 0]] },
+  { w: 2, h: 2, cells: [[0, 0], [0, 1], [1, 0], [1, 1]] },
+  /* ㄱ자 3칸 — 네 방향 */
+  { w: 2, h: 2, cells: [[0, 0], [0, 1], [1, 0]] },
+  { w: 2, h: 2, cells: [[0, 0], [0, 1], [1, 1]] },
+  { w: 2, h: 2, cells: [[0, 0], [1, 0], [1, 1]] },
+  { w: 2, h: 2, cells: [[0, 1], [1, 0], [1, 1]] },
+  /* ㄴ자 4칸 */
+  { w: 3, h: 2, cells: [[0, 0], [0, 1], [0, 2], [1, 2]] },
+  { w: 3, h: 2, cells: [[0, 0], [0, 1], [0, 2], [1, 0]] },
+  { w: 2, h: 3, cells: [[0, 0], [1, 0], [2, 0], [2, 1]] },
+  { w: 2, h: 3, cells: [[0, 1], [1, 1], [2, 0], [2, 1]] },
+  { w: 3, h: 2, cells: [[0, 0], [0, 1], [1, 0], [2, 0]] },
+  { w: 3, h: 2, cells: [[0, 0], [0, 1], [1, 1], [2, 1]] },
+  { w: 2, h: 3, cells: [[0, 0], [1, 0], [1, 1], [1, 2]] },
+  { w: 2, h: 3, cells: [[0, 2], [1, 0], [1, 1], [1, 2]] },
+  /* T자 · S자 · Z자 */
+  { w: 3, h: 2, cells: [[0, 0], [0, 1], [0, 2], [1, 1]] },
+  { w: 3, h: 2, cells: [[0, 1], [1, 0], [1, 1], [1, 2]] },
+  { w: 2, h: 3, cells: [[0, 0], [1, 0], [1, 1], [2, 1]] },
+  { w: 2, h: 3, cells: [[0, 1], [1, 0], [1, 1], [2, 0]] },
+  /* 3×2 큰 블록 */
+  { w: 3, h: 2, cells: [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2]] }
+];
+
+function bbMakePiece(def) {
+  return {
+    w: def.w,
+    h: def.h,
+    cells: def.cells,
+    color: BB_COLORS[Math.floor(Math.random() * BB_COLORS.length)],
+    used: false
+  };
+}
+
+function bbRandomPiece(smallOnly) {
+  var pool = BB_POOL;
+  if (smallOnly) {
+    pool = BB_POOL.filter(function (d) { return d.cells.length <= 3; });
+  }
+  return bbMakePiece(pool[Math.floor(Math.random() * pool.length)]);
+}
+
+function runBlockBlast(playEl, done) {
+  var grid = [];
+  for (var gi = 0; gi < BB_N * BB_N; gi++) grid.push('');
+  var pieces = [];
+  var selected = -1;
+  var score = 0;
+  var linesTotal = 0;
+  var combo = 0;
+  var locked = false;
+  var finished = false;
+  var clearing = {};
+  var ghost = null;
+
+  var cellsHtml = '';
+  for (var b = 0; b < BB_N * BB_N; b++) {
+    cellsHtml += '<button type="button" class="bg-bb-cell" data-idx="' + b + '" aria-label="' +
+      (Math.floor(b / BB_N) + 1) + '행 ' + (b % BB_N + 1) + '열"></button>';
+  }
+
+  playEl.innerHTML =
+    '<div class="bg-hud">' +
+      '<span class="bg-hud-item">점수<strong id="bg-bb-score">0</strong></span>' +
+      '<span class="bg-hud-item">지운 줄<strong id="bg-bb-lines">0</strong></span>' +
+      '<span class="bg-hud-item">콤보<strong id="bg-bb-combo">x0</strong></span>' +
+    '</div>' +
+    '<div class="bg-bb-board" id="bg-bb-board">' + cellsHtml + '</div>' +
+    '<div class="bg-bb-tray" id="bg-bb-tray"></div>' +
+    '<p class="bg-status" id="bg-status">조각을 고르고 보드에 놓아 보세요.</p>';
+
+  var boardEl = playEl.querySelector('#bg-bb-board');
+  var trayEl = playEl.querySelector('#bg-bb-tray');
+  var statusEl = playEl.querySelector('#bg-status');
+  var scoreEl = playEl.querySelector('#bg-bb-score');
+  var linesEl = playEl.querySelector('#bg-bb-lines');
+  var comboEl = playEl.querySelector('#bg-bb-combo');
+  var cellEls = boardEl.querySelectorAll('.bg-bb-cell');
+
+  function at(r, c) { return r * BB_N + c; }
+
+  function fits(piece, r0, c0) {
+    if (r0 < 0 || c0 < 0 || r0 + piece.h > BB_N || c0 + piece.w > BB_N) return false;
+    for (var i = 0; i < piece.cells.length; i++) {
+      if (grid[at(r0 + piece.cells[i][0], c0 + piece.cells[i][1])]) return false;
+    }
+    return true;
+  }
+
+  function fitsAnywhere(piece) {
+    for (var r = 0; r + piece.h <= BB_N; r++) {
+      for (var c = 0; c + piece.w <= BB_N; c++) {
+        if (fits(piece, r, c)) return true;
+      }
+    }
+    return false;
+  }
+
+  function remaining() {
+    var out = [];
+    for (var i = 0; i < pieces.length; i++) {
+      if (pieces[i] && !pieces[i].used) out.push(i);
+    }
+    return out;
+  }
+
+  function hasAnyMove() {
+    var left = remaining();
+    for (var i = 0; i < left.length; i++) {
+      if (fitsAnywhere(pieces[left[i]])) return true;
+    }
+    return false;
+  }
+
+  function filledCount() {
+    var n = 0;
+    for (var i = 0; i < grid.length; i++) if (grid[i]) n += 1;
+    return n;
+  }
+
+  /* --------------------------------------------------------- 그리기 */
+  function paintBoard() {
+    for (var i = 0; i < cellEls.length; i++) {
+      var cls = 'bg-bb-cell';
+      if (grid[i]) cls += ' is-filled ' + grid[i];
+      if (clearing[i]) cls += ' is-clearing';
+      if (ghost && ghost.map[i]) cls += ghost.ok ? ' is-ghost' : ' is-ghost-bad';
+      cellEls[i].className = cls;
+    }
+  }
+
+  function paintHud() {
+    scoreEl.textContent = String(score);
+    linesEl.textContent = String(linesTotal);
+    comboEl.textContent = 'x' + combo;
+  }
+
+  function pieceMiniGrid(piece) {
+    var out = '';
+    for (var r = 0; r < piece.h; r++) {
+      for (var c = 0; c < piece.w; c++) {
+        var on = false;
+        for (var i = 0; i < piece.cells.length; i++) {
+          if (piece.cells[i][0] === r && piece.cells[i][1] === c) { on = true; break; }
+        }
+        out += '<span class="bg-bb-mini' + (on ? ' is-on ' + piece.color : ' is-off') + '"></span>';
+      }
+    }
+    return '<span class="bg-bb-mini-grid" style="grid-template-columns:repeat(' + piece.w + ',1fr)">' + out + '</span>';
+  }
+
+  function paintTray() {
+    var html = '';
+    for (var i = 0; i < 3; i++) {
+      var p = pieces[i];
+      if (!p || p.used) {
+        html += '<span class="bg-bb-slot is-used" aria-hidden="true"></span>';
+        continue;
+      }
+      html += '<button type="button" class="bg-bb-slot' + (selected === i ? ' is-selected' : '') + '"' +
+        ' data-piece="' + i + '" aria-label="블록 조각 ' + (i + 1) + ' — ' + p.cells.length + '칸"' +
+        ' aria-pressed="' + (selected === i ? 'true' : 'false') + '">' + pieceMiniGrid(p) + '</button>';
+    }
+    trayEl.innerHTML = html;
+  }
+
+  /* ------------------------------------------------------- 새 조각 */
+  function trayFits(list) {
+    for (var i = 0; i < list.length; i++) {
+      if (fitsAnywhere(list[i])) return true;
+    }
+    return false;
+  }
+
+  function newTray() {
+    var tight = filledCount() >= 34;
+    var out = [];
+    for (var i = 0; i < 3; i++) out.push(bbRandomPiece(tight && i === 0));
+    var guard = 0;
+    while (!trayFits(out) && guard < 40) {
+      out[guard % 3] = bbRandomPiece(guard < 24);
+      guard += 1;
+    }
+    return out;
+  }
+
+  /* --------------------------------------------------------- 놓기 */
+  function selectPiece(i) {
+    if (locked || finished) return;
+    if (!pieces[i] || pieces[i].used) return;
+    if (selected === i) return;
+    selected = i;
+    sfx.select();
+    paintTray();
+    statusEl.textContent = '보드에서 놓을 칸을 눌러 주세요.';
+  }
+
+  function placePiece(p, r0, c0) {
+    locked = true;
+    ghost = null;
+    for (var i = 0; i < p.cells.length; i++) {
+      grid[at(r0 + p.cells[i][0], c0 + p.cells[i][1])] = p.color;
+    }
+    p.used = true;
+    selected = -1;
+    score += p.cells.length * BB_CELL_POINTS;
+    paintBoard();
+    paintTray();
+    paintHud();
+    sfx.place();
+    later(function () { resolveLines(); }, 110);
+  }
+
+  function resolveLines() {
+    if (finished) return;
+    var rows = [];
+    var cols = [];
+    var r, c;
+    for (r = 0; r < BB_N; r++) {
+      var rowFull = true;
+      for (c = 0; c < BB_N; c++) {
+        if (!grid[at(r, c)]) { rowFull = false; break; }
+      }
+      if (rowFull) rows.push(r);
+    }
+    for (c = 0; c < BB_N; c++) {
+      var colFull = true;
+      for (r = 0; r < BB_N; r++) {
+        if (!grid[at(r, c)]) { colFull = false; break; }
+      }
+      if (colFull) cols.push(c);
+    }
+    var count = rows.length + cols.length;
+    if (!count) {
+      combo = 0;
+      paintHud();
+      afterPlace();
+      return;
+    }
+
+    combo += 1;
+    linesTotal += count;
+    var base = BB_LINE_POINTS[Math.min(BB_LINE_POINTS.length - 1, count)] || 0;
+    var bonus = base + (combo > 1 ? (combo - 1) * 5 : 0);
+    score += bonus;
+    clearing = {};
+    for (var i = 0; i < rows.length; i++) {
+      for (c = 0; c < BB_N; c++) clearing[at(rows[i], c)] = true;
+    }
+    for (var j = 0; j < cols.length; j++) {
+      for (r = 0; r < BB_N; r++) clearing[at(r, cols[j])] = true;
+    }
+    paintBoard();
+    paintHud();
+    sfx.clear(count);
+    statusEl.textContent = (count > 1 ? count + '줄 동시 클리어! ' : '줄 클리어! ') + '+' + bonus + '점' +
+      (combo > 1 ? ' · 콤보 x' + combo : '');
+
+    later(function () {
+      for (var k = 0; k < grid.length; k++) {
+        if (clearing[k]) grid[k] = '';
+      }
+      clearing = {};
+      paintBoard();
+      afterPlace();
+    }, 340);
+  }
+
+  function afterPlace() {
+    if (finished) return;
+    var left = remaining();
+    if (!left.length) {
+      pieces = newTray();
+      selected = 0;
+      paintTray();
+      sfx.refill();
+      later(function () {
+        if (finished) return;
+        if (!hasAnyMove()) { gameOver(); return; }
+        locked = false;
+        if (remaining().length === 1) selected = remaining()[0];
+        paintTray();
+        statusEl.textContent = '새 조각 3개! 이어서 놓아 보세요.';
+      }, 240);
+      return;
+    }
+    if (!hasAnyMove()) { gameOver(); return; }
+    locked = false;
+    if (remaining().length === 1) {
+      selected = remaining()[0];
+      paintTray();
+      statusEl.textContent = '마지막 조각이에요. 보드에서 놓을 칸을 눌러 주세요.';
+      return;
+    }
+    if (selected < 0 || !pieces[selected] || pieces[selected].used) {
+      selected = remaining()[0];
+    }
+    paintTray();
+    statusEl.textContent = '다음 조각을 골라 보드에 놓아 보세요.';
+  }
+
+  function gameOver() {
+    if (finished) return;
+    finished = true;
+    locked = true;
+    ghost = null;
+    paintBoard();
+    clearAllTimers();
+    statusEl.textContent = '더 이상 놓을 곳이 없어요! ' + score + '점으로 기록을 저장합니다.';
+    sfx.close();
+    later(function () {
+      done({ game_key: 'block_blast', score: score, metric_ms: null, accuracy: null });
+    }, 950);
+  }
+
+  /* --------------------------------------------------------- 입력 */
+  function onTray(ev) {
+    var el = ev.target && ev.target.closest ? ev.target.closest('[data-piece]') : null;
+    if (!el) return;
+    selectPiece(Number(el.getAttribute('data-piece')));
+  }
+
+  function showGhost(idx) {
+    if (selected < 0 || locked || finished) return;
+    var p = pieces[selected];
+    if (!p || p.used) return;
+    var r0 = Math.floor(idx / BB_N);
+    var c0 = idx % BB_N;
+    var map = {};
+    for (var i = 0; i < p.cells.length; i++) {
+      var r = r0 + p.cells[i][0];
+      var c = c0 + p.cells[i][1];
+      if (r < BB_N && c < BB_N) map[at(r, c)] = true;
+    }
+    ghost = { map: map, ok: fits(p, r0, c0) };
+    paintBoard();
+  }
+
+  function clearGhost() {
+    if (!ghost) return;
+    ghost = null;
+    paintBoard();
+  }
+
+  function onBoard(ev) {
+    if (finished) return;
+    var el = ev.target && ev.target.closest ? ev.target.closest('.bg-bb-cell') : null;
+    if (!el) return;
+    if (locked) return;
+    var idx = Number(el.getAttribute('data-idx'));
+    if (selected < 0) {
+      sfx.nope();
+      statusEl.textContent = '아래 블록 조각을 먼저 골라 주세요.';
+      return;
+    }
+    var p = pieces[selected];
+    var r0 = Math.floor(idx / BB_N);
+    var c0 = idx % BB_N;
+    if (!p || !fits(p, r0, c0)) {
+      sfx.nope();
+      el.classList.remove('is-blocked');
+      void el.offsetWidth;
+      el.classList.add('is-blocked');
+      later(function () { el.classList.remove('is-blocked'); }, 360);
+      statusEl.textContent = '여기에는 이 조각을 놓을 수 없어요. 다른 칸을 눌러 주세요.';
+      return;
+    }
+    placePiece(p, r0, c0);
+  }
+
+  trayEl.addEventListener('click', onTray);
+  boardEl.addEventListener('click', onBoard);
+  boardEl.addEventListener('pointermove', function (ev) {
+    if (ev.pointerType && ev.pointerType !== 'mouse') return;
+    var el = ev.target && ev.target.closest ? ev.target.closest('.bg-bb-cell') : null;
+    if (el) showGhost(Number(el.getAttribute('data-idx')));
+  });
+  boardEl.addEventListener('pointerleave', clearGhost);
+
+  /* --------------------------------------------------------- 시작 */
+  pieces = newTray();
+  selected = 0;
+  paintBoard();
+  paintTray();
+  paintHud();
+  later(function () {
+    if (finished) return;
+    statusEl.textContent = '조각을 고르고 보드에 놓아 보세요. 가로·세로 8칸을 채우면 줄이 지워집니다!';
+    sfx.start();
+  }, 500);
+}
+
 /* ------------------------------------------------------------- 결과 저장 */
 function finishGame(playEl, key, meta, result, logs, refreshBoard, showHub, restart) {
   var before = computeBrainGameStats(logs);
@@ -1411,7 +1951,7 @@ export async function render(ctx) {
     '<header class="page-head">' +
       '<span class="page-eyebrow">' + icon('gamepad', 16) + ' BRAIN GAME</span>' +
       '<h1 class="page-title">오늘의 두뇌 워밍업</h1>' +
-      '<p class="page-desc">기억력 · 집중력 · 주의전환 · 집중 조준 · 멀티태스킹 5종을 1~2분씩 가볍게. 매일 한 판이면 기록이 이어집니다.</p>' +
+      '<p class="page-desc">기억 · 집중 · 주의전환 · 조준 · 멀티태스킹 · 공간지각 ' + BRAIN_GAMES.length + '종을 1~2분씩 가볍게. 매일 한 판이면 기록이 이어집니다.</p>' +
     '</header>' +
 
     '<div id="bg-board" class="bg-board"></div>' +
@@ -1502,6 +2042,7 @@ function mountGames(el, logs) {
     else if (key === 'number_grid') runNumberGrid(playEl, done);
     else if (key === 'archery_target') runArchery(playEl, done);
     else if (key === 'order_cooking') runCooking(playEl, done);
+    else if (key === 'block_blast') runBlockBlast(playEl, done);
   }
 
   el.addEventListener('pointerdown', function () { unlockSfx(); }, { once: true });

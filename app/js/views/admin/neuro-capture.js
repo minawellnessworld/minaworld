@@ -1,8 +1,8 @@
 /* 관리자 → 뉴로피드백: NeuroBrain 화면 캡처 자동 입력 (v2.0.20)
    - 이미지는 브라우저 안에서만 OCR (외부 전송 없음)
    - 인식된 회차를 고르면 회차 기록 입력 폼을 채우고, 단계별 세부 기록을 아래 표에서 수정 */
-import { recognizeNeuroCapture, preloadOcr } from '../../capture-ocr.js?v=2.0.29';
-import { esc, noticeBox, toast } from '../../ui.js?v=2.0.29';
+import { recognizeNeuroCapture, preloadOcr } from '../../capture-ocr.js?v=2.0.30';
+import { esc, noticeBox, toast } from '../../ui.js?v=2.0.30';
 
 export function captureSectionHtml() {
   return '<section class="admin-section" id="capture-section">' +

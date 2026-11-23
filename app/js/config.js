@@ -43,7 +43,7 @@ export var CONFIG = {
   SUPABASE_SCHEMA: 'public',
   STORAGE_BUCKET: 'brain-results',
   GA_MEASUREMENT_ID: 'G-TTMVKBHNZM',
-  APP_VERSION: '2.0.29',
+  APP_VERSION: '2.0.30',
   SCHEMA_VERSION: 'v2',
   SITE_URL: 'https://www.minaworld.co.kr',
   CONTACT_EMAIL: 'minawellnessworld@gmail.com',
@@ -176,6 +176,18 @@ export var BRAIN_GAMES = [
     direction: 'higher',
     unit: '점',
     ico: 'utensils',
+    tone: 'navy'
+  },
+  {
+    key: 'block_blast',
+    title: '블록 블라스트',
+    en: 'BLOCK BLAST',
+    area: '공간지각 · 시각구성',
+    desc: '블록 조각 3개를 8×8 보드에 맞춰 가로·세로 줄 지우기',
+    howto: '아래 블록 조각 하나를 고른 뒤 8×8 보드 빈칸을 눌러 놓으세요. 가로·세로 줄이 꽉 차면 줄이 지워집니다. 3개 조각을 다 놓으면 새 조각이 나오고, 더 이상 놓을 곳이 없으면 끝납니다.',
+    direction: 'higher',
+    unit: '점',
+    ico: 'grid',
     tone: 'navy'
   }
 ];

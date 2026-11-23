@@ -2684,17 +2684,27 @@ body.portal-mode .mode-banner { display: none; }
 .bg-guest > span { flex: 1; }
 .bg-guest .btn { flex: 0 0 auto; }
 
-/* 게임 선택 카드 */
+/* 게임 선택 카드 — 예시 그림(미니 프리뷰) + 제목/설명/기록 */
 .bg-games { display: flex; flex-direction: column; gap: 10px; }
 .bg-game-card {
-  position: relative; display: flex; align-items: flex-start; gap: 12px; width: 100%;
-  padding: 14px; text-align: left; cursor: pointer; font-family: inherit;
+  position: relative; display: flex; align-items: center; gap: 11px; width: 100%;
+  padding: 11px; text-align: left; cursor: pointer; font-family: inherit;
   border-radius: var(--radius-md); border: 1px solid var(--line); background: var(--white);
-  box-shadow: var(--shadow-sm); transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease);
+  box-shadow: var(--shadow-sm); transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease), border-color 0.16s var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
 .bg-game-card:active { transform: scale(0.985); box-shadow: var(--shadow-md); }
 .bg-game-card.is-done { border-color: #DCEBE2; }
+.bg-game-thumb {
+  position: relative; display: block; flex: 0 0 auto; width: 84px; height: 68px;
+  border-radius: 14px; overflow: hidden; background: var(--box);
+  box-shadow: inset 0 0 0 1px rgba(7, 13, 30, 0.06);
+}
+.bg-game-thumb-svg { display: block; width: 100%; height: 100%; }
+.bg-game-thumb.tone-navy { background: linear-gradient(150deg, #16223F 0%, #070D1E 100%); }
+.bg-game-thumb.tone-gold { background: linear-gradient(150deg, #FBF6EA 0%, #EEE1C4 100%); }
+.bg-game-thumb.tone-yellow { background: linear-gradient(150deg, #FFF8E2 0%, #FBE4AB 100%); }
+.bg-game-thumb.tone-ivory { background: linear-gradient(150deg, #FFFFFF 0%, #EEF1F7 100%); }
 .bg-game-ico { display: grid; place-items: center; flex: 0 0 auto; width: 42px; height: 42px; border-radius: 14px; background: var(--gold-soft); color: var(--gold-dark); }
 .bg-game-ico.tone-navy { background: linear-gradient(145deg, #101A36, #070D1E); color: var(--yellow); }
 .bg-game-ico.tone-gold { background: linear-gradient(145deg, #FBF6EA, var(--gold-soft)); color: var(--gold-dark); }
@@ -2702,14 +2712,22 @@ body.portal-mode .mode-banner { display: none; }
 .bg-game-ico.tone-ivory { background: var(--box); color: var(--navy); }
 .bg-game-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
 .bg-game-area { font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; color: var(--gold-dark); }
+.bg-game-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.bg-game-title-row strong { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
 .bg-game-text strong { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
-.bg-game-sub { font-size: 11.5px; line-height: 1.45; color: var(--muted); }
-.bg-game-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; font-size: 10.5px; color: var(--muted-2); }
+.bg-game-sub { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 11.5px; line-height: 1.45; color: var(--muted); }
+.bg-game-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; font-size: 10.5px; color: var(--muted-2); }
 .bg-game-best { color: var(--navy); font-weight: 700; }
 .bg-game-latest { color: var(--muted-2); }
-.bg-done { display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto; align-self: center; padding: 4px 8px; border-radius: 999px; background: var(--green-soft); color: var(--green); font-size: 9.5px; font-weight: 800; }
+.bg-done { display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto; padding: 3px 7px; border-radius: 999px; background: var(--green-soft); color: var(--green); font-size: 9px; font-weight: 800; white-space: nowrap; }
 .bg-play-ico { align-self: center; flex: 0 0 auto; color: var(--muted-2); }
 .bg-guide { margin-top: 10px; font-size: 11px; line-height: 1.55; color: var(--muted-2); }
+
+@media (max-width: 380px) {
+  .bg-game-thumb { width: 74px; height: 60px; }
+  .bg-game-card { gap: 9px; padding: 10px; }
+  .bg-game-title-row strong, .bg-game-text strong { font-size: 14px; }
+}
 
 /* 플레이 화면 */
 .bg-stage { margin: 18px 18px 0; padding: 16px; border-radius: var(--radius-lg); background: var(--white); border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
@@ -3114,6 +3132,65 @@ body.portal-mode .mode-banner { display: none; }
   .bg-rush-order-n { font-size: 7px; }
   .bg-rush-basket .bk-ico { font-size: 16px; }
   .bg-rush-slot-n { font-size: 6.5px; }
+}
+
+/* 6) 블록 블라스트 */
+.bg-bb-board {
+  display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px;
+  width: 100%; max-width: 300px; margin: 12px auto 0; padding: 6px;
+  border-radius: 16px; background: linear-gradient(160deg, #101A36 0%, #070D1E 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), var(--shadow-sm);
+  touch-action: manipulation;
+}
+.bg-bb-cell {
+  aspect-ratio: 1 / 1; width: 100%; padding: 0; border: 0; border-radius: 6px;
+  background: rgba(255, 255, 255, 0.07); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+}
+.bg-bb-cell.is-filled { box-shadow: inset 0 -2px 0 rgba(7, 13, 30, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.32); }
+.bg-bb-cell.c1 { background: linear-gradient(160deg, #F0845F, #D2503B); }
+.bg-bb-cell.c2 { background: linear-gradient(160deg, #FFD15C, #E5A419); }
+.bg-bb-cell.c3 { background: linear-gradient(160deg, #63C6AE, #2E8B77); }
+.bg-bb-cell.c4 { background: linear-gradient(160deg, #7AA6E6, #3F6FB5); }
+.bg-bb-cell.c5 { background: linear-gradient(160deg, #B394E0, #7E5CB8); }
+.bg-bb-cell.is-ghost { background: rgba(245, 184, 46, 0.46); box-shadow: 0 0 0 2px rgba(245, 184, 46, 0.55); }
+.bg-bb-cell.is-ghost-bad { background: rgba(180, 69, 63, 0.4); box-shadow: 0 0 0 2px rgba(216, 108, 100, 0.5); }
+.bg-bb-cell.is-clearing { background: linear-gradient(160deg, #FFF4CF, #F5B82E); animation: bgBbClear 0.34s var(--ease) forwards; }
+.bg-bb-cell.is-blocked { animation: bgShake 0.36s var(--ease); }
+.bg-bb-tray {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  width: 100%; max-width: 300px; margin: 12px auto 0;
+}
+.bg-bb-slot {
+  display: grid; place-items: center; align-content: center; min-height: 62px; padding: 7px 4px;
+  border-radius: 12px; border: 1px solid var(--line); background: var(--box);
+  cursor: pointer; font-family: inherit; -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
+}
+.bg-bb-slot:active { transform: scale(0.96); }
+.bg-bb-slot.is-selected { border-color: var(--yellow-dark); background: var(--yellow-soft); box-shadow: 0 0 0 2px rgba(245, 184, 46, 0.32); }
+.bg-bb-slot.is-used { border-style: dashed; border-color: var(--line); background: transparent; cursor: default; opacity: 0.45; }
+.bg-bb-mini-grid { display: grid; gap: 2px; }
+.bg-bb-mini { display: block; width: 12px; height: 12px; border-radius: 3px; }
+.bg-bb-mini.is-off { background: transparent; }
+.bg-bb-mini.is-on.c1 { background: #E4694F; }
+.bg-bb-mini.is-on.c2 { background: #E5A419; }
+.bg-bb-mini.is-on.c3 { background: #3E9E8A; }
+.bg-bb-mini.is-on.c4 { background: #4A7BC4; }
+.bg-bb-mini.is-on.c5 { background: #8B6BC7; }
+
+@keyframes bgBbClear {
+  0% { transform: scale(1); opacity: 1; }
+  45% { transform: scale(1.14); opacity: 1; }
+  100% { transform: scale(0.25); opacity: 0; }
+}
+
+@media (max-width: 359px) {
+  .bg-bb-board { gap: 2px; padding: 5px; border-radius: 14px; }
+  .bg-bb-cell { border-radius: 5px; }
+  .bg-bb-slot { min-height: 56px; padding: 6px 3px; }
+  .bg-bb-mini { width: 10px; height: 10px; }
 }
 
 

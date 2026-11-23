@@ -6,9 +6,9 @@
      · 프로그램·기수·쿠폰·기본 게시글만 시드로 보관
      · 개인 측정 데이터는 절대 임의 생성하지 않음 (빈 상태 표시)
    ===================================================================== */
-import { CONFIG, POINT_DEFAULTS, BRAIN_GAMES, brainGameMeta } from './config.js?v=2.0.29';
-import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.29';
-import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.29';
+import { CONFIG, POINT_DEFAULTS, BRAIN_GAMES, brainGameMeta } from './config.js?v=2.0.30';
+import { ensureClient, clientSync, signedResultUrl } from './supabase.js?v=2.0.30';
+import { FALLBACK_PROGRAMS, FALLBACK_COHORTS, FALLBACK_COUPONS, FALLBACK_POSTS } from './catalog.js?v=2.0.30';
 
 export var state = {
   mode: 'local',
@@ -1375,11 +1375,15 @@ export function computeBrainGameStats(logs) {
     if (todayGames[BRAIN_GAMES[gi].key]) todayCount += 1;
   }
 
+  /* 오늘 챌린지 완주 목표 — 게임이 늘어나도 하루 부담은 4종 */
+  var todayGoal = Math.min(4, BRAIN_GAMES.length);
+
   return {
     rows: rows,
     streakDays: streakDays,
     todayGames: todayGames,
     todayCount: todayCount,
+    todayGoal: todayGoal,
     gameCount: BRAIN_GAMES.length,
     totalPlays: rows.length,
     last7Days: last7Days,

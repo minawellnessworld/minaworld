@@ -11,7 +11,7 @@
    · 새 주간 게임에서도 sfx.start() · sfx.correct() · sfx.wrong() ·
      sfx.finish() · sfx.record() 를 그대로 호출하면 됩니다.
    ===================================================================== */
-import { icon, toast } from './ui.js?v=2.0.29';
+import { icon, toast } from './ui.js?v=2.0.30';
 
 var LS_KEY = 'mina_game_sfx_v1';
 var ctx = null;
@@ -246,6 +246,28 @@ export var sfx = {
   close: function () {
     bell(880, 0, 0.5, 0.11);
     bell(659.25, 0.16, 0.8, 0.1);
+  },
+  /* 블록 블라스트 */
+  select: function () {
+    tone(760, 0, 0.07, { type: 'triangle', gain: 0.09, to: 980 });
+  },
+  place: function () {
+    tone(212, 0, 0.13, { type: 'sine', gain: 0.13, to: 132 });
+    noise(0.07, { freq: 1500, to: 600, gain: 0.045 });
+    bell(587.33, 0.02, 0.16, 0.05);
+  },
+  clear: function (lines) {
+    var n = Math.min(4, Math.max(1, Number(lines) || 1));
+    var base = 783.99 * Math.pow(2, (n - 1) / 6);
+    bell(base, 0, 0.3, 0.11);
+    bell(base * 1.25, 0.06, 0.3, 0.1);
+    bell(base * 1.5, 0.12, 0.42, 0.1);
+    if (n >= 2) bell(base * 2, 0.18, 0.55, 0.1);
+    if (n >= 3) bell(base * 2.5, 0.26, 0.6, 0.08);
+  },
+  refill: function () {
+    tone(520, 0, 0.08, { type: 'triangle', gain: 0.09, to: 700 });
+    bell(880, 0.04, 0.24, 0.08);
   }
 };
 
