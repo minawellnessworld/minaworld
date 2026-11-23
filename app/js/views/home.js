@@ -1,20 +1,20 @@
 /* S01. 홈 — 개인 회원 메인 대시보드(PART 2-2) + 오늘의 뇌 컨디션 체크인 */
-import { BRAND, MINA_MEANING, GOAL_OPTIONS, BRAIN_GAMES } from '../config.js?v=2.0.35';
+import { BRAND, MINA_MEANING, GOAL_OPTIONS, BRAIN_GAMES } from '../config.js?v=2.0.36';
 import {
   state, listWellness, addWellness, listBookings, listPosts, listResults, listPackages,
   listSessions, getPrograms, getPointSettings, isStaff, isOrgWorker,
   friendlyError, dateKey, todayStr, listBrainGameLogs, computeBrainGameStats
-} from '../store.js?v=2.0.35';
+} from '../store.js?v=2.0.36';
 import {
   listOrganizationsFiltered, listBranchesForOrg, listMyMemberships, setShareBrainResults
-} from '../store-org.js?v=2.0.35';
-import { recordConsents, logAudit } from '../store-security.js?v=2.0.35';
+} from '../store-org.js?v=2.0.36';
+import { recordConsents, logAudit } from '../store-security.js?v=2.0.36';
 import {
   icon, esc, fmtKRW, fmtDate, todayLabel, toast, emptyState, setBusy, sectionHead, go, track, noticeBox
-} from '../ui.js?v=2.0.35';
-import { requireLoginSheet } from '../booking.js?v=2.0.35';
-import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.35';
-import { shareChipButton } from '../share.js?v=2.0.35';
+} from '../ui.js?v=2.0.36';
+import { requireLoginSheet } from '../booking.js?v=2.0.36';
+import { latestSpoonArticle, spoonDateLabel } from '../spoon.js?v=2.0.36';
+import { shareChipButton } from '../share.js?v=2.0.36';
 
 var MENU = [
   { key: 'brain_check', title: 'BRAIN CHECK', sub: '뇌파측정 · 뇌기능검사 예약', ico: 'pulse', href: '#/brain-check', tone: 'navy' },

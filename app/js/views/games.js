@@ -8,12 +8,12 @@
    · 게임 개수는 config.js 의 BRAIN_GAMES 길이를 그대로 따릅니다.
    · '오늘 챌린지' 완주 목표는 Math.min(4, 게임 수) — 게임이 늘어도 하루 부담은 4종.
    ===================================================================== */
-import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.35';
+import { BRAIN_GAMES, brainGameMeta, brainGameScoreText } from '../config.js?v=2.0.36';
 import {
   state, listBrainGameLogs, saveBrainGameLog, computeBrainGameStats, friendlyError
-} from '../store.js?v=2.0.35';
-import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.35';
-import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.35';
+} from '../store.js?v=2.0.36';
+import { icon, esc, toast, go, noticeBox } from '../ui.js?v=2.0.36';
+import { sfx, unlockSfx, sfxToggleHtml, bindSfxToggles } from '../game-sfx.js?v=2.0.36';
 
 var WEEK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -848,33 +848,39 @@ function guestSvg(g) {
 
 /* 토핑 스테이션 그림 — 스텐 바트에 담긴 양상추·토마토·치즈 */
 function toppingSvg() {
-  return '<svg viewBox="0 0 56 44" class="bg-rush-topping-art" aria-hidden="true">' +
+  return '<svg viewBox="0 0 56 46" class="bg-rush-topping-art" aria-hidden="true">' +
     '<defs>' +
       '<linearGradient id="bgTopSteel" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#F5F8FC"/><stop offset=".52" stop-color="#CBD4DF"/><stop offset="1" stop-color="#87919F"/>' +
+        '<stop offset="0" stop-color="#F7FAFD"/><stop offset=".5" stop-color="#CFD7E1"/><stop offset="1" stop-color="#828C9A"/>' +
+      '</linearGradient>' +
+      '<linearGradient id="bgTopInner" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#AEBBCC"/><stop offset="1" stop-color="#E6ECF3"/>' +
       '</linearGradient>' +
       '<linearGradient id="bgTopLeaf" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#9FDFA8"/><stop offset="1" stop-color="#3C8B56"/>' +
+        '<stop offset="0" stop-color="#A6E4AE"/><stop offset="1" stop-color="#3E8C56"/>' +
       '</linearGradient>' +
     '</defs>' +
+    /* 스텐 바트 */
+    '<path d="M5 24h46c0 11.8-10 19.2-23 19.2S5 35.8 5 24Z" fill="url(#bgTopSteel)"/>' +
+    '<ellipse cx="28" cy="24" rx="23" ry="6" fill="url(#bgTopInner)" stroke="#8E99A7" stroke-width="1.1"/>' +
+    '<path d="M8.4 26c1.6 8 9.2 13.9 19.6 13.9" stroke="rgba(255,255,255,.8)" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+    /* 내용물 — 바트에 수북이 담긴 양상추·토마토·치즈 */
     '<g>' +
-      '<path d="M7.5 23c-1.4-5.2 1.6-9.6 6.6-10.6 2.6-.5 5.2.3 6.8 2.2-4.6.5-7.6 3.6-8.4 8.4Z" fill="url(#bgTopLeaf)"/>' +
-      '<path d="M15 24c-1-5.4 1.8-10 6.8-11 2.6-.5 5.2.4 6.8 2.4-4.8.4-8 3.8-8.8 8.6Z" fill="#7ACB8B"/>' +
-      '<path d="M30 22.5c-.6-5 2.4-9.2 7.2-10 2.4-.4 4.8.4 6.2 2.2-4.4.6-7.2 3.6-7.8 8Z" fill="url(#bgTopLeaf)"/>' +
-      '<path d="M41 23.5c.6-4.2 3.4-7.2 7.4-7.4 1.6 0 3.2.6 4.2 1.8-3.6.6-5.8 2.8-6.2 5.8Z" fill="#6FBF80"/>' +
-      '<circle cx="20.5" cy="18.6" r="5.4" fill="#E2564A"/>' +
-      '<circle cx="20.5" cy="18.6" r="3.5" fill="#F0806F"/>' +
-      '<circle cx="20.5" cy="18.6" r="1.5" fill="#F9B6A6" opacity=".85"/>' +
-      '<circle cx="34.5" cy="17.4" r="4.6" fill="#D94C42"/>' +
-      '<circle cx="34.5" cy="17.4" r="2.9" fill="#EF7A68"/>' +
-      '<circle cx="34.5" cy="17.4" r="1.2" fill="#F9B6A6" opacity=".85"/>' +
-      '<path d="M25 12.4 31.6 9.4l6.1 3.2-6.5 3.2Z" fill="#F7C948"/>' +
-      '<path d="M27.7 12 31.6 10.3l3.4 1.8-3.6 1.9Z" fill="#FFE07A"/>' +
+      '<path d="M8.6 25.6c-2.1-5.2-.2-10.6 4.8-12.6 3-1.2 6.1 0 7.1 2.3-4.1 1-6.3 4.2-6.6 8.5Z" fill="url(#bgTopLeaf)"/>' +
+      '<path d="M15.6 26.6c-1.7-5.7 1-11.2 6.5-12.9 3-.9 6 .3 7.4 2.6-5.1.3-8.6 4.1-9.4 9.5Z" fill="#7ECB8E"/>' +
+      '<path d="M27.4 26.2c-.9-5.5 2-10.2 7.5-11.2 2.6-.5 5.2.4 6.7 2.4-4.9.6-8 3.9-8.6 8.6Z" fill="url(#bgTopLeaf)"/>' +
+      '<path d="M38.8 27c.6-4.7 3.6-8.1 8.1-8.3 1.8 0 3.4.6 4.4 2-3.9.6-6.3 3.1-6.7 6.3Z" fill="#6FBF80"/>' +
+      '<circle cx="18.6" cy="21" r="6" fill="#E05348"/>' +
+      '<circle cx="18.6" cy="21" r="4" fill="#F27F6D"/>' +
+      '<circle cx="18.6" cy="21" r="1.8" fill="#FBB9A9"/>' +
+      '<circle cx="35" cy="20" r="5.4" fill="#D64A40"/>' +
+      '<circle cx="35" cy="20" r="3.6" fill="#EE7A67"/>' +
+      '<circle cx="35" cy="20" r="1.6" fill="#FBB9A9"/>' +
+      '<path d="M23.6 14.2 31.8 10.2l8.8 4.1-8.6 4.5Z" fill="#F6C74A"/>' +
+      '<path d="M26.8 13.8 31.8 11.2l4.7 2.2-4.7 2.4Z" fill="#FFE08A"/>' +
+      '<rect x="14.6" y="26.2" width="4.6" height="3.2" rx="1" fill="#F6C74A"/>' +
+      '<rect x="33.4" y="25.6" width="4" height="3" rx="1" fill="#FFD873"/>' +
     '</g>' +
-    '<path d="M6 22h44c0 11-9.6 18-22 18S6 33 6 22Z" fill="url(#bgTopSteel)"/>' +
-    '<ellipse cx="28" cy="22" rx="22" ry="5.6" fill="#E9EEF4" stroke="#96A1B0" stroke-width="1.1"/>' +
-    '<ellipse cx="28" cy="22" rx="19" ry="4.1" fill="#BCC5D1" opacity=".5"/>' +
-    '<path d="M9 24.4c1.4 7.4 8.6 13 19 13" stroke="rgba(255,255,255,.75)" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
   '</svg>';
 }
 
