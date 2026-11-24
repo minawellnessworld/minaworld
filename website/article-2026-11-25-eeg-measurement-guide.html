@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TTMVKBHNZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TTMVKBHNZM');
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      location.replace(location.href.replace('http:', 'https:'));
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>뇌파측정, 왜 해야 할까요? — 2채널 뇌파검사로 알 수 있는 것들 총정리 | 하루 한 스푼, 뇌과학 - MINA Wellness World</title>
+  <meta name="description" content="'집중이 안 돼요' 안에는 과열과 가라앉음이라는 정반대 두 상태가 섞여 있습니다. 기분으로는 구분되지 않는 뇌의 상태를 2채널 무선 뇌파측정으로 확인하는 이유와, 간편검사 8항목·종합검사 10항목이 각각 보여주는 것, 비침습 패시브 센서로 진행되는 측정 절차와 전후 비교 관리까지 정리했습니다." />
+  <meta name="keywords" content="뇌파측정, 뇌파검사, 2채널 뇌파, EEG, 뇌파측정 이유, 뇌파검사 항목, 기초율동, 베르거 효과, 개안 폐안 뇌파, 뇌 산만도, 세타 SMR, 좌우뇌 균형, 육체적 스트레스, 정신적 스트레스, 행동성향, 정서성향, 자기 피드백 능력, 뉴로피드백, 뇌 컨디션, 뉴로웰니스, 미나월드" />
+  <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="Vi6kKPe24ViYvS4NbUpW02Nco_04PP_qHLX9UmNT3QM" />
+  <meta name="naver-site-verification" content="b397311e6eb26e5eec40f3994740c10e6a243a4a" />
+  <link rel="canonical" href="https://www.minaworld.co.kr/article-2026-11-25-eeg-measurement-guide.html" />
+  <meta property="og:site_name" content="MINA Wellness World" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.minaworld.co.kr/article-2026-11-25-eeg-measurement-guide.html" />
+  <meta property="og:title" content="뇌파측정, 왜 해야 할까요? — 2채널 뇌파검사로 알 수 있는 것들 총정리 | 하루 한 스푼, 뇌과학 - MINA Wellness World" />
+  <meta property="og:description" content="과열된 뇌와 가라앉은 뇌는 정반대의 관리 방향이 필요합니다. 2채널 뇌파측정이 알려주는 8~10가지 지표와 측정 절차를 안내합니다." />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+    #reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(to right, #22D3EE, #FF7E95, #3CD070);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-white">
+  
+  <!-- 상단 읽기 진행률 바 -->
+  <div id="reading-bar"></div>
+
+  <!-- 헤더 / 내비게이션 바 -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/85 border-b border-white/10 transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="font-serif font-bold text-xl tracking-wider text-white group-hover:text-brand-accent transition">MINA</span>
+        <span class="text-xs uppercase tracking-widest text-brand-accent font-semibold">Wellness World</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="community.html" class="hidden sm:inline-flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          <span>📚 하루 한 스푼 뇌과학 목록</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 text-slate-300 hover:text-brand-accent transition">
+          <span>← 메인 홈으로</span>
+        </a>
+        <a href="contact.html" class="px-4 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white shadow-md shadow-brand-accent/20 transition">
+          상담/제휴 문의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 본문 영역 -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16 w-full">
+    
+    <!-- 빵부스러기 내비게이션 -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8 overflow-x-auto no-scrollbar">
+      <a href="index.html" class="hover:text-white transition">홈</a>
+      <span>/</span>
+      <a href="community.html" class="hover:text-white transition">하루 한 스푼, 뇌과학</a>
+      <span>/</span>
+      <span class="text-cyan-400 font-medium">수요일 · 뇌파측정 가이드</span>
+    </nav>
+
+    <!-- 아티클 헤더 -->
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-xs">
+        <span class="px-3 py-1 rounded-full font-bold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">수요일 · 뇌파측정 가이드</span>
+        <span class="text-slate-400">2026.11.25</span>
+        <span class="text-slate-500">·</span>
+        <span class="text-slate-400">12분 완독</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight" style="word-break: keep-all;">
+        뇌파측정, 왜 해야 할까요? — 2채널 뇌파검사로 알 수 있는 것들 총정리
+      </h1>
+      
+      <p class="text-base md:text-xl text-slate-300 font-medium leading-relaxed mb-8" style="word-break: keep-all;">
+        기분과 실제 뇌의 리듬은 자주 어긋납니다. 미나월드가 이마 좌우 두 지점에서 무엇을, 어떻게 읽는지 문의 고객분께 그대로 보내드릴 수 있게 정리했습니다
+      </p>
+
+      <!-- 작성자 정보 -->
+      <div class="flex items-center gap-4 py-4 px-5 rounded-2xl bg-brand-card/70 border border-white/10">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center text-lg font-bold text-white shadow-md">
+          M
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white flex items-center gap-2">
+            이미나 대표
+            <span class="text-[11px] font-normal text-slate-400">| 뇌교육상담사 · MINA Wellness World</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            뇌과학 기반 뉴로웰니스 솔루션과 신체 움직임을 결합하여 건강한 뇌 컨디션을 만듭니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 핵심 요약 콜아웃 박스 -->
+      <div class="mt-8 p-6 rounded-2xl bg-brand-navy border-l-4 border-cyan-400 border-r border-t border-b border-white/10 card-glow">
+        <div class="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider mb-2">
+          <span>💡 30초 핵심 요약 (Executive Summary)</span>
+        </div>
+        <p class="text-sm text-slate-200 leading-relaxed">
+          우리는 대개 <strong class="text-white">"요즘 집중이 안 돼요"</strong>라고 말하지만, 그 안에는 정반대의 두 상태가 섞여 있습니다. 뇌가 긴장으로 굳어 <strong class="text-white">과열된 상태</strong>(빠른 베타파 과다·과각성)와, 각성이 가라앉아 <strong class="text-white">멍한 상태</strong>(세타파 과다·저각성)입니다. 두 상태는 필요한 관리 방향도 정반대인데, 우리의 기분은 이 둘을 잘 구분해 주지 않습니다. <strong class="text-white">뇌파측정</strong>은 두피에 가볍게 대는 패시브 센서로 뇌가 스스로 내는 미세한 전기 리듬을 읽어, 지금 내 뇌가 어느 대역에서 어떤 상태로 머무는지를 보여줍니다. 미나월드는 이마 좌우 두 지점(<strong class="text-white">2채널</strong>)에서 눈을 뜬 상태·감은 상태·집중 과제 중의 파형을 비교해 <strong class="text-white">뇌 활용 능력·뇌파의 안정성·뇌 산만도·좌우뇌 균형·육체적 스트레스·정신적 스트레스·행동성향·정서성향</strong>(간편검사 8항목)을, 종합검사에서는 <strong class="text-white">기초율동·개안/폐안 변화·자기 피드백 능력</strong>까지 10항목으로 정리합니다. 이것은 점수를 매기는 진단이 아니라, 훈련의 출발선을 정하는 <strong class="text-white">객관적 기준선</strong>입니다.
+        </p>
+      </div>
+
+      <div class="mt-4 p-4 rounded-2xl bg-cyan-500/5 border border-cyan-400/25">
+        <p class="text-xs text-slate-300 leading-relaxed">
+          🙋 <strong class="text-white">이 글은 뇌파측정·뉴로피드백을 문의하신 분께 카카오톡·문자·링크 복사로 그대로 보내드릴 수 있는 안내서입니다.</strong> 궁금한 점은 편하게 <a href="contact.html" class="text-cyan-300 hover:underline">문의</a>로 이어 주세요.
+        </p>
+      </div>
+    </header>
+
+    <!-- 상세 본문 -->
+    <article class="mb-16">
+      <div class="prose prose-invert max-w-none text-slate-300 space-y-8 text-base leading-relaxed">
+        
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-cyan-400">01.</span> 왜 느낌과 의지가 아니라 뇌파를 재야 하는가
+          </h2>
+          <p>
+            상담을 하다 보면 거의 같은 문장을 두 가지 다른 표정으로 듣습니다. 한 분은 어깨를 세운 채 <strong class="text-white">"머리가 계속 돌아가서 잠이 안 와요"</strong>라고 말하고, 다른 분은 몸을 의자 깊이 기댄 채 <strong class="text-white">"앉아만 있으면 머리가 하얘져요"</strong>라고 말합니다. 표현은 비슷한데 몸이 보내는 신호는 정반대입니다.
+          </p>
+          <p>
+            뇌의 각성이 위로 치우친 상태를 <strong class="text-white">과각성</strong>이라고 합니다. 빠른 베타파(15~30Hz)가 과하게 올라오고 근육의 미세한 긴장이 그 파형에 그대로 섞여 들어옵니다. 턱과 어깨가 굳고, 생각이 빨리 감기고, 하던 일을 자꾸 다른 일로 갈아타고, 밤에 몸은 피곤한데 머리는 깨어 있는 상태입니다. 반대로 각성이 아래로 가라앉은 상태는 <strong class="text-white">저각성</strong>입니다. 느린 세타파(4~8Hz) 쪽으로 무게가 실리면서, 앉아 있는데 눈꺼풀이 무겁고 같은 문장을 세 번 읽고, 무엇을 하려고 했는지 잊고, 의욕이 잘 올라오지 않습니다.
+          </p>
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+            <h4 class="text-sm font-bold text-cyan-300 mb-2">🌀 같은 '집중이 안 됨'인데 방향은 반대입니다</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>과열된 뇌에게 필요한 것:</strong> 자극을 줄이고, 호흡을 길게 빼고, 턱과 어깨의 힘을 빼고, 입력을 잠시 끊는 일. 여기에 각성 자극(카페인·강한 빛·빠른 영상)을 더하면 더 굳습니다.</li>
+              <li><strong>가라앉은 뇌에게 필요한 것:</strong> 빛과 움직임으로 각성을 올리고, 짧은 대근육 활동을 끼우고, 잠의 양과 시각을 먼저 고치는 일. 여기에 이완만 더하면 더 멍해집니다.</li>
+              <li><strong>그래서 기준선이 필요합니다:</strong> 내 뇌가 어느 쪽으로 기울었는지 모르는 채로 "집중력을 높이는 법"을 적용하면, 절반의 경우에는 정확히 반대 방향으로 밀게 됩니다.</li>
+            </ul>
+          </div>
+          <p>
+            그런데 이 구분을 <strong class="text-white">느낌으로 알아내기는 생각보다 어렵습니다</strong>. 우리가 "요즘 좀 힘들다"고 말할 때의 그 느낌은, 몸에서 일어난 일을 실시간으로 읽어낸 값이라기보다 이미 지나간 상태를 정리해 붙인 요약본에 가깝습니다. 실제로 주관적으로 보고한 스트레스 수준과 생리적 각성 지표가 늘 같은 방향으로 움직이지는 않는다는 것은 오래 관찰된 사실입니다. 몸의 신호를 읽어내는 정확도에도 사람마다 차이가 큽니다. 그래서 <strong class="text-white">"그럭저럭 괜찮아요"라고 답한 분의 턱이 이미 굳어 있는 경우</strong>가 흔합니다.
+          </p>
+          <p>
+            의지로 밀어붙이는 방식에도 한계가 있습니다. 스스로를 억누르고 집중하려는 시도는 전전두엽의 자원을 쓰는 값비싼 조작입니다. 내 상태가 어떤지 모른 채 의지로만 밀면, 그 자원이 먼저 닳아서 오히려 저녁의 판단력이 떨어집니다. <strong class="text-white">뇌파측정은 이 두 가지를 대신합니다.</strong> 느낌이 놓치는 것을 숫자로 받아 적고, 의지가 아니라 리듬을 조절하는 쪽으로 방향을 틀어 줍니다.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">장면 1</span>
+              <h4 class="text-base font-bold text-white mb-2">쉬었는데 더 피곤하다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                주말에 누워만 있었는데 월요일이 더 무겁습니다. 과열된 뇌는 가만히 눕기만 해서는 잘 내려가지 않습니다. 이완에도 '방향'이 필요합니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">장면 2</span>
+              <h4 class="text-base font-bold text-white mb-2">집중이 안 되는 두 얼굴</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                어떤 날은 안절부절하고 어떤 날은 손이 안 움직입니다. 같은 사람에게서도 이 두 상태가 번갈아 나타나기 때문에, 몸의 느낌만으로는 어느 쪽인지 헷갈립니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">장면 3</span>
+              <h4 class="text-base font-bold text-white mb-2">노력할수록 굳는다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                더 집중하려고 악을 쓰면 어깨와 턱이 먼저 굳고, 그 긴장이 뇌파에 빠른 파로 섞여 들어와 실제 수행이 흔들립니다. '애쓰는 긴장'은 집중과 다릅니다.
+              </p>
+            </div>
+          </div>
+
+          <p>
+            정리하면 뇌파측정은 세 가지를 위한 도구입니다. <strong class="text-white">첫째</strong>, 내가 지금 과열 쪽인지 가라앉은 쪽인지 구분하는 일. <strong class="text-white">둘째</strong>, 그 상태를 생활 습관(수면·카페인·호흡·움직임)과 연결해 설명하는 일. <strong class="text-white">셋째</strong>, 4주 뒤에 같은 조건으로 다시 재서 <strong class="text-white">변화를 눈으로 확인하는 일</strong>입니다. 세 번째가 특히 중요합니다. 훈련은 비교가 있어야 의미가 생기고, 비교는 기준선이 있어야 가능하기 때문입니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-cyan-400">02.</span> 2채널 뇌파측정으로 알 수 있는 것들
+          </h2>
+          <p>
+            뇌는 수십억 개 신경세포가 동시에 주고받는 전기 신호로 움직입니다. 그 신호가 두피까지 도달하면 아주 작은 전위차로 남습니다. 뇌파측정(EEG)은 이 미세한 전위를 증폭해 <strong class="text-white">주파수 대역별로 나누어</strong> 읽는 방법입니다. 대역마다 대략 이런 의미가 있습니다.
+          </p>
+
+          <div class="overflow-x-auto my-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-white/5 text-slate-200">
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">대역</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">주파수</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">이 대역이 크게 나타날 때</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-300">
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">델타 (δ)</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">1~4Hz</td>
+                  <td class="px-3 py-2.5 border border-white/10">깊은 잠, 또는 깨어 있는데도 각성이 크게 떨어진 상태</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">세타 (θ)</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">4~8Hz</td>
+                  <td class="px-3 py-2.5 border border-white/10">졸림·멍함, 주의가 안쪽으로 새는 상태(공상·딴생각)</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">알파 (α)</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">8~12Hz</td>
+                  <td class="px-3 py-2.5 border border-white/10">눈을 감았을 때, 편안한 이완. 입력을 걸러내는 여유가 있는 상태</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">SMR</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">12~15Hz</td>
+                  <td class="px-3 py-2.5 border border-white/10">몸은 조용한데 정신은 또렷한 '조용한 집중'. 감각운동 리듬</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">베타 (β)</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">15~30Hz</td>
+                  <td class="px-3 py-2.5 border border-white/10">활동적 사고·처리. 지나치면 긴장과 조급함, 근육의 힘이 섞여 들어옴</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            미나월드의 측정은 <strong class="text-white">2채널</strong>, 즉 이마의 좌우 두 지점(FP1·FP2)에서 동시에 신호를 읽습니다. 채널이 하나면 "지금 어떤 대역이 큰가"까지만 알 수 있지만, 둘이면 <strong class="text-white">좌우를 비교</strong>할 수 있습니다. 한쪽만 진폭이 커지거나 두 채널의 파형이 서로 다른 박자로 놀 때, 그것은 컨디션의 기울기를 보여주는 정보가 됩니다. 지금부터는 결과지에 실제로 담기는 항목을 하나씩 보겠습니다.
+          </p>
+
+          <h3 class="text-lg font-bold text-white pt-2">간편검사 8항목 — 각 항목이 보여주는 것</h3>
+
+          <div class="overflow-x-auto my-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-white/5 text-slate-200">
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">항목</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">무엇을 보는가</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">이것으로 알 수 있는 것</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-300">
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">1. 뇌 활용 능력</td>
+                  <td class="px-3 py-2.5 border border-white/10">표준 주파수와 좌·우 우세 주파수</td>
+                  <td class="px-3 py-2.5 border border-white/10">지금 뇌가 주력으로 쓰는 리듬이 어느 대역인지. 빠른 쪽(과열 경향)인지 느린 쪽(가라앉는 경향)인지 방향을 잡아 줍니다</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">2. 뇌파의 안정성</td>
+                  <td class="px-3 py-2.5 border border-white/10">좌·우 알파 평균진폭과 진폭 편차</td>
+                  <td class="px-3 py-2.5 border border-white/10">리듬이 고르게 유지되는지, 아니면 크게 출렁이는지. 편차가 크면 하루 안에서 컨디션 기복이 큰 편으로 읽습니다</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">3. 뇌 산만도</td>
+                  <td class="px-3 py-2.5 border border-white/10">좌·우 산만도(세타 대비 SMR 비율)</td>
+                  <td class="px-3 py-2.5 border border-white/10">집중이 끊기는 이유가 '졸림 쪽'인지 '긴장 쪽'인지. 세타가 높으면 멍함, SMR이 낮으면 또렷한 집중의 바닥이 얕은 상태</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">4. 좌우뇌 균형</td>
+                  <td class="px-3 py-2.5 border border-white/10">좌우동조(두 채널 파형의 일치도)와 진폭대칭</td>
+                  <td class="px-3 py-2.5 border border-white/10">한쪽으로 치우쳐 있는지. 좌우가 함께 같은 박자로 움직이는지, 한쪽만 열심히 일하는지</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">5. 육체적 스트레스</td>
+                  <td class="px-3 py-2.5 border border-white/10">좌·우 신체 긴장과 피로도</td>
+                  <td class="px-3 py-2.5 border border-white/10">턱·어깨·목의 힘이 뇌파에 얼마나 섞여 있는지. '마음은 괜찮은데 몸이 굳은' 상태를 잡아냅니다</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">6. 정신적 스트레스</td>
+                  <td class="px-3 py-2.5 border border-white/10">좌·우 심리·정신 긴장</td>
+                  <td class="px-3 py-2.5 border border-white/10">생각이 계속 돌아가는 쪽의 부담. 5번과 분리해서 보기 때문에 '몸의 긴장'과 '머리의 긴장'을 따로 다룰 수 있습니다</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">7. 행동성향</td>
+                  <td class="px-3 py-2.5 border border-white/10">좌·우 알파/베타 비율과 차이비율</td>
+                  <td class="px-3 py-2.5 border border-white/10">차분하게 오래 가는 쪽인지, 빠르게 반응하고 전환하는 쪽인지. <strong class="text-white">우열이 아니라 성향</strong>이며, 훈련 난이도를 맞추는 데 씁니다</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">8. 정서성향</td>
+                  <td class="px-3 py-2.5 border border-white/10">좌·우 알파 평균과 차이비율</td>
+                  <td class="px-3 py-2.5 border border-white/10">좌우 전두엽의 알파 기울기를 정서 반응 경향으로 읽는 참고 지표. 기분을 단정하는 값이 아니라 <strong class="text-white">회복 방식</strong>을 고르는 단서입니다</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-brand-navy border border-cyan-400/30 my-6">
+            <h4 class="text-sm font-bold text-cyan-300 mb-2">📄 종합검사에서는 여기에 4가지가 더해집니다</h4>
+            <p class="text-xs text-slate-300 leading-relaxed mb-2">
+              종합검사는 위 8개 항목에 <strong class="text-white">기초율동</strong>을 더해 10항목으로 정리합니다. 기초율동은 모든 해석의 바닥이 되는 부분이라, 처음 측정에서는 이쪽을 보는 것이 특히 중요합니다.
+            </p>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>주파수 출현빈도 및 평균 진폭:</strong> 각 대역이 얼마나 자주, 얼마나 큰 진폭으로 나타나는지. 그 사람의 '평소 리듬'을 잡는 기준선입니다.</li>
+              <li><strong>알파파 파형의 변화:</strong> 알파가 안정적으로 유지되는지, 아니면 자주 끊기고 흔들리는지. 이완의 지속력을 봅니다.</li>
+              <li><strong>개안·폐안 뇌파의 변화:</strong> 눈을 감았을 때 알파가 올라오고 눈을 뜨면 내려가는 <strong class="text-white">베르거 효과</strong>가 제대로 작동하는지. 이 전환이 잘 되지 않으면 '눈을 감아도 생각이 멈추지 않는' 상태로 이어집니다. 결과지에는 개안-폐안 변화율이 함께 표기되며, 10~40% 구간을 조절이 무난한 범위로 안내합니다.</li>
+              <li><strong>자기 피드백 능력:</strong> 내 상태를 스스로 원하는 쪽으로 되돌리는 힘. 뉴로피드백 훈련은 이 항목을 출발선으로 삼아, 훈련을 거치며 얼마나 달라지는지를 비교합니다.</li>
+            </ul>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-brand-navy border border-cyan-400/25 my-6">
+            <h4 class="text-sm font-bold text-cyan-300 mb-2">🔍 항목을 읽는 세 가지 태도</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>점수가 아니라 지도입니다:</strong> 항목별 값은 서열을 매기기 위한 것이 아니라, 오늘 내 뇌가 어디에 머무는지 그린 지도입니다. 높낮이 자체보다 <strong class="text-white">어느 항목끼리 어긋나는지</strong>를 봅니다.</li>
+              <li><strong>성향 항목에는 좋고 나쁨이 없습니다:</strong> 행동성향·정서성향은 우열이 아니라 기울기입니다. 같은 값이 어떤 사람에게는 강점이고, 다른 상황에서는 조정할 지점이 됩니다.</li>
+              <li><strong>한 번의 값보다 변화를 봅니다:</strong> 같은 사람도 수면·카페인·그날의 긴장에 따라 값이 흔들립니다. 그래서 미나월드는 측정을 <strong class="text-white">4주 단위 변화 추적</strong>으로 씁니다.</li>
+            </ul>
+          </div>
+
+          <p>
+            좌우 전두엽의 알파 비대칭과 정서 반응 경향을 연결하는 연구 흐름은 오래전부터 있습니다. 다만 그 값 하나로 어떤 사람의 기분이나 성격을 단정할 수는 없고, 그렇게 쓰라고 만든 지표도 아닙니다. 이 지점에서 미나월드가 드리는 답은 일관됩니다. <strong class="text-white">측정값은 진단이 아니라, 나를 이해하는 참고 자료</strong>입니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-cyan-400">03.</span> 측정은 이렇게 진행됩니다
+          </h2>
+          <p>
+            뇌파측정이라는 말에 전기가 오거나 바늘이 들어가는 이미지를 떠올리는 분이 많습니다. 아닙니다. 미나월드의 측정은 <strong class="text-white">패시브 센서</strong> 방식입니다. 전극을 머리에 가볍게 대어 <strong class="text-white">뇌가 스스로 내는 미세한 신호만 읽습니다</strong>. 통증도, 전기 자극도 없고, 읽은 신호로 무언가를 몸에 보내지도 않습니다. 라디오 안테나에 가깝습니다. 반면 뉴로피드백 훈련은 이렇게 읽은 신호를 화면·소리로 되돌려 주어 뇌가 스스로 조절을 배우게 하는 과정입니다. <strong class="text-white">측정이 '읽기'라면 훈련은 '연습'</strong>입니다.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">구간 1</span>
+              <h4 class="text-base font-bold text-white mb-2">준비와 부착</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                편한 의자에 앉아 이마의 좌우 두 지점에 센서를 가볍게 밀착합니다. 머리카락 사이로 신호가 잘 잡히는지 화면으로 확인하며 자리를 잡습니다. 힘을 빼고 평소처럼 앉아 있으면 됩니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">구간 2</span>
+              <h4 class="text-base font-bold text-white mb-2">개안·폐안 안정 구간</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                눈을 뜬 채 가만히 있는 구간과 눈을 감은 구간을 나누어 짧게 측정합니다. 이 두 구간의 차이가 알파 전환, 즉 이완과 각성을 오가는 능력을 보여줍니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">구간 3</span>
+              <h4 class="text-base font-bold text-white mb-2">집중 과제 구간</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                간단한 인지 과제를 수행하는 동안의 파형을 봅니다. 여기서 세타와 SMR의 비율, 즉 '집중하려 할 때 실제로 뇌가 어디로 가는지'가 드러납니다.
+              </p>
+            </div>
+          </div>
+
+          <p>
+            이렇게 <strong class="text-white">짧은 구간을 여러 번 나누어</strong> 재는 이유는, 한 장면보다 장면 사이의 전환이 더 많은 것을 알려주기 때문입니다. 눈을 감았을 때 알파가 올라오는지, 과제가 시작될 때 세타가 정리되는지, 과제가 끝난 뒤 얼마나 빨리 원래대로 돌아오는지. 이 전환의 매끄러움이 곧 일상에서의 전환 능력입니다.
+          </p>
+          <p>
+            값을 흔드는 요인도 분명히 있습니다. 전날의 수면, 마지막 커피의 시각, 측정실에 들어오기 전의 긴장, 심지어 머리카락 상태까지 영향을 줍니다. 그래서 좋은 측정은 '완벽한 조건'을 만드는 것이 아니라 <strong class="text-white">조건을 기록해 두고 다음에도 비슷하게 맞추는 일</strong>입니다. 미나월드가 결과지를 한 번의 점수로 끝내지 않고 앱의 기록과 함께 보는 이유입니다.
+          </p>
+
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-cyan-400/30 my-6">
+            <h4 class="text-sm font-bold text-cyan-300 mb-2">❓ 문의 전에 가장 많이 받는 질문 4가지</h4>
+            <ul class="text-xs text-slate-300 space-y-2 list-disc pl-5">
+              <li><strong>아프거나 전기가 오나요?</strong> 아닙니다. 센서를 피부에 가볍게 대어 뇌가 내는 신호만 읽는 패시브 방식입니다. 통증이나 전기 자극은 없습니다.</li>
+              <li><strong>병원 검사와 무엇이 다른가요?</strong> 미나월드의 뇌파측정은 질병을 진단하는 의료 검사가 아니라, 생활 속 뇌 컨디션을 관리하기 위한 <strong class="text-white">비의료 웰니스 데이터</strong>입니다. 진단서가 아니라 컨디션 지도라고 이해하시면 됩니다.</li>
+              <li><strong>한 번 받으면 충분한가요?</strong> 한 번의 값은 오늘의 기준선입니다. 뉴로피드백 훈련과 함께 <strong class="text-white">4주 단위로 다시 재서 전후를 비교</strong>할 때 변화가 보입니다.</li>
+              <li><strong>아이도 받을 수 있나요?</strong> 수험생·청소년의 시험 긴장과 집중, 아동·성인의 주의산만 자기조절, 시니어의 인지 활력까지 대상별로 프로그램을 나누어 진행합니다.</li>
+            </ul>
+          </div>
+
+          <p>
+            아직 내 상태가 어느 쪽인지 감이 오지 않는다면, <a href="diagnostic.html" class="text-cyan-300 hover:underline">1분 뇌건강 자가진단</a>으로 방향을 먼저 잡아 보셔도 좋습니다. 수면·스트레스·집중·번아웃을 묶어 지금의 컨디션 유형을 보여주고, 그 결과에 맞춰 어떤 측정과 케어가 필요한지 안내합니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-accent">오늘부터</span> 측정을 제대로 쓰는 4단계
+          </h2>
+          <div class="bg-brand-navy p-6 rounded-2xl border border-white/10 space-y-3">
+            <p class="text-xs text-slate-300">
+              측정은 받는 순간보다 <strong>받기 전과 받은 뒤</strong>에 값이 달라집니다. 아래 네 단계만 지켜도 결과지가 훨씬 오래 쓰이는 자료가 됩니다.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-2 list-disc pl-5">
+              <li><strong>1단계 · 측정 3일 전부터 '컨디션 로그' 3줄:</strong> 잠든 시각과 잠들기까지 걸린 시간, 마지막 커피·에너지드링크 시각, 오늘 집중이 끊긴 시간대. 세 줄이면 충분합니다. 결과지를 받았을 때 "왜 이 항목이 이렇게 나왔는지"를 설명해 주는 근거가 바로 이 기록입니다.</li>
+              <li><strong>2단계 · 측정 당일은 '평소와 비슷하게':</strong> 일부러 푹 자거나 몰아서 카페인을 마시면 값이 실제와 달라집니다. 센터에서 안내드리는 준비 사항을 따르고, 오기 전 과한 운동이나 몰아보기 같은 강한 자극은 피하세요. 머리를 감고 바로 오시면 신호가 약해질 수 있어, 여유를 두고 오시는 편이 좋습니다.</li>
+              <li><strong>3단계 · 결과지에서는 딱 3개만 고르기:</strong> ① 지금 가장 불편한 항목 하나(예: 뇌 산만도) ② 내 강점으로 쓸 항목 하나(예: 좌우뇌 균형) ③ 다음 4주에 바꿀 행동 하나(예: 오후 카페인 컷오프). 항목 10개를 모두 개선하려 하면 아무것도 남지 않습니다.</li>
+              <li><strong>4단계 · 같은 조건으로 4주 뒤 재측정:</strong> 비슷한 요일, 비슷한 시간대에 다시 재고, 앱 <strong>MINA WORLD</strong>의 <strong>MY BRAIN</strong>에서 이전 결과와 나란히 놓고 봅니다. 좋아진 항목과 그대로인 항목을 구분하는 것이 다음 4주의 계획이 됩니다.</li>
+            </ul>
+            <p class="text-xs text-slate-400 pt-1">
+              ※ 측정값은 그날의 컨디션에 따라 달라질 수 있습니다. 한 번의 결과로 자신의 상태를 단정하지 마시고, 반복 측정의 흐름으로 읽어 주세요. 이 글은 생활 속 뇌 컨디션 관리를 위한 정보이며, 특정 증상의 진단이나 치료를 대신하지 않습니다.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-4 pt-4 border-t border-white/10">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <span class="text-cyan-400">04.</span> 미나월드의 2채널 뇌파측정 &amp; 뉴로웰니스 케어
+          </h2>
+          <p>
+            미나월드는 <strong>2채널 무선 정밀 뇌파 패턴 측정</strong>으로 개인의 뇌 컨디션, 주의집중, 긴장과 이완 상태를 확인하고, 그 데이터를 바탕으로 <strong>개인 맞춤 뉴로피드백 훈련 루틴</strong>을 설계합니다. 측정 결과는 순위표가 아니라 <strong>오늘의 컨디션 지도</strong>로 씁니다. 과열 쪽으로 기운 분에게는 이완과 호흡 중심의 루틴을, 가라앉는 쪽으로 기운 분에게는 빛·움직임·각성 중심의 루틴을 먼저 배치합니다.
+          </p>
+          <p>
+            훈련은 <strong>4주 단위 뇌 컨디션 변화 추적</strong>으로 이어집니다. 첫 측정에서 잡은 기준선을 출발점으로 삼아, 뉴로피드백 회차를 쌓고 다시 재서 전후를 비교합니다. 앱 <strong>MINA WORLD</strong>의 <strong>MY BRAIN</strong>에서는 검사 기록과 항목별 설명, 이전 결과와 현재 결과의 비교, 다음 재검사 권장일을 한곳에서 확인하실 수 있습니다. 기업·기관에서는 <strong>현장 뇌파 측정과 리포트 해석</strong>을 포함한 뇌 컨디션 워크숍으로 확장합니다.
+          </p>
+          <div class="mt-4 p-5 rounded-2xl bg-brand-card border border-cyan-500/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">🧠 뇌파측정 &amp; 뉴로웰니스 케어</h4>
+              <p class="text-xs text-slate-400">2채널 무선 정밀 뇌파 측정, 1:1 뉴로웰니스 &amp; 뇌파 코칭, 기업·기관 뇌 컨디션 워크숍</p>
+            </div>
+            <a href="contact.html" class="px-6 py-2.5 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white text-xs font-bold shrink-0 transition">
+              프로그램 문의하기
+            </a>
+          </div>
+
+          <div class="mt-4 p-5 rounded-2xl bg-white/5 border border-white/10">
+            <p class="text-xs text-slate-300 leading-relaxed">
+              <strong class="text-white">비의료 고지:</strong> 본 뇌파측정은 의료기관의 진단·치료를 대체하지 않는 <strong class="text-white">비의료 웰니스 컨디션 관리 데이터</strong>입니다. 질환이 의심되는 증상이 있으시면 먼저 의료기관에서 진료를 받으시길 권합니다. 미나월드의 모든 뇌파검사 및 뉴로피드백 프로그램은 의료 행위나 질병 치료가 아닌, 뇌과학 데이터 기반의 비의료 웰니스·두뇌 컨디션 훈련 서비스입니다.
+            </p>
+          </div>
+        </section>
+
+      </div>
+    </article>
+
+    <!-- 공유 및 하단 내비게이션 -->
+    <div class="py-8 border-t border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">아티클 공유하기:</span>
+        <button onclick="copyCurrentUrl()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-1.5">
+          <span>🔗 링크 복사</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="community.html" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+          목록으로 돌아가기
+        </a>
+        <a href="contact.html" class="px-5 py-2 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white shadow-md transition">
+          1:1 프로그램 상담 신청
+        </a>
+      </div>
+    </div>
+
+    <!-- 다른 요일의 '하루 한 스푼, 뇌과학' 추천 링크 -->
+    <section class="mt-16">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>✨</span> 함께 읽으면 좋은 뇌과학 인사이트
+        </h3>
+        <a href="community.html" class="text-xs text-brand-accent hover:underline">전체보기 →</a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="article-2026-11-21-alpha-smr-beta-brainwaves.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-emerald-400/40 transition block group">
+          <div class="text-[11px] text-emerald-400 font-bold mb-1">토요일 · 뉴로피드백·뇌파 과학</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-emerald-400 transition mb-1">
+            눈만 감았는데 뇌파가 바뀐다 — 알파파·SMR파·하이베타파로 읽는 내 뇌의 컨디션 스위치
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">대역별 의미와 베르거 효과를 먼저 읽으면 오늘 글의 항목이 훨씬 쉽게 들어옵니다</p>
+        </a>
+
+        <a href="article-neurofeedback.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-cyan-400/40 transition block group">
+          <div class="text-[11px] text-cyan-400 font-bold mb-1">뉴로피드백 입문</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-cyan-400 transition mb-1">
+            내 뇌파를 직접 보며 훈련하는 '뇌 피트니스', 뉴로피드백의 과학
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">측정한 뇌파를 어떻게 훈련으로 연결하는지, 조작적 조건화의 원리</p>
+        </a>
+
+        <a href="article-2026-11-17-vagus-nerve-hrv.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-pink-400/40 transition block group">
+          <div class="text-[11px] text-pink-400 font-bold mb-1">화요일 · 스트레스와 감정</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-pink-400 transition mb-1">
+            참는다고 가라앉지 않는 이유 — 미주신경과 HRV로 회복하는 자율신경 브레이크
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">육체적 스트레스 항목이 높게 나왔을 때 바로 쓰는 4단계 브레이크</p>
+        </a>
+
+        <a href="article-2026-11-24-josik-breathing-brain.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-accent/40 transition block group">
+          <div class="text-[11px] text-brand-accent font-bold mb-1">화요일 · 스트레스·자율신경</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-accent transition mb-1">
+            숨이 가쁜 날엔 판단도 같이 흔들린다 — 조식(調息) 3·3 복식호흡으로 뇌의 각성 스위치를 다스리는 법
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">과열된 뇌의 기준선을 내리는 하루 10분 호흡 루틴</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (아임웹 정보 100% 반영) -->
+  <footer class="py-14 border-t border-white/10 text-xs text-slate-400 bg-brand-dark/95">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- 1열: 브랜드 로고 및 저작권 -->
+        <div>
+          <h4 class="text-base font-bold text-white tracking-wider mb-2 font-serif">MINA WORLD</h4>
+          <p class="text-slate-500 text-xs">© 2026 Make.</p>
+        </div>
+
+        <!-- 2열: SITEMAP -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">SITEMAP</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="about.html" class="hover:text-white transition">ABOUT US</a></li>
+            <li><a href="programs.html" class="hover:text-white transition">PROGRAM</a></li>
+            <li><a href="community.html" class="hover:text-white transition">COMMUNITY</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">CONTACT</a></li>
+          </ul>
+        </div>
+
+        <!-- 3열: SERVICE & BANK -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">SERVICE</h4>
+          <p class="text-slate-300 font-medium mb-1">010-5424-0807</p>
+          <p class="text-slate-500 mb-0.5">Mon - Fri AM 09:00 - 18:00</p>
+          <p class="text-slate-500 mb-4">Sat.Sun.Red-Day Off</p>
+
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">BANK</h4>
+          <p class="text-slate-400">KAKAO BANK 3333-37-1190044</p>
+        </div>
+
+        <!-- 4열: INSTAGRAM, NAVER, KAKAO TALK -->
+        <div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">INSTAGRAM</h4>
+            <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://www.instagram.com/wellnessworld.zip</a>
+          </div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">NAVER</h4>
+            <a href="https://naver.me/xhPGBxC0" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://naver.me/xhPGBxC0</a>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">KAKAO TALK</h4>
+            <a href="http://pf.kakao.com/_WxmhEX" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">http://pf.kakao.com/_WxmhEX</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 mb-6">
+        <div>
+          <span>Seoul, Korea</span>
+          <span class="mx-2">|</span>
+          <span>Biz License 893-53-00975</span>
+          <span class="mx-2">|</span>
+          <span>© 2026 MINA WORLD. All rights reserved</span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+          <span class="text-slate-600">|</span>
+          <a href="#" class="hover:text-slate-300 transition">Privacy</a>
+        </div>
+      </div>
+
+      <!-- 맨 하단 한 줄 사업자 상세 정보 -->
+      <div class="text-[11px] text-slate-600 leading-relaxed">
+        상호명: 미나월드 대표자: 이미나 사업장주소: 서울 송파구 오금로46길 41 (가락동) 2층 2567호 연락처: 01054240807 사업자등록번호: 893-53-00975 대표자 이메일: minawellnesslab@gmail.com
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // 읽기 진행률 표시
+    window.addEventListener('scroll', function() {
+      var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      var bar = document.getElementById('reading-bar');
+      if (bar) {
+        bar.style.width = scrolled + '%';
+      }
+    });
+
+    // 현재 URL 클립보드 복사
+    function copyCurrentUrl() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          alert('아티클 링크가 복사되었습니다! 원하는 곳에 공유해보세요.');
+        });
+      } else {
+        alert('주소창의 링크를 복사해주세요: ' + window.location.href);
+      }
+    }
+  </script>
+</body>
+</html>
