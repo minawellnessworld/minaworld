@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TTMVKBHNZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TTMVKBHNZM');
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      location.replace(location.href.replace('http:', 'https:'));
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>뉴로피드백 완벽 가이드 — 원리부터 진행 과정·대상별 활용까지 | 하루 한 스푼, 뇌과학 - MINA Wellness World</title>
+  <meta name="description" content="뉴로피드백은 뇌를 자극하는 장치가 아니라 뇌가 스스로 조절을 배우게 하는 '보여주기' 훈련입니다. 실시간 뇌파 측정과 시각·청각 피드백, 조작적 조건화와 신경가소성의 원리, 미나월드의 4단계 진행 과정(기준선 측정 → 맞춤 프로토콜 → 앱 회차 기록 → 4주 재측정), 대상별 활용과 이용권·FAQ를 문의 고객용으로 정리했습니다." />
+  <meta name="keywords" content="뉴로피드백, 뉴로피드백 원리, 뉴로피드백 가격, 뉴로피드백 이용권, 뉴로피드백 효과, 뉴로피드백 진행 과정, 뇌파 훈련, EEG 바이오피드백, 조작적 조건화, 신경가소성, SMR파, 알파파 강화 훈련, 수험생 집중력 훈련, 성인 주의산만, 시니어 인지 활력, 뉴로스포츠, 골프 멘탈, 미나월드, 뉴로웰니스" />
+  <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="Vi6kKPe24ViYvS4NbUpW02Nco_04PP_qHLX9UmNT3QM" />
+  <meta name="naver-site-verification" content="b397311e6eb26e5eec40f3994740c10e6a243a4a" />
+  <link rel="canonical" href="https://www.minaworld.co.kr/article-2026-11-26-neurofeedback-complete-guide.html" />
+  <meta property="og:site_name" content="MINA Wellness World" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.minaworld.co.kr/article-2026-11-26-neurofeedback-complete-guide.html" />
+  <meta property="og:title" content="뉴로피드백 완벽 가이드 — 원리부터 진행 과정·대상별 활용까지 | 하루 한 스푼, 뇌과학 - MINA Wellness World" />
+  <meta property="og:description" content="뇌는 '보는 것'만으로 스스로 조절을 배웁니다. 작동 원리와 미나월드 4단계 진행 과정, 대상별 활용, 이용권과 FAQ를 한 편에 정리했습니다." />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+    #reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(to right, #4A90E2, #22D3EE, #3CD070);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-white">
+  
+  <!-- 상단 읽기 진행률 바 -->
+  <div id="reading-bar"></div>
+
+  <!-- 헤더 / 내비게이션 바 -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/85 border-b border-white/10 transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="font-serif font-bold text-xl tracking-wider text-white group-hover:text-brand-accent transition">MINA</span>
+        <span class="text-xs uppercase tracking-widest text-brand-accent font-semibold">Wellness World</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="community.html" class="hidden sm:inline-flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          <span>📚 하루 한 스푼 뇌과학 목록</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 text-slate-300 hover:text-brand-accent transition">
+          <span>← 메인 홈으로</span>
+        </a>
+        <a href="contact.html" class="px-4 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white shadow-md shadow-brand-accent/20 transition">
+          상담/제휴 문의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 본문 영역 -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16 w-full">
+    
+    <!-- 빵부스러기 내비게이션 -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8 overflow-x-auto no-scrollbar">
+      <a href="index.html" class="hover:text-white transition">홈</a>
+      <span>/</span>
+      <a href="community.html" class="hover:text-white transition">하루 한 스푼, 뇌과학</a>
+      <span>/</span>
+      <span class="text-brand-blue font-medium">목요일 · 뉴로피드백 가이드</span>
+    </nav>
+
+    <!-- 아티클 헤더 -->
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-xs">
+        <span class="px-3 py-1 rounded-full font-bold bg-brand-blue/15 text-brand-blue border border-brand-blue/30">목요일 · 뉴로피드백 가이드</span>
+        <span class="text-slate-400">2026.11.26</span>
+        <span class="text-slate-500">·</span>
+        <span class="text-slate-400">13분 완독</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight" style="word-break: keep-all;">
+        뉴로피드백 완벽 가이드 — 원리부터 진행 과정&#8288;·&#8288;대상별 활용까지
+      </h1>
+      
+      <p class="text-base md:text-xl text-slate-300 font-medium leading-relaxed mb-8" style="word-break: keep-all;">
+        뇌는 '보는 것'만으로 스스로 조절을 배웁니다. 문의 고객분께 카톡·문자로 그대로 보내드릴 수 있게, 원리와 진행 방식·이용 안내를 한 편에 정리했습니다
+      </p>
+
+      <!-- 작성자 정보 -->
+      <div class="flex items-center gap-4 py-4 px-5 rounded-2xl bg-brand-card/70 border border-white/10">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-blue to-cyan-500 flex items-center justify-center text-lg font-bold text-white shadow-md">
+          M
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white flex items-center gap-2">
+            이미나 대표
+            <span class="text-[11px] font-normal text-slate-400">| 뇌교육상담사 · MINA Wellness World</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            뇌과학 기반 뉴로웰니스 솔루션과 신체 움직임을 결합하여 건강한 뇌 컨디션을 만듭니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 핵심 요약 콜아웃 박스 -->
+      <div class="mt-8 p-6 rounded-2xl bg-brand-navy border-l-4 border-brand-blue border-r border-t border-b border-white/10 card-glow">
+        <div class="flex items-center gap-2 text-brand-blue font-bold text-xs uppercase tracking-wider mb-2">
+          <span>💡 30초 핵심 요약 (Executive Summary)</span>
+        </div>
+        <p class="text-sm text-slate-200 leading-relaxed">
+          <strong class="text-white">뉴로피드백</strong>은 뇌에 전기나 자극을 보내는 장치가 아니라, <strong class="text-white">뇌가 지금 내는 리듬을 그대로 보여주고 원하는 방향에 가까워질 때 보상</strong>을 주는 훈련입니다. 두피에 가볍게 댄 센서로 실시간 뇌파(EEG)를 읽어 화면의 움직임·색·소리로 바꾸면, 뇌는 <strong class="text-white">조작적 조건화(Operant Conditioning)</strong> 원리로 보상이 오는 방향을 조용히 따라가기 시작합니다. 그 반복이 쌓이면 <strong class="text-white">신경가소성(Neuroplasticity)</strong>에 따라 그 리듬을 쓰는 회로가 다듬어집니다. 미나월드는 <strong class="text-white">① 2채널 뇌파측정으로 기준선 확인 → ② 개인별 맞춤 프로토콜·exercise 설계 → ③ 실시간 피드백 훈련(1회 약 40분)과 MINA WORLD 앱 회차 기록 연동 → ④ 4주 단위 재측정 전후 비교</strong>의 네 단계로 진행합니다. 전기 자극과 통증은 없고, 진단·치료가 아닌 <strong class="text-white">비의료 두뇌 훈련·컨디션 관리</strong> 서비스입니다.
+        </p>
+      </div>
+
+      <div class="mt-4 p-4 rounded-2xl bg-brand-blue/5 border border-brand-blue/25">
+        <p class="text-xs text-slate-300 leading-relaxed">
+          🙋 <strong class="text-white">이 글은 뉴로피드백을 처음 문의하신 분께 카카오톡·문자·링크 복사로 그대로 보내드릴 수 있는 안내서입니다.</strong> 이용권 금액과 진행 순서까지 한 번에 확인하실 수 있고, 더 궁금한 점은 <a href="contact.html" class="text-brand-blue hover:underline">문의</a>로 이어 주세요.
+        </p>
+      </div>
+    </header>
+
+    <!-- 상세 본문 -->
+    <article class="mb-16">
+      <div class="prose prose-invert max-w-none text-slate-300 space-y-8 text-base leading-relaxed">
+        
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-blue">01.</span> 뉴로피드백은 무엇을 '배우는' 훈련인가
+          </h2>
+          <p>
+            헬스장에서 트레이너가 하는 일은 크게 두 가지입니다. 몸 상태를 재고(체성분·자세·체력), 그 결과에 맞춰 운동을 짜 줍니다. <strong class="text-white">뉴로피드백도 똑같습니다.</strong> 뇌파를 재는 일이 '재는 일'이라면, 뉴로피드백은 그 측정값을 재료로 뇌가 <strong class="text-white">스스로 조절하는 법을 연습</strong>하는 과정입니다. 그래서 미나월드에서는 이 둘을 늘 나누어 설명합니다. <strong class="text-white">측정은 읽기, 훈련은 연습, 재측정은 채점이 아니라 비교</strong>입니다.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-blue uppercase tracking-wider block mb-1">1단계 원리</span>
+              <h4 class="text-base font-bold text-white mb-2">실시간으로 읽는다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                두피에 댄 패시브 센서가 뇌가 내는 미세한 전위를 읽어 주파수 대역별로 나눕니다. 이때 읽는 것은 뇌가 스스로 만든 신호뿐, 밖에서 보내는 것은 없습니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-blue uppercase tracking-wider block mb-1">2단계 원리</span>
+              <h4 class="text-base font-bold text-white mb-2">즉시 보여준다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                그 값을 화면의 움직임·색·소리로 바꿉니다. 원하는 리듬에 가까워지면 화면이 밝아지고 소리가 맑아지고, 반대 방향으로 가면 흐려집니다. 지연이 거의 없는 즉시성이 핵심입니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-blue uppercase tracking-wider block mb-1">3단계 원리</span>
+              <h4 class="text-base font-bold text-white mb-2">보상으로 굳힌다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                좋아지는 쪽에 보상이 오면, 뇌는 그 방향을 반복해서 고릅니다. 이 반복이 쌓이면 해당 리듬을 만드는 회로가 편해집니다. 이것이 신경가소성입니다.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+            <h4 class="text-sm font-bold text-brand-blue mb-2">🎯 조작적 조건화 — '잘해서 상 받는' 것이 아니라 '상이 오는 쪽으로 가는' 것</h4>
+            <p class="text-xs text-slate-300 leading-relaxed mb-2">
+              뉴로피드백의 뼈대는 심리학의 <strong class="text-white">조작적 조건화(Operant Conditioning)</strong>입니다. 어떤 행동 뒤에 보상이 오면 그 행동의 빈도가 늘어난다는 원리입니다. 뇌파 훈련에서는 이 '행동'이 손동작이 아니라 <strong class="text-white">파형의 상태</strong>입니다.
+            </p>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              1960년대 UCLA의 배리 스터먼(Barry Sterman) 연구팀은 고양이의 감각운동리듬(<strong class="text-white">SMR, 12~15Hz</strong>)이 커질 때 보상을 주는 방식으로 훈련했습니다. 놀랍게도 고양이는 몸을 움직이지 않고도 그 리듬을 스스로 늘리는 법을 익혔습니다. 이후 같은 원리가 사람의 각성 조절 훈련으로 확장되었고, 오늘날에는 우주·스포츠·교육 현장에서 '조용한 집중'을 다루는 방법으로 쓰입니다. 뇌는 설명을 듣고 이해해서가 아니라, <strong class="text-white">보상이 오는 방향을 몸으로 익히며</strong> 배웁니다.
+            </p>
+          </div>
+
+          <p>
+            여기에 <strong class="text-white">신경가소성(Neuroplasticity)</strong>이 붙습니다. 신경세포는 함께 자주 흥분할수록 그 연결이 강해지고, 쓰지 않는 연결은 약해집니다(헵의 법칙). 뉴로피드백은 이 원리를 <strong class="text-white">'반복 + 즉각 보상'</strong>으로 압축한 훈련입니다. 다만 정직하게 말씀드리면, 변화의 속도와 폭은 사람마다 다릅니다. 잠을 거의 못 잔 주, 카페인을 몰아 마신 날에는 잘되던 회차도 흔들립니다. 그래서 미나월드는 한 번의 점수보다 <strong class="text-white">회차가 쌓이는 흐름</strong>을 봅니다.
+          </p>
+
+          <div class="p-5 rounded-2xl bg-brand-navy border border-brand-blue/30 my-6">
+            <h4 class="text-sm font-bold text-cyan-300 mb-2">🌀 '애쓰면 안 되는' 훈련이라는 점이 가장 낯섭니다</h4>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>힘으로 밀면 반대로 갑니다:</strong> "집중해야지" 하고 악을 쓰면 턱·어깨가 굳고, 근육의 미세한 긴장이 빠른 베타파로 파형에 섞여 들어옵니다. 의지로 미는 시도는 전전두엽의 자원을 쓰는 값비싼 조작이라 오래 가지도 못합니다.</li>
+              <li><strong>뇌는 보상 쪽으로 알아서 갑니다:</strong> 화면이 밝아지는 경험을 몇 번 하고 나면, 뇌는 특별히 애쓰지 않아도 그 상태를 다시 만들기 시작합니다. 훈련 중 졸거나 딴생각이 드는 것도 '실패'가 아니라 <strong class="text-white">지금 내 뇌가 어디로 가는지 알려주는 정보</strong>입니다.</li>
+              <li><strong>그래서 상담사가 함께 앉습니다:</strong> 혼자서는 "잘하고 있는 건가"가 계속 궁금해집니다. 미나월드는 1:1로 진행하며 회차마다 무엇을 보상했고 무엇이 어려웠는지 메모로 남깁니다(훈련 1회 약 40분).</li>
+            </ul>
+          </div>
+
+          <p>
+            정리하면, 뉴로피드백은 <strong class="text-white">'뇌 피트니스'</strong>입니다. 무거운 것을 드는 대신 원하는 리듬을 반복하고, 거울 대신 화면이 내 상태를 비춰 줍니다. 운동이 체력의 바닥을 올리듯, 이 훈련은 <strong class="text-white">각성과 이완을 오가는 바닥</strong>을 다룹니다. 운동을 한다고 병이 낫는 것이 아니듯, 이 훈련도 진단이나 치료가 아닙니다. 이 구분은 글 전체에서 계속 지키겠습니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-blue">02.</span> 미나월드 뉴로피드백 4단계 진행 과정
+          </h2>
+          <p>
+            뉴로피드백은 "앉아서 게임하는 40분"만으로 끝나지 않습니다. 그 40분이 의미를 가지려면 <strong class="text-white">무엇을 기준으로, 무엇을 목표로, 어떻게 확인할지</strong>가 앞뒤에 붙어야 합니다. 미나월드는 이 네 단계로 진행합니다.
+          </p>
+
+          <div class="overflow-x-auto my-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-white/5 text-slate-200">
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">단계</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">무엇을 하나</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">무엇이 남는가</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-300">
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">① 사전 뇌파측정<br><span class="text-[11px] font-normal text-slate-400">기준선 확인</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">2채널 무선 EEG(이마 좌우 FP1·FP2)로 개안·폐안·집중 과제 구간을 측정</td>
+                  <td class="px-3 py-2.5 border border-white/10">오늘의 기준선 결과지(간편 8항목·종합 10항목)</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">② 맞춤 프로토콜<br><span class="text-[11px] font-normal text-slate-400">· exercise 설계</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">과열·가라앉음의 방향을 판단해 목표 리듬과 난이도를 정함</td>
+                  <td class="px-3 py-2.5 border border-white/10">이번 회차에 무엇을 보상할지 정한 훈련 설계</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">③ 실시간 피드백 훈련<br><span class="text-[11px] font-normal text-slate-400">1회 약 40분</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">화면·소리 피드백을 보며 훈련, 회차별 점수·프로토콜·exercise·전극 상태 기록</td>
+                  <td class="px-3 py-2.5 border border-white/10">MINA WORLD 앱에 쌓이는 회차 기록과 추이</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">④ 주기적 재측정<br><span class="text-[11px] font-normal text-slate-400">4주 단위</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">같은 조건(비슷한 요일·시간·컨디션)으로 다시 측정해 전후를 비교</td>
+                  <td class="px-3 py-2.5 border border-white/10">좋아진 항목·그대로인 항목의 구분, 다음 4주 계획</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="text-lg font-bold text-white pt-2">① 사전 뇌파측정 — 오늘의 기준선을 잡습니다</h3>
+          <p>
+            첫 단계는 훈련이 아니라 측정입니다. 이마 좌우 두 지점에서 동시에 신호를 읽는 <strong class="text-white">2채널 무선 EEG</strong>로 눈을 뜬 구간·감은 구간·간단한 집중 과제 구간을 나누어 짧게 여러 번 잽니다. 채널이 하나면 "어떤 대역이 큰가"까지만 알 수 있지만, 둘이면 <strong class="text-white">좌우 비교</strong>가 가능해 컨디션의 기울기를 읽을 수 있습니다. 결과지는 뇌 활용 능력·뇌파의 안정성·뇌 산만도·좌우뇌 균형·육체적 스트레스·정신적 스트레스 등의 항목으로 정리되고, 자세한 해석은 <a href="article-2026-11-25-eeg-measurement-guide.html" class="text-brand-blue hover:underline">뇌파측정 총정리 글</a>에 담아 두었습니다.
+          </p>
+          <p>
+            이 기준선이 왜 중요할까요. "집중이 안 된다"는 같은 말 안에도 <strong class="text-white">긴장으로 굳어 과열된 뇌</strong>와 <strong class="text-white">각성이 가라앉은 뇌</strong>가 섞여 있고, 두 상태의 관리 방향은 정반대이기 때문입니다. 과열 쪽에는 이완과 호흡을, 가라앉은 쪽에는 빛·움직임·각성을 먼저 배치해야 합니다. 기준선 없이 "집중력 높이는 법"을 적용하면 절반의 경우 정확히 반대 방향으로 밀게 됩니다.
+          </p>
+
+          <h3 class="text-lg font-bold text-white pt-2">② 맞춤 프로토콜·exercise 설계 — 무엇을 보상할지 정합니다</h3>
+          <p>
+            측정 결과가 나오면 그다음은 설계입니다. 과열 쪽으로 기운 분에게는 <strong class="text-white">알파(8~12Hz) 강화·이완</strong> 중심으로, 집중이 자주 끊기는 분에게는 <strong class="text-white">SMR(12~15Hz)과 저베타의 균형</strong> 중심으로 목표를 잡습니다. 세타(4~8Hz)가 지나치게 우세한 경우에는 각성을 끌어올리는 과제를 먼저 배치합니다. 이렇게 정한 목표 리듬과 난이도, 보상 조건을 묶어 <strong class="text-white">프로토콜</strong>이라고 부르고, 그 안에서 회차마다 실제로 수행하는 훈련 과제를 <strong class="text-white">exercise</strong>라고 부릅니다.
+          </p>
+          <p>
+            같은 사람도 4주 뒤에는 목표가 달라질 수 있습니다. 그래서 프로토콜은 한 번 정하고 끝나는 처방이 아니라, 회차 기록과 재측정 결과를 보며 <strong class="text-white">조정되는 설계도</strong>입니다. 잘 되던 과제가 갑자기 어려워졌다면 그 전 며칠의 수면·일정을 함께 봅니다. 숫자만 보면 놓치는 것이 이 지점입니다.
+          </p>
+
+          <h3 class="text-lg font-bold text-white pt-2">③ 실시간 피드백 훈련 — 앱에 회차가 쌓입니다</h3>
+          <p>
+            실제 훈련은 1:1로 진행하며 1회 약 40분입니다. 센서를 착용하고 편하게 앉아 화면의 움직임과 소리를 따라가면 됩니다. 이때 기록되는 것은 점수만이 아닙니다. 회차 번호, 적용한 프로토콜과 exercise, 점수, 전극 상태(electrodes), 파형 조정(wave adjust) 같은 값이 함께 남습니다. 그래야 "이번 주에 왜 점수가 흔들렸는지"를 나중에 설명할 수 있습니다.
+          </p>
+          <p>
+            이 기록은 <strong class="text-white">MINA WORLD</strong> 앱의 <strong class="text-white">NEURO TRAINING</strong> 화면에 회차별로 쌓이고, 추이 그래프로 확인하실 수 있습니다. 뇌파측정 결과지는 <strong class="text-white">MY BRAIN</strong>에서 이전 결과와 나란히 비교됩니다. 종이 결과지를 받아 두는 것과, 앱에서 흐름으로 보는 것은 다릅니다. 훈련은 <strong class="text-white">비교가 있어야 의미가 생기고, 비교는 기록이 있어야 가능</strong>하기 때문입니다.
+          </p>
+
+          <h3 class="text-lg font-bold text-white pt-2">④ 4주 단위 재측정 — 달라진 것과 그대로인 것을 나눕니다</h3>
+          <p>
+            네 번째 단계는 다시 재는 일입니다. 이때 중요한 것은 <strong class="text-white">조건을 비슷하게 맞추는 것</strong>입니다. 비슷한 요일, 비슷한 시간대, 비슷한 컨디션에서 재야 비교가 성립합니다. 전날 밤을 새우고 잰 값과 푹 자고 잰 값을 나란히 놓으면, 그것은 훈련의 효과인지 수면의 효과인지 알 수 없습니다.
+          </p>
+          <p>
+            재측정 결과는 다음 4주의 계획으로 바로 이어집니다. 좋아진 항목은 유지 과제로 남기고, 그대로인 항목은 목표 리듬이나 생활 습관(수면 시각·카페인·호흡)을 함께 조정합니다. 미나월드가 결과지를 <strong class="text-white">순위표가 아니라 컨디션 지도</strong>로 쓰는 이유입니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-blue">03.</span> 대상별 활용 — 같은 훈련, 다른 목표
+          </h2>
+          <p>
+            뉴로피드백은 '집중력 훈련'이라는 한 단어로 묶기에는 쓰임이 넓습니다. 훈련의 뼈대는 같지만, <strong class="text-white">어떤 리듬을 목표로 삼고 어떤 장면에서 쓰게 할지</strong>가 대상마다 다릅니다. 미나월드는 상담에서 생활 장면을 먼저 듣고 목표를 정합니다.
+          </p>
+
+          <div class="overflow-x-auto my-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-white/5 text-slate-200">
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">대상</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">주로 다루는 목표</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">훈련 포인트</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-300">
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">직장인</td>
+                  <td class="px-3 py-2.5 border border-white/10">스트레스 반응·수면 컨디션</td>
+                  <td class="px-3 py-2.5 border border-white/10">퇴근 후에도 내려가지 않는 각성을 알파·이완 쪽으로 낮추는 연습</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">수험생·청소년</td>
+                  <td class="px-3 py-2.5 border border-white/10">집중 지속력·시험 긴장 관리</td>
+                  <td class="px-3 py-2.5 border border-white/10">SMR·저베타의 '조용한 집중'을 유지하는 시간을 늘리고, 시험 전 긴장을 내리는 루틴</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">아동·성인</td>
+                  <td class="px-3 py-2.5 border border-white/10">주의산만 자기조절</td>
+                  <td class="px-3 py-2.5 border border-white/10">짧은 회차와 즉각 보상으로 '스스로 돌아오는' 경험을 쌓기</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">시니어</td>
+                  <td class="px-3 py-2.5 border border-white/10">인지 활력·이완</td>
+                  <td class="px-3 py-2.5 border border-white/10">편안한 난이도로 규칙적인 리듬을 유지하고, 앉아서 부담 없이 반복</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">스포츠 선수</td>
+                  <td class="px-3 py-2.5 border border-white/10">멘탈 퍼포먼스</td>
+                  <td class="px-3 py-2.5 border border-white/10">프리샷 루틴에서 '조용한 집중' 상태를 빠르게 켜고, 실수 직후 빠르게 회복</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-blue uppercase tracking-wider block mb-1">직장인</span>
+              <h4 class="text-base font-bold text-white mb-2">쉬어도 개운하지 않은 저녁</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                하루 종일 긴장으로 달린 뇌는 소파에 눕는다고 바로 내려가지 않습니다. 이완에도 '방향'이 필요합니다. 알파 강화 훈련과 긴 날숨 호흡을 묶어, 잠들기 전 각성을 내리는 연습을 합니다. 야근이 잦은 주에는 회차 목표를 낮춰서라도 리듬을 끊지 않는 쪽을 택합니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">수험생·청소년</span>
+              <h4 class="text-base font-bold text-white mb-2">책상에 앉아 있는 시간과 집중한 시간은 다릅니다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                시험 직전의 문제는 실력보다 각성 조절인 경우가 많습니다. 너무 긴장하면 문제가 안 읽히고, 너무 가라앉으면 풀다가 멍해집니다. 목표는 '조용한 집중' 구간을 스스로 켜는 감각을 익히는 것입니다. 시험 전날 새 과제를 시작하기보다, 이미 익숙한 루틴을 짧게 반복하는 편이 낫습니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">아동·성인</span>
+              <h4 class="text-base font-bold text-white mb-2">혼내서 길들이는 것이 아니라 보상으로 길들이는 것</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                주의가 흩어질 때 화면이 흐려지고, 돌아오면 다시 밝아집니다. 이 즉각성이 아이들에게 특히 잘 맞습니다. 다만 미성년자는 <strong class="text-white">보호자 동의와 동반</strong>이 필요하고, 집중이 어려운 이유가 수면·시력·청각·정서 등 다른 곳에 있을 수 있으므로 그 부분은 먼저 확인합니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <span class="text-xs font-bold text-brand-gold uppercase tracking-wider block mb-1">시니어</span>
+              <h4 class="text-base font-bold text-white mb-2">부담 없이 앉아서 반복할 수 있어야 오래 갑니다</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                난이도를 낮추고 회차를 규칙적으로 두는 것이 핵심입니다. 문제를 많이 맞히는 과제보다, 편안한 리듬을 유지하는 과제로 시작합니다. 가족과 함께 오시면 집에서의 수면·활동 리듬까지 함께 정리할 수 있어 좋습니다.
+              </p>
+            </div>
+          </div>
+
+          <p>
+            스포츠 현장에서는 조금 다르게 씁니다. 골프처럼 한 라운드에 실제 동작은 몇 분뿐이고 나머지 시간의 생각과 긴장이 결과를 가르는 종목에서는, <strong class="text-white">샷 전에 각성 수준을 스스로 맞추는 능력</strong>이 곧 퍼포먼스입니다. 뉴로골프·뉴로스포츠 프로그램은 이 지점을 집중적으로 다룹니다. 자세한 내용은 <a href="programs.html" class="text-brand-blue hover:underline">프로그램 안내</a>에서 확인하실 수 있습니다.
+          </p>
+
+          <div class="p-5 rounded-2xl bg-brand-navy border border-white/10 my-6">
+            <h4 class="text-sm font-bold text-white mb-2">⚠️ 대상과 무관하게 지키는 선</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              뉴로피드백은 <strong class="text-white">진단·치료가 아니라 훈련</strong>입니다. 집중이 어렵거나 잠이 오지 않는 이유가 질환에 있을 수 있으므로, 그런 가능성이 있으면 먼저 의료기관에서 진료를 받으셔야 합니다. 미나월드의 훈련은 그 진료를 대체하지 않고, 생활 속 컨디션 관리와 자기조절 연습을 돕는 역할만 합니다. 복용 중인 약을 이 훈련 때문에 바꾸거나 끊는 일은 절대 없어야 합니다.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-accent">처음 오시는 날</span> 이 세 가지만 기억하세요
+          </h2>
+          <div class="bg-brand-navy p-6 rounded-2xl border border-white/10 space-y-3">
+            <p class="text-xs text-slate-300">
+              훈련은 <strong>받는 순간보다 오기 전과 간 뒤</strong>에 값이 달라집니다. 예약을 잡으셨다면 아래 세 가지만 챙겨 오세요.
+            </p>
+            <ul class="text-xs text-slate-400 space-y-2 list-disc pl-5">
+              <li><strong>1 · 3일 전부터 '컨디션 로그' 3줄:</strong> 잠든 시각과 잠들기까지 걸린 시간, 마지막 커피 시각, 오늘 집중이 끊긴 시간대. 이 세 줄이 회차 기록을 해석하는 근거가 됩니다.</li>
+              <li><strong>2 · 당일은 '평소와 비슷하게':</strong> 일부러 몰아서 자거나 카페인을 더 마시면 값이 실제와 달라집니다. 오기 전 과한 운동이나 강한 자극은 피하고, 머리를 감고 바로 오시면 신호가 약해질 수 있어 여유를 두고 오시는 편이 좋습니다.</li>
+              <li><strong>3 · 첫 회차의 목표는 점수가 아니라 '알아가기':</strong> 첫날 잘하는 것이 목적이 아닙니다. 어떤 장면에서 리듬이 흔들리는지 알아가는 것이 목적입니다. 애쓰지 않아도 된다는 점, 졸거나 딴생각이 드는 것도 기록된다는 점을 기억해 주세요.</li>
+            </ul>
+            <p class="text-xs text-slate-400 pt-1">
+              ※ 훈련값은 그날의 컨디션에 따라 달라질 수 있습니다. 한 회차의 점수로 자신의 상태를 단정하지 마세요. 이 글은 생활 속 뇌 컨디션 관리를 위한 정보이며, 특정 증상의 진단이나 치료를 대신하지 않습니다.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-4 pt-4 border-t border-white/10">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <span class="text-brand-blue">04.</span> 문의 고객 FAQ &amp; 이용 안내
+          </h2>
+          <p>
+            상담 전화와 카카오톡으로 가장 자주 받는 질문을 모았습니다. 아래에 없는 내용은 <a href="contact.html" class="text-brand-blue hover:underline">문의</a>로 편하게 남겨 주세요.
+          </p>
+
+          <div class="space-y-3 my-6">
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q1. 전기가 오거나 아픈가요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                아닙니다. 미나월드의 센서는 <strong class="text-white">패시브 방식</strong>으로, 피부에 가볍게 대어 <strong class="text-white">뇌가 스스로 내는 미세한 신호만 읽습니다</strong>. 통증도, 전기 자극도 없고, 읽은 신호로 몸에 무언가를 보내지도 않습니다. 라디오 안테나에 가깝습니다. 훈련 중에는 앉아서 화면을 보고 소리를 듣는 것이 전부입니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q2. 몇 회 해야 하나요? 한 회는 얼마나 걸리나요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                <strong class="text-white">1회는 약 40분</strong>이며, 센서 착용과 훈련, 상담사 메모를 포함합니다. 권장 리듬은 <strong class="text-white">주 1~2회</strong>이고, 미나월드는 <strong class="text-white">10회를 기본 단위</strong>로 봅니다. 20회는 2~3개월에 걸친 지속 관리, 30회는 장기 훈련 과정입니다. 다만 변화의 속도와 폭은 사람마다 다르므로, "몇 회면 달라진다"고 약속하지 않습니다. 대신 <strong class="text-white">4주 단위 재측정</strong>으로 실제로 무엇이 달라졌는지 확인합니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q3. 약이나 병원 치료와 무엇이 다른가요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                뉴로피드백은 <strong class="text-white">비의료 두뇌 훈련</strong>입니다. 진단하지 않고, 질병을 치료하지 않으며, 처방약을 대신하지도 않습니다. 병원의 진료·검사·약물 치료는 의료기관의 영역이고, 미나월드는 그 옆에서 <strong class="text-white">생활 속 각성·이완·집중 리듬을 연습하는 훈련</strong>을 맡습니다. 두 가지는 서로 대체가 아니라 병행의 관계입니다. 복용 중인 약이 있다면 변경·중단은 반드시 담당 주치의와 상의하셔야 합니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q4. 아이도 받을 수 있나요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                네, 연령대에 맞춰 난이도와 회차 길이를 조정합니다. 미성년자는 <strong class="text-white">보호자 동의와 동반</strong>이 필요합니다. 아이가 집중하지 못하는 이유가 수면 부족·시력·청각·정서 등 다른 곳에 있을 수 있으니, 그 부분은 상담에서 먼저 확인하고 필요하면 의료기관 진료를 권해 드립니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q5. 훈련 중에 무엇을 하나요? 잘해야 하나요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                화면 속 우주선·막대·풍경 같은 요소가 내 뇌파에 반응해 움직이고, 소리가 함께 납니다. 원하는 상태에 가까워지면 진행되고, 흐트러지면 멈춥니다. <strong class="text-white">잘하려고 애쓰지 않으셔도 됩니다.</strong> 오히려 애쓰면 어깨와 턱이 굳어 파형이 흐려집니다. 졸리거나 딴생각이 드는 것도 '지금 내 뇌가 어디로 가는지' 알려주는 정보이니, 그대로 두고 상담사와 함께 보면 됩니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q6. 앱은 꼭 써야 하나요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                필수는 아니지만 권합니다. 종이 결과지는 그날의 사진이고, 앱 기록은 <strong class="text-white">흐름</strong>입니다. <strong class="text-white">MINA WORLD</strong> 앱의 <strong>NEURO TRAINING</strong>에서 회차별 점수와 추이를, <strong>MY BRAIN</strong>에서 뇌파측정 결과지와 전후 비교를 확인하실 수 있습니다. 회차 기록이 쌓이면 "요즘 왜 흔들리는지"를 훨씬 구체적으로 이야기할 수 있습니다.
+              </p>
+            </div>
+          </div>
+
+          <h3 class="text-lg font-bold text-white pt-2">이용권 안내</h3>
+          <p>
+            뉴로피드백은 <strong class="text-white">1회 단회</strong>부터 <strong class="text-white">10·20·30회 패키지</strong>까지 운영합니다. 회차를 묶을수록 회당 단가가 낮아지는 구조이며, 금액은 아래와 같습니다.
+          </p>
+
+          <div class="overflow-x-auto my-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-white/5 text-slate-200">
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">구분</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">금액</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">회당</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">운영 메모</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-300">
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">1회</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">50,000원</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">50,000원</td>
+                  <td class="px-3 py-2.5 border border-white/10">단회 훈련 · 약 40분 · 처음이라면 기준선 측정과 함께</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">10회</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">450,000원</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">45,000원</td>
+                  <td class="px-3 py-2.5 border border-white/10">기본 집중 관리 코스 · 주 1~2회 · 회차별 비교 리포트</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">20회</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">850,000원</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">42,500원</td>
+                  <td class="px-3 py-2.5 border border-white/10">지속 뇌 컨디션 관리 코스 · 2~3개월 · 중간·최종 비교 상담</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">30회</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">1,200,000원</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">40,000원</td>
+                  <td class="px-3 py-2.5 border border-white/10">장기 집중 훈련 코스 · 전담 상담사 누적 관리</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-slate-400">
+            ※ 금액과 구성은 프로그램 운영에 따라 조정될 수 있습니다. 예약 시 최종 금액과 포함 사항을 다시 확인해 주세요. 기업·기관 워크숍과 제휴기관 프로그램은 인원과 장소에 따라 별도 견적으로 안내합니다.
+          </p>
+
+          <div class="p-5 rounded-2xl bg-white/5 border border-white/10 my-6">
+            <p class="text-xs text-slate-300 leading-relaxed">
+              <strong class="text-white">비의료 고지:</strong> 미나월드의 뉴로피드백은 의료기관의 진단·치료를 대체하지 않는 <strong class="text-white">비의료 두뇌 훈련·뇌 컨디션 관리 서비스</strong>입니다. 질환이 의심되는 증상이 있으시면 먼저 의료기관에서 진료를 받으시길 권합니다. 복용 중인 처방약의 변경·중단은 반드시 담당 주치의와 상의하셔야 하며, 본 프로그램은 약물 치료를 대신하지 않습니다.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6">
+            <a href="programs.html" class="p-4 rounded-2xl bg-brand-card/70 border border-white/10 hover:border-brand-blue/50 transition block">
+              <span class="text-[11px] font-bold text-brand-blue block mb-1">PROGRAM</span>
+              <span class="text-sm font-bold text-white block mb-1">프로그램 전체 보기</span>
+              <span class="text-[11px] text-slate-400">기업 워크숍 · 1:1 코칭 · 뉴로스포츠</span>
+            </a>
+            <a href="diagnostic.html" class="p-4 rounded-2xl bg-brand-card/70 border border-white/10 hover:border-brand-accent/50 transition block">
+              <span class="text-[11px] font-bold text-brand-accent block mb-1">1분 자가진단</span>
+              <span class="text-sm font-bold text-white block mb-1">내 뇌 컨디션 먼저 확인</span>
+              <span class="text-[11px] text-slate-400">수면·스트레스·집중·번아웃 유형</span>
+            </a>
+            <a href="contact.html" class="p-4 rounded-2xl bg-brand-accent/15 border border-brand-accent/40 hover:bg-brand-accent/25 transition block">
+              <span class="text-[11px] font-bold text-brand-accent block mb-1">CONTACT</span>
+              <span class="text-sm font-bold text-white block mb-1">예약·문의하기</span>
+              <span class="text-[11px] text-slate-300">카카오톡 · 전화 010-5424-0807</span>
+            </a>
+          </div>
+
+          <div class="mt-4 p-5 rounded-2xl bg-brand-card border border-brand-blue/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">🧠 1:1 뉴로피드백 &amp; 뇌파 코칭</h4>
+              <p class="text-xs text-slate-400">2채널 무선 뇌파 측정 + 개인 맞춤 프로토콜 훈련 + 4주 단위 변화 추적</p>
+            </div>
+            <a href="contact.html" class="px-6 py-2.5 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white text-xs font-bold shrink-0 transition">
+              상담 신청하기
+            </a>
+          </div>
+        </section>
+
+      </div>
+    </article>
+
+    <!-- 공유 및 하단 내비게이션 -->
+    <div class="py-8 border-t border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">아티클 공유하기:</span>
+        <button onclick="copyCurrentUrl()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-1.5">
+          <span>🔗 링크 복사</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="community.html" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+          목록으로 돌아가기
+        </a>
+        <a href="contact.html" class="px-5 py-2 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white shadow-md transition">
+          1:1 프로그램 상담 신청
+        </a>
+      </div>
+    </div>
+
+    <!-- 다른 요일의 '하루 한 스푼, 뇌과학' 추천 링크 -->
+    <section class="mt-16">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>✨</span> 함께 읽으면 좋은 뇌과학 인사이트
+        </h3>
+        <a href="community.html" class="text-xs text-brand-accent hover:underline">전체보기 →</a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="article-2026-11-25-eeg-measurement-guide.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-cyan-400/40 transition block group">
+          <div class="text-[11px] text-cyan-400 font-bold mb-1">수요일 · 뇌파측정 가이드</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-cyan-400 transition mb-1">
+            뇌파측정, 왜 해야 할까요? — 2채널 뇌파검사로 알 수 있는 것들 총정리
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">훈련 전 기준선을 잡는 측정 8~10항목과 측정 절차를 먼저 읽어 보세요</p>
+        </a>
+
+        <a href="article-2026-11-21-alpha-smr-beta-brainwaves.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-emerald-400/40 transition block group">
+          <div class="text-[11px] text-emerald-400 font-bold mb-1">토요일 · 뉴로피드백·뇌파 과학</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-emerald-400 transition mb-1">
+            눈만 감았는데 뇌파가 바뀐다 — 알파파·SMR파·하이베타파로 읽는 내 뇌의 컨디션 스위치
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">알파·SMR·베타 대역의 의미를 알면 오늘 글의 목표 리듬이 쉽게 들어옵니다</p>
+        </a>
+
+        <a href="article-neurofeedback.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-blue/40 transition block group">
+          <div class="text-[11px] text-brand-blue font-bold mb-1">뉴로피드백 입문</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-blue transition mb-1">
+            내 뇌파를 직접 보며 훈련하는 '뇌 피트니스', 뉴로피드백의 과학
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">짧게 읽고 싶다면 — 뉴로피드백의 기본 개념을 6분 분량으로 정리한 입문 글</p>
+        </a>
+
+        <a href="article-2026-11-17-vagus-nerve-hrv.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-pink-400/40 transition block group">
+          <div class="text-[11px] text-pink-400 font-bold mb-1">화요일 · 스트레스와 감정</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-pink-400 transition mb-1">
+            참는다고 가라앉지 않는 이유 — 미주신경과 HRV로 회복하는 자율신경 브레이크
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">과열된 뇌를 내리는 4단계 브레이크, 훈련 사이에 집에서 쓰는 방법</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (아임웹 정보 100% 반영) -->
+  <footer class="py-14 border-t border-white/10 text-xs text-slate-400 bg-brand-dark/95">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- 1열: 브랜드 로고 및 저작권 -->
+        <div>
+          <h4 class="text-base font-bold text-white tracking-wider mb-2 font-serif">MINA WORLD</h4>
+          <p class="text-slate-500 text-xs">© 2026 Make.</p>
+        </div>
+
+        <!-- 2열: SITEMAP -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">SITEMAP</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="about.html" class="hover:text-white transition">ABOUT US</a></li>
+            <li><a href="programs.html" class="hover:text-white transition">PROGRAM</a></li>
+            <li><a href="community.html" class="hover:text-white transition">COMMUNITY</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">CONTACT</a></li>
+          </ul>
+        </div>
+
+        <!-- 3열: SERVICE & BANK -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">SERVICE</h4>
+          <p class="text-slate-300 font-medium mb-1">010-5424-0807</p>
+          <p class="text-slate-500 mb-0.5">Mon - Fri AM 09:00 - 18:00</p>
+          <p class="text-slate-500 mb-4">Sat.Sun.Red-Day Off</p>
+
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">BANK</h4>
+          <p class="text-slate-400">KAKAO BANK 3333-37-1190044</p>
+        </div>
+
+        <!-- 4열: INSTAGRAM, NAVER, KAKAO TALK -->
+        <div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">INSTAGRAM</h4>
+            <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://www.instagram.com/wellnessworld.zip</a>
+          </div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">NAVER</h4>
+            <a href="https://naver.me/xhPGBxC0" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://naver.me/xhPGBxC0</a>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">KAKAO TALK</h4>
+            <a href="http://pf.kakao.com/_WxmhEX" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">http://pf.kakao.com/_WxmhEX</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 mb-6">
+        <div>
+          <span>Seoul, Korea</span>
+          <span class="mx-2">|</span>
+          <span>Biz License 893-53-00975</span>
+          <span class="mx-2">|</span>
+          <span>© 2026 MINA WORLD. All rights reserved</span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+          <span class="text-slate-600">|</span>
+          <a href="#" class="hover:text-slate-300 transition">Privacy</a>
+        </div>
+      </div>
+
+      <!-- 맨 하단 한 줄 사업자 상세 정보 -->
+      <div class="text-[11px] text-slate-600 leading-relaxed">
+        상호명: 미나월드 대표자: 이미나 사업장주소: 서울 송파구 오금로46길 41 (가락동) 2층 2567호 연락처: 01054240807 사업자등록번호: 893-53-00975 대표자 이메일: minawellnesslab@gmail.com
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // 읽기 진행률 표시
+    window.addEventListener('scroll', function() {
+      var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      var bar = document.getElementById('reading-bar');
+      if (bar) {
+        bar.style.width = scrolled + '%';
+      }
+    });
+
+    // 현재 URL 클립보드 복사
+    function copyCurrentUrl() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          alert('아티클 링크가 복사되었습니다! 원하는 곳에 공유해보세요.');
+        });
+      } else {
+        alert('주소창의 링크를 복사해주세요: ' + window.location.href);
+      }
+    }
+  </script>
+</body>
+</html>
