@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TTMVKBHNZM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TTMVKBHNZM');
+  </script>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <script>
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      location.replace(location.href.replace('http:', 'https:'));
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아무 일도 안 하는데 생각이 멈추지 않는 이유 — 디폴트 모드 네트워크(DMN)와 뇌파 리듬의 균형 | 하루 한 스푼, 뇌과학 - MINA Wellness World</title>
+  <meta name="description" content="가만히 있는데도 머리가 시끄러운 밤은 뇌의 '기본값'인 디폴트 모드 네트워크(DMN)와 반추가 겹치는 시간입니다. 2001년 라이클의 원 논문부터 딴생각 46.9% 연구, 반추와 DMN 연결을 다룬 우울증 연구까지 정리하고, 알파·세타·고베타 리듬으로 밤의 세 가지 상태를 읽는 법과 잠들기 전 10분 루틴, 뇌파측정·뉴로피드백 안내를 한 편에 담았습니다." />
+  <meta name="keywords" content="디폴트 모드 네트워크, DMN, 반추, 잡념, 생각이 멈추지 않는 밤, 자기참조적 사고, 뇌파측정, 무선 EEG, 알파파 세타파 고베타파, 알파세타 훈련, 뉴로피드백, 뇌 컨디션 관리, 명상 fMRI, 미나월드, 뉴로웰니스" />
+  <meta name="robots" content="index, follow" />
+  <meta name="google-site-verification" content="Vi6kKPe24ViYvS4NbUpW02Nco_04PP_qHLX9UmNT3QM" />
+  <meta name="naver-site-verification" content="b397311e6eb26e5eec40f3994740c10e6a243a4a" />
+  <link rel="canonical" href="https://www.minaworld.co.kr/article-2026-11-28-dmn-rumination-brainwaves.html" />
+  <meta property="og:site_name" content="MINA Wellness World" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.minaworld.co.kr/article-2026-11-28-dmn-rumination-brainwaves.html" />
+  <meta property="og:title" content="아무 일도 안 하는데 생각이 멈추지 않는 이유 — 디폴트 모드 네트워크(DMN)와 뇌파 리듬의 균형 | 하루 한 스푼, 뇌과학 - MINA Wellness World" />
+  <meta property="og:description" content="쉬는 순간 켜지는 뇌의 '기본값' 디폴트 모드 네트워크와 반추가 밤의 잡념이 되는 과정, 알파·세타·고베타 리듬으로 읽는 밤의 세 가지 상태, 잠들기 전 10분과 4주 루틴을 정리했습니다." />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Pretendard -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#070D1E',
+              navy: '#0B1633',
+              card: '#122046',
+              accent: '#FF7E95',
+              accentHover: '#FF607D',
+              gold: '#E5C07B',
+              mint: '#3CD070',
+              blue: '#4A90E2',
+              purple: '#A855F7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #070D1E;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .card-glow {
+      box-shadow: 0 10px 30px -10px rgba(11, 22, 51, 0.7);
+    }
+    #reading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(to right, #4A90E2, #22D3EE, #3CD070);
+      width: 0%;
+      z-index: 100;
+      transition: width 0.1s ease-out;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-white">
+  
+  <!-- 상단 읽기 진행률 바 -->
+  <div id="reading-bar"></div>
+
+  <!-- 헤더 / 내비게이션 바 -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-brand-dark/85 border-b border-white/10 transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <span class="font-serif font-bold text-xl tracking-wider text-white group-hover:text-brand-accent transition">MINA</span>
+        <span class="text-xs uppercase tracking-widest text-brand-accent font-semibold">Wellness World</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="community.html" class="hidden sm:inline-flex items-center gap-1.5 text-slate-300 hover:text-white px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          <span>📚 하루 한 스푼 뇌과학 목록</span>
+        </a>
+        <a href="index.html" class="inline-flex items-center gap-1 text-slate-300 hover:text-brand-accent transition">
+          <span>← 메인 홈으로</span>
+        </a>
+        <a href="contact.html" class="px-4 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white shadow-md shadow-brand-accent/20 transition">
+          상담/제휴 문의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 아티클 본문 영역 -->
+  <main class="max-w-4xl mx-auto px-6 py-12 md:py-16 w-full">
+    
+    <!-- 빵부스러기 내비게이션 -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 mb-8 overflow-x-auto no-scrollbar">
+      <a href="index.html" class="hover:text-white transition">홈</a>
+      <span>/</span>
+      <a href="community.html" class="hover:text-white transition">하루 한 스푼, 뇌과학</a>
+      <span>/</span>
+      <span class="text-brand-gold font-medium">토요일 · 뉴로피드백·뇌파 과학</span>
+    </nav>
+
+    <!-- 아티클 헤더 -->
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-xs">
+        <span class="px-3 py-1 rounded-full font-bold bg-brand-gold/15 text-brand-gold border border-brand-gold/30">토요일 · 뉴로피드백·뇌파 과학</span>
+        <span class="text-slate-400">2026.11.28</span>
+        <span class="text-slate-500">·</span>
+        <span class="text-slate-400">13분 완독</span>
+      </div>
+
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight" style="word-break: keep-all;">
+        아무 일도 안 하는데 생각이 멈추지 않는 이유 — 디폴트 모드 네트워크&#8288;(DMN)&#8288;와 뇌파 리듬의 균형
+      </h1>
+      
+      <p class="text-base md:text-xl text-slate-300 font-medium leading-relaxed mb-8" style="word-break: keep-all;">
+        가만히 있는데도 머리가 시끄러운 밤은 뇌의 '기본값'인 디폴트 모드 네트워크(DMN)가 반추로 넘어가는 시간입니다. DMN이 무엇이고 왜 밤에 특히 요란해지는지, 알파·세타·고베타 리듬으로 그 상태를 어떻게 읽는지, 잠들기 전 10분과 4주 루틴까지 한 편에 정리했습니다.
+      </p>
+
+      <!-- 작성자 정보 -->
+      <div class="flex items-center gap-4 py-4 px-5 rounded-2xl bg-brand-card/70 border border-white/10">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-blue to-cyan-500 flex items-center justify-center text-lg font-bold text-white shadow-md">
+          M
+        </div>
+        <div>
+          <div class="text-sm font-bold text-white flex items-center gap-2">
+            이미나 대표
+            <span class="text-[11px] font-normal text-slate-400">| 뇌교육상담사 · MINA Wellness World</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            뇌과학 기반 뉴로웰니스 솔루션과 신체 움직임을 결합하여 건강한 뇌 컨디션을 만듭니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 핵심 요약 콜아웃 박스 -->
+      <div class="mt-8 p-6 rounded-2xl bg-brand-navy border-l-4 border-brand-gold border-r border-t border-b border-white/10 card-glow">
+        <div class="flex items-center gap-2 text-brand-gold font-bold text-xs uppercase tracking-wider mb-2">
+          <span>💡 30초 핵심 요약 (Executive Summary)</span>
+        </div>
+        <p class="text-sm text-slate-200 leading-relaxed">
+          2001년 라이클(Raichle) 연구팀이 <em>PNAS</em>에 발표한 논문은 뇌에 <strong class="text-white">'일을 안 할 때 오히려 더 활발한 회로'</strong>가 있다는 사실을 보여줬습니다. 내측 전전두엽·후대상피질·외측 두정엽을 잇는 이 회로가 <strong class="text-white">디폴트 모드 네트워크(DMN)</strong>입니다. 과거를 되감고 미래를 미리 그려 보는 데 쓰는, 나를 이어주는 회로입니다. 문제는 이 회로가 <strong class="text-white">해결로 가지 않는 반복</strong>에 갇힐 때입니다. 스마트폰 표본 25만 건을 분석한 연구는 깨어 있는 시간의 <strong class="text-white">46.9%</strong>가 딴생각이었고, 그 순간 기분이 더 낮았다고 보고했습니다. 밤에는 외부 입력이 줄어 이 내부 회로의 비중이 커지고, 알파·세타·고베타의 균형이 흐트러진 상태가 '몸은 피곤한데 머리는 깨어 있는 밤'으로 나타납니다. 이 글은 그 메커니즘과 <strong class="text-white">밤에 쓸 수 있는 4단계</strong>, 그리고 자기조절을 연습하는 <strong class="text-white">뉴로피드백</strong>의 자리를 정리했습니다.
+        </p>
+      </div>
+
+      <!-- 상단 비의료 고지 (필수) -->
+      <div class="mt-4 p-5 rounded-2xl bg-brand-accent/10 border border-brand-accent/40">
+        <p class="text-xs text-slate-200 leading-relaxed">
+          ⚠️ <strong class="text-white">본 글은 뇌과학 연구 동향과 비의료 웰니스 훈련 정보를 안내하는 글입니다.</strong> 미나월드의 뇌파측정과 뉴로피드백은 의료기관의 <strong class="text-white">진단·치료를 대체하지 않는 비의료 두뇌 훈련·뇌 컨디션 관리 서비스</strong>이며, 불면·우울·불안 등 증상이 의심되면 먼저 의료기관에서 진료를 받으셔야 합니다.
+        </p>
+      </div>
+    </header>
+
+    <!-- 상세 본문 -->
+    <article class="mb-16">
+      <div class="prose prose-invert max-w-none text-slate-300 space-y-8 text-base leading-relaxed">
+        
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-gold">01.</span> '아무것도 안 했는데' 뇌는 가장 바쁩니다 — 디폴트 모드 네트워크
+          </h2>
+          <p>
+            밤 열한 시, 불을 끄고 누웠습니다. 오늘 할 일은 다 끝냈고, 내일 아침까지 해야 할 것도 없습니다. 그런데 머릿속에서는 회의가 시작됩니다. 낮에 했던 말이 다시 재생되고, 3년 전 대화가 떠오르고, 내일 아침 그 말을 또 잘못하면 어떡하나 하는 장면이 미리 그려집니다. 몸은 무거운데 머리만 또렷합니다. <strong class="text-white">"아무것도 안 하고 있는데 왜 이렇게 시끄럽지?"</strong>
+          </p>
+          <p>
+            이 질문에 대한 답은 2001년에 이미 논문 한 편으로 정리되어 있었습니다. 워싱턴대학의 마커스 라이클(Marcus Raichle) 연구팀은 양전자단층촬영(PET) 자료를 모아, <strong class="text-white">특정 과제를 수행할 때 오히려 활동이 '줄어드는' 영역들</strong>이 일정하게 겹친다는 것을 발견했습니다. 그 영역은 내측 전전두엽, 후대상피질과 설전부, 외측 두정엽, 해마 주변입니다. 연구팀은 이 회로에 <strong class="text-white">'기본값(default)'</strong>이라는 이름을 붙였습니다. 과제를 하지 않을 때 상대적으로 더 활발하다는 뜻에서였습니다(<em>PNAS</em> 2001;98(2):676-682).
+          </p>
+
+          <div class="p-5 rounded-2xl bg-brand-card/90 border border-white/10 my-6">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-brand-blue/15 text-brand-blue border border-brand-blue/30">원 논문</span>
+              <h4 class="text-sm font-bold text-white">"A default mode of brain function" — 라이클 외, PNAS 2001</h4>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left border-collapse">
+                <thead>
+                  <tr class="bg-white/5 text-slate-200">
+                    <th class="px-3 py-2 border border-white/10 font-bold whitespace-nowrap">구분</th>
+                    <th class="px-3 py-2 border border-white/10 font-bold">논문이 말한 것</th>
+                  </tr>
+                </thead>
+                <tbody class="text-slate-300">
+                  <tr>
+                    <td class="px-3 py-2 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">핵심 발견</td>
+                    <td class="px-3 py-2 border border-white/10">목표 지향 과제를 수행할 때 활동이 <strong class="text-white">일관되게 감소</strong>하는 영역군이 존재하며, 이 영역들이 서로 기능적으로 묶여 있다</td>
+                  </tr>
+                  <tr class="bg-white/[0.02]">
+                    <td class="px-3 py-2 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">주요 노드</td>
+                    <td class="px-3 py-2 border border-white/10">내측 전전두엽(mPFC), 후대상피질(PCC)·설전부, 외측 두정엽, 해마 주변</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">이름의 뜻</td>
+                    <td class="px-3 py-2 border border-white/10">특정 과제를 하지 않을 때 상대적으로 더 활발한 <strong class="text-white">'뇌의 기본 상태'</strong>라는 의미. 과제 수행 중에는 이 회로가 꺼지는 경향</td>
+                  </tr>
+                  <tr class="bg-white/[0.02]">
+                    <td class="px-3 py-2 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">이후 연구로</td>
+                    <td class="px-3 py-2 border border-white/10">2007년 벅너·캐럴이 정리한 개념(<em>Trends Cogn Sci</em>) — 이 회로는 <strong class="text-white">자기 투영(self-projection)</strong>, 즉 과거를 다시 세우고 미래 장면을 미리 시뮬레이션하는 일을 맡는다</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-3 leading-relaxed">
+              ※ 2001년 논문은 이미 축적된 영상 자료를 재분석해 개념을 정리한 것이고, 이후 20여 년간 수천 편의 연구로 이 회로의 세부 구조와 기능이 확장·수정되었습니다. 지금도 'DMN을 어떻게 정의할 것인가'에는 논쟁이 남아 있습니다.
+            </p>
+          </div>
+
+          <h3 class="text-lg font-bold text-white pt-2">쉬는 뇌가 비용을 아끼는 것이 아닙니다</h3>
+          <p>
+            '기본값'이라는 이름 때문에 오해하기 쉽지만, DMN이 켜지는 것은 뇌가 <strong class="text-white">전력을 아끼는 모드</strong>가 아닙니다. 뇌는 몸무게의 약 2%인데 산소와 포도당의 약 20%를 씁니다. 그런데 과제를 시작할 때 특정 부위에서 늘어나는 활동은 <strong class="text-white">전체 에너지 사용량의 몇 퍼센트 수준</strong>에 그칩니다. 뇌의 에너지 지출은 과제를 하느냐보다 <strong class="text-white">기준선을 어디에 두고 있느냐</strong>에 훨씬 크게 좌우된다는 것입니다(라이클 & 민턴, <em>Annual Review of Neuroscience</em> 2006). 라이클은 이 관찰을 두고 뇌의 <strong class="text-white">'다크 에너지'</strong>에 비유했습니다. 우주를 구성하는 대부분이 관측되지 않는 에너지이듯, 뇌가 쓰는 에너지의 대부분도 눈에 띄는 과제 활동이 아니라 조용한 배경 활동이라는 뜻입니다.
+          </p>
+          <p>
+            그래서 "오늘 아무것도 안 했는데 왜 이렇게 피곤하지"는 이상한 일이 아닙니다. <strong class="text-white">몸은 쉬었지만 뇌는 기본 회로를 계속 돌리고 있었던 것</strong>입니다. 그리고 그 회로가 돌리는 내용이 대개 오늘의 미완료 목록, 어제의 실수, 내일의 예상 장면이라면 — 쉬는 시간이 곧 재방송 시간이 됩니다.
+          </p>
+
+          <div class="p-5 rounded-2xl bg-brand-navy border border-brand-gold/30 my-6">
+            <h4 class="text-sm font-bold text-brand-gold mb-2">🧭 DMN은 나쁜 회로가 아닙니다</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              DMN은 <strong class="text-white">자기 이해, 기억 정리, 계획, 다른 사람의 마음을 짐작하기</strong>를 담당합니다. 창의적 연결이 이 회로에서 나오기도 합니다. 문제는 회로의 존재가 아니라 <strong class="text-white">켜져 있을 때 무엇을 반복하고 있는가</strong>입니다. 같은 장면을 열 번째 되감고 있다면 그건 정리가 아니라 재생입니다. 이 글에서 다루는 것도 'DMN을 끄는 법'이 아니라 <strong class="text-white">반복에서 빠져나오는 연습</strong>입니다.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-gold">02.</span> 그 회로가 '반추'로 굳을 때 — 46.9%라는 숫자와 밤의 구조
+          </h2>
+          <p>
+            그렇다면 왜 하필 밤에 심해질까요. 답을 세 겹으로 나눠 볼 수 있습니다. <strong class="text-white">내부 사고의 비중이 커지는 조건</strong>, <strong class="text-white">미완료 과제가 남아 있는 조건</strong>, 그리고 <strong class="text-white">생각을 지우려 할수록 커지는 역설</strong>입니다.
+          </p>
+
+          <h3 class="text-lg font-bold text-white pt-2">① 딴생각은 하루의 절반을 차지합니다</h3>
+          <p>
+            2010년 <em>Science</em>에 실린 킬링스워스와 길버트의 연구는 이 주제에서 가장 자주 인용되는 자료입니다. 연구팀은 아이폰 앱으로 <strong class="text-white">2,250명의 성인</strong>에게 하루 몇 차례씩 "지금 무엇을 하고 있나요, 지금 기분은 어떤가요"를 물었고, 약 <strong class="text-white">25만 건</strong>의 응답을 모았습니다. 결과는 이랬습니다. 깨어 있는 시간의 <strong class="text-white">46.9%</strong>에서 사람들은 '지금 하는 일'이 아니라 다른 것을 생각하고 있었습니다. 그리고 딴생각을 하는 순간의 행복도는 그렇지 않은 순간보다 낮았으며, <strong class="text-white">딴생각이 그 직후의 기분을 예측</strong>했습니다(반대 방향, 즉 기분이 나빠서 딴생각이 늘어나는 경로도 배제할 수 없다고 저자들은 밝혔습니다).
+          </p>
+          <p>
+            이 숫자를 '절반은 집중 못 한다'로 읽으면 손해입니다. 더 중요한 것은 <strong class="text-white">딴생각이 기본값</strong>이라는 사실입니다. 눕자마자 생각이 시작되는 것은 의지가 약해서가 아니라, 외부에서 들어오는 입력이 끊긴 자리에 <strong class="text-white">원래 늘 돌고 있던 회로</strong>가 그대로 남아 있기 때문입니다.
+          </p>
+
+          <h3 class="text-lg font-bold text-white pt-2">② 반추에는 두 종류가 있습니다</h3>
+          <p>
+            반추(rumination)는 <strong class="text-white">반복적이고 수동적으로, 자기 자신에 대해 되감는 사고</strong>를 말합니다. 그런데 같은 반추라도 성질이 다릅니다. 트레이너 등이 정리한 반추 척도(2003, <em>Cognitive Therapy and Research</em>)는 이를 <strong class="text-white">'브루딩(brooding)'</strong>과 <strong class="text-white">'리플렉션(reflection)'</strong>으로 나눕니다. 브루딩은 "왜 나는 항상 이럴까"처럼 <strong class="text-white">결론 없이 같은 자리를 도는 사고</strong>이고, 리플렉션은 문제를 이해하려는 <strong class="text-white">목적 있는 되짚기</strong>입니다. 전자는 기분을 더 가라앉히는 쪽으로, 후자는 상대적으로 중립적이거나 때로 도움이 되는 쪽으로 보고됩니다.
+          </p>
+          <p>
+            뇌 영상 연구도 이 구분과 맞물립니다. 해밀턴 등은 주요우울장애가 있는 사람들을 대상으로 한 연구에서 <strong class="text-white">DMN의 핵심 노드들 사이의 연결</strong>과 <strong class="text-white">DMN과 다른 회로(예: 슬픔·자기평가에 관여하는 복내측 전전두엽 영역)의 연결</strong>이 반추의 서로 다른 측면과 관련된다고 보고했습니다(<em>Biological Psychiatry</em> 2011;70(4):327-333). 즉 <strong class="text-white">같은 '생각이 많다'도 신경 회로의 층위에서는 한 가지 상태가 아닙니다</strong>.
+          </p>
+          <p class="text-xs text-slate-400 leading-relaxed bg-white/5 border border-white/10 rounded-xl p-4">
+            ※ 이 문단은 집단 수준의 관찰 연구 결과입니다. 개인의 뇌 영상이나 뇌파로 반추를 진단하거나 '브루딩인지 리플렉션인지' 판정할 수는 없습니다. 우울감이 2주 이상 지속되거나 일상 기능이 흔들린다면 검사보다 진료가 먼저입니다.
+          </p>
+
+          <h3 class="text-lg font-bold text-white pt-2">③ 밤에 심해지는 세 가지 이유</h3>
+          <div class="overflow-x-auto my-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-white/5 text-slate-200">
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">이유</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">무슨 일이 일어나는가</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">그래서 무엇을 바꾸는가</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-300">
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">외부 입력이<br>끊긴다</td>
+                  <td class="px-3 py-2.5 border border-white/10">낮에는 대화·일·화면이 계속 주의를 바깥으로 끌어당깁니다. 불을 끄면 그 입력이 사라지고, 남은 것은 <strong class="text-white">내부 회로의 소리</strong>뿐입니다. 상대적 비중이 커집니다.</td>
+                  <td class="px-3 py-2.5 border border-white/10">잠들기 전 <strong class="text-white">입력을 갑자기 0으로 만들지 않기</strong>. 낮은 조도·느린 리듬의 입력을 남겨 두고 서서히 내립니다.</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">미완료 과제가<br>남아 있다</td>
+                  <td class="px-3 py-2.5 border border-white/10">끝내지 못한 일은 기억에서 <strong class="text-white">'열린 채로'</strong> 표시됩니다. 마시캄포와 바우마이스터의 연구(<em>JPSP</em> 2011)는 <strong class="text-white">구체적인 계획을 적는 것만으로</strong> 미완료 과제가 떠오르는 빈도가 줄었다고 보고했습니다.</td>
+                  <td class="px-3 py-2.5 border border-white/10">잠들기 전 <strong class="text-white">'내일 할 것'을 한 줄로 적어 닫기</strong>. 해결이 아니라 '닫힘'이 목적입니다.</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">지우려 하면<br>더 커진다</td>
+                  <td class="px-3 py-2.5 border border-white/10">베그너의 '흰곰' 실험(1987, <em>JPSP</em>)에서 "흰곰을 떠올리지 마세요"라고 지시받은 사람들은 오히려 그 생각을 더 자주 떠올렸습니다. 억제는 <strong class="text-white">감시 장치를 함께 켜기</strong> 때문입니다.</td>
+                  <td class="px-3 py-2.5 border border-white/10">"생각하지 말자" 대신 <strong class="text-white">"지금 계획인지, 걱정인지, 기억인지" 이름 붙이기</strong>. 지우는 대신 분류합니다.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            세 가지를 겹쳐 보면 밤의 잡념은 <strong class="text-white">의지의 문제가 아니라 조건의 문제</strong>라는 것이 드러납니다. 그리고 조건은 바꿀 수 있습니다. 다만 그 전에, 지금 내 밤이 어떤 상태인지부터 알아야 방향이 정해집니다. 여기서 뇌파가 등장합니다.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-gold">03.</span> 뇌파로 보는 '시끄러운 밤'의 세 가지 유형 — 알파·세타·고베타
+          </h2>
+          <p>
+            먼저 분명히 해 둘 것이 있습니다. <strong class="text-white">DMN은 fMRI나 PET으로 보는 심부 네트워크이고, 두피에 붙인 전극 몇 개로 그 회로를 직접 '찍는' 것은 아닙니다.</strong> 미나월드의 뇌파측정은 이마 좌우(FP1·FP2)에서 피질의 대규모 리듬을 읽는 방식입니다. 그렇다면 뇌파로 무엇을 보는 걸까요. <strong class="text-white">각성 수준과 리듬의 균형</strong>입니다. 그리고 그 균형이 잡념의 밤과 어떻게 연결되는지가 이 절의 주제입니다.
+          </p>
+
+          <div class="overflow-x-auto my-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-white/5 text-slate-200">
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">대역</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">주파수</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">컨디션 언어로 읽으면</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-300">
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">델타</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">1~4Hz</td>
+                  <td class="px-3 py-2.5 border border-white/10">깊은 잠. 깨어 있는데도 이 대역이 두드러지면 각성이 크게 떨어진 상태</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">세타</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">4~8Hz</td>
+                  <td class="px-3 py-2.5 border border-white/10">졸림·몽롱함. 다만 <strong class="text-white">내적으로 주의가 모일 때</strong>도 올라가는 두 얼굴을 가진 대역(아래 설명)</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">알파</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">8~12Hz</td>
+                  <td class="px-3 py-2.5 border border-white/10">눈을 감으면 올라가는 이완 리듬. 필요 없는 입력을 걸러내는 여유. 잠으로 넘어가는 <strong class="text-white">완충 구간</strong></td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">SMR</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">12~15Hz</td>
+                  <td class="px-3 py-2.5 border border-white/10">몸은 조용한데 정신은 또렷한 '조용한 집중'. 훈련에서 자주 목표가 되는 대역</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">베타 /<br>고베타</td>
+                  <td class="px-3 py-2.5 border border-white/10 whitespace-nowrap">15~30Hz<br>20~30Hz+</td>
+                  <td class="px-3 py-2.5 border border-white/10">활동적 사고. 지나치면 조급함·생각 빨리 감김. <strong class="text-white">턱·어깨의 미세한 긴장</strong>이 파형에 섞여 들어옴</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="text-lg font-bold text-white pt-2">세타의 두 얼굴 — 졸림과 내적 몰입</h3>
+          <p>
+            세타는 특히 조심해서 읽어야 합니다. 아프타나스와 골로첼키네의 연구(<em>Neuroscience Letters</em> 2001)는 명상 중 <strong class="text-white">전두·정중 부위의 세타 증가</strong>와 <strong class="text-white">낮은 알파</strong>가 정서적으로 긍정적인 상태 및 내적 주의와 함께 나타났다고 보고했습니다. 즉 세타가 올라간다고 해서 모두 '멍한 상태'는 아닙니다. <strong class="text-white">졸려서 올라온 세타</strong>와 <strong class="text-white">조용히 안으로 모이며 올라온 세타</strong>를 구분해야 합니다.
+          </p>
+          <p>
+            구분은 파형만으로 되지 않습니다. <strong class="text-white">호흡이 얕고 느려졌는지, 눈꺼풀이 무거운지, 생각의 흐름이 끊기는지</strong>를 함께 봐야 합니다. 그래서 미나월드는 숫자와 함께 그날의 컨디션(잠든 시각, 마지막 커피, 집중이 끊긴 시간대)을 기록합니다. 숫자는 흔들림을 보여주고, 기록은 그 흔들림의 이유를 알려줍니다.
+          </p>
+
+          <h3 class="text-lg font-bold text-white pt-2">'알파-세타'라는 이름에 대해 — 근거의 수준을 정직하게</h3>
+          <p>
+            이 분야에서 가장 오래 언급되는 프로토콜 중 하나가 알파-세타 훈련입니다. 페니스턴과 쿨코스키는 1980년대 후반 알코올 의존이 있는 성인 <strong class="text-white">10명</strong>을 대상으로 <strong class="text-white">6주간 30회기</strong>의 알파-세타 뇌파 훈련을 진행하고, 이후 추적 보고를 발표했습니다(1989, <em>Alcoholism: Clinical and Experimental Research</em>; 1991 추적). 보고된 변화는 인상적이었지만, <strong class="text-white">대상이 10명이고 대조군이 없는 초기 연구</strong>입니다. 이후 연구들도 설계와 결과가 일관되지 않아, 학계에서는 <strong class="text-white">'가능성을 보여준 초기 근거'</strong>로 다룹니다.
+          </p>
+          <p>
+            그래서 미나월드는 이 훈련을 '알파-세타'라는 이름으로 약속하지 않습니다. 대신 <strong class="text-white">개인의 기준선에 맞춘 프로토콜</strong>로 진행하고, <strong class="text-white">회차 기록과 4주 재측정</strong>으로 실제 변화를 확인합니다. 이름이 주는 기대보다, 내 기록에서 확인되는 변화가 더 정직하기 때문입니다.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">유형 A</span>
+              <h4 class="text-base font-bold text-white mb-2">알파로 내려가지 않는 밤</h4>
+              <ul class="text-xs text-slate-400 leading-relaxed space-y-1.5 list-disc pl-4">
+                <li>눈을 감아도 리듬이 가라앉지 않음</li>
+                <li>생각이 오히려 또렷해짐</li>
+                <li>몸은 피곤한데 잠으로 넘어가는 완충 구간이 없음</li>
+              </ul>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-purple uppercase tracking-wider block mb-1">유형 B</span>
+              <h4 class="text-base font-bold text-white mb-2">몽롱한데 잠은 안 오는 밤</h4>
+              <ul class="text-xs text-slate-400 leading-relaxed space-y-1.5 list-disc pl-4">
+                <li>눕기만 하면 몽롱해짐</li>
+                <li>생각이 끊기다가 다시 이어짐</li>
+                <li>낮에도 멍한 시간이 길어짐</li>
+              </ul>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/5 border border-white/10">
+              <span class="text-xs font-bold text-brand-accent uppercase tracking-wider block mb-1">유형 C</span>
+              <h4 class="text-base font-bold text-white mb-2">긴장이 안 풀리는 밤</h4>
+              <ul class="text-xs text-slate-400 leading-relaxed list-disc pl-4 space-y-1.5">
+                <li>턱·어깨에 힘이 남아 있음</li>
+                <li>생각이 빨리 감기고 심장이 두근거림</li>
+                <li>이불 속에서 몸을 자주 뒤척임</li>
+              </ul>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            ※ 위 세 유형은 뇌파 대역의 일반적 해석을 일상 언어로 옮긴 것으로, 진단적 분류가 아닙니다. 같은 사람도 날마다 다른 유형을 오갑니다.
+          </p>
+
+          <div class="p-5 rounded-2xl bg-brand-navy border border-brand-blue/30 my-6">
+            <h4 class="text-sm font-bold text-cyan-300 mb-2">🔍 잠들기 전 30초 셀프 체크</h4>
+            <p class="text-xs text-slate-300 leading-relaxed mb-2">
+              아래 세 문장 중 <strong class="text-white">두 개 이상</strong>이 최근 2~3주 자주 해당된다면, 잠의 문제를 '의지'로 다루기 전에 <strong class="text-white">지금 내 각성이 어느 방향으로 치우쳐 있는지</strong>를 확인해 볼 만합니다.
+            </p>
+            <ul class="text-xs text-slate-300 space-y-1.5 list-disc pl-5">
+              <li><strong>① 불을 끄면 머리가 켜집니다.</strong> 낮보다 밤에 생각이 더 정리되고, 그 정리가 끝나지 않습니다.</li>
+              <li><strong>② 낮에는 멍한데 밤에는 또렷합니다.</strong> 오후의 멍함과 밤의 각성이 같은 사람에게서 번갈아 나타납니다.</li>
+              <li><strong>③ 잠들 때까지 몸의 힘이 안 빠집니다.</strong> 이를 악물고 있거나 어깨가 올라가 있는 것을 나중에 알아차립니다.</li>
+            </ul>
+            <p class="text-xs text-slate-400 pt-2">
+              ※ 이 신호들은 질환의 증상이 아니라 <strong class="text-slate-300">컨디션 점검이 필요한 지점</strong>입니다. 잠들기 어려움이 오래 이어지거나 낮 기능이 떨어진다면 먼저 의료기관에서 진료를 받으세요.
+            </p>
+          </div>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-3">
+            <span class="text-brand-accent">정리</span> 오늘 기억할 세 문장
+          </h2>
+          <div class="bg-brand-navy p-6 rounded-2xl border border-white/10 space-y-3">
+            <ul class="text-xs text-slate-300 space-y-2.5 list-disc pl-5">
+              <li><strong class="text-white">밤의 잡념은 의지가 아니라 조건입니다.</strong> 입력이 끊기고, 미완료 과제가 남고, 지우려 할수록 커지는 세 조건이 겹친 결과입니다. 조건을 바꾸면 결과도 바뀝니다.</li>
+              <li><strong class="text-white">DMN은 끄는 것이 아니라 쓰는 것입니다.</strong> 같은 회로가 정리와 계획도 하고 반추도 합니다. 브루딩이 시작되면 '지우기'가 아니라 '이름 붙이기'로 방향을 바꿉니다.</li>
+              <li><strong class="text-white">내 밤의 유형을 먼저 압니다.</strong> 알파로 못 내려가는 밤, 몽롱한데 못 자는 밤, 긴장이 안 풀리는 밤은 필요한 처방이 다릅니다. 한 번 재 두면 다음 4주의 기준이 생깁니다.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="space-y-4 pt-4 border-t border-white/10">
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <span class="text-brand-gold">04.</span> 오늘 밤부터 쓰는 4단계 &amp; 체험 안내
+          </h2>
+          <p>
+            읽고 나면 대개 "그래서 뭘 하지"가 남습니다. 아래는 오늘 밤 바로 시작할 수 있는 순서입니다. 1·2단계는 첫날부터, 3·4단계는 일주일쯤 지나 리듬이 생기면 붙이는 편이 오래갑니다.
+          </p>
+
+          <div class="overflow-x-auto my-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-white/5 text-slate-200">
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">단계</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">무엇을 하나</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">왜 그렇게 하나</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-300">
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">① 잠들기 1시간 전<br><span class="text-[11px] font-normal text-slate-400">3줄 메모로 닫기</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">종이에 세 칸을 만들고 적습니다. <strong class="text-white">내일 할 것 하나 / 오늘 끝낸 것 하나 / 그냥 두기로 한 것 하나</strong></td>
+                  <td class="px-3 py-2.5 border border-white/10">미완료 과제는 '열린 채'로 남아 떠오릅니다. 해결이 아니라 <strong class="text-white">닫힘 표시</strong>가 목적입니다(마시캄포·바우마이스터 2011).</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">② 불을 끄기 전<br><span class="text-[11px] font-normal text-slate-400">입력을 0으로 만들지 않기</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">화면은 끄되, <strong class="text-white">낮은 조도와 느린 리듬의 입력</strong>(조용한 음악, 종이책, 가벼운 스트레칭)을 20~30분 남겨 두고 서서히 내립니다.</td>
+                  <td class="px-3 py-2.5 border border-white/10">입력이 갑자기 사라지면 남는 것은 내부 회로의 소리입니다. 완만한 하강 구간이 <strong class="text-white">알파로 넘어가는 완충</strong>이 됩니다.</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">③ 누운 뒤 10분<br><span class="text-[11px] font-normal text-slate-400">이름 붙이기</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">생각이 뜨면 지우지 말고 <strong class="text-white">"계획" "걱정" "기억"</strong> 중 하나로 이름 붙인 뒤, 호흡의 길이로 돌아옵니다. 날숨을 들숨보다 길게.</td>
+                  <td class="px-3 py-2.5 border border-white/10">"생각하지 말자"는 감시 장치를 켭니다(베그너 1987). <strong class="text-white">분류는 억제보다 비용이 적습니다</strong>. 긴 날숨은 각성을 내리는 쪽으로 작용합니다.</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">④ 아침 1분<br><span class="text-[11px] font-normal text-slate-400">하나만 재개</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">밤에 적어 둔 3줄 중 <strong class="text-white">실제로 오늘 할 하나</strong>만 골라 첫 10분에 착수합니다.</td>
+                  <td class="px-3 py-2.5 border border-white/10">밤의 반추가 '쓸모없는 재생'으로 굳지 않게, <strong class="text-white">한 번은 행동으로 닫아 주는</strong> 절차입니다.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            이 네 단계는 뇌파를 바꾸는 기술이 아니라 <strong class="text-white">조건을 정리하는 생활 설계</strong>입니다. 밤의 반추가 오래 이어지거나 낮 기능이 떨어진다면 생활 설계만으로는 부족할 수 있으니, 그때는 진료가 먼저입니다. 생활 설계로도 잘 안 풀리는 <strong class="text-white">'각성의 방향'</strong>을 다루는 것이 뉴로피드백의 자리입니다.
+          </p>
+
+          <h3 class="text-lg font-bold text-white pt-2">미나월드의 진행 순서</h3>
+          <div class="overflow-x-auto my-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-white/5 text-slate-200">
+                  <th class="px-3 py-2.5 border border-white/10 font-bold whitespace-nowrap">단계</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">무엇을 하나</th>
+                  <th class="px-3 py-2.5 border border-white/10 font-bold">무엇이 남는가</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-300">
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">① 뇌파측정<br><span class="text-[11px] font-normal text-slate-400">기준선 확인</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">무선 EEG(이마 좌우 FP1·FP2)로 개안·폐안·집중 과제 구간을 측정</td>
+                  <td class="px-3 py-2.5 border border-white/10">오늘의 기준선 결과지(간편 8항목·종합 10항목)</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">② 프로토콜 설계<br><span class="text-[11px] font-normal text-slate-400">· exercise</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">과열·가라앉음의 방향과 세타·알파 비율을 보고 목표 리듬과 난이도를 정함</td>
+                  <td class="px-3 py-2.5 border border-white/10">이번 회차에 무엇을 보상할지 정한 훈련 설계</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">③ 1:1 피드백 훈련<br><span class="text-[11px] font-normal text-slate-400">1회 약 40분</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">화면·소리 피드백을 보며 훈련, 회차별 점수·프로토콜·전극 상태 기록</td>
+                  <td class="px-3 py-2.5 border border-white/10">MINA WORLD 앱에 쌓이는 회차 기록과 추이</td>
+                </tr>
+                <tr class="bg-white/[0.02]">
+                  <td class="px-3 py-2.5 border border-white/10 font-semibold text-slate-200 whitespace-nowrap">④ 재측정<br><span class="text-[11px] font-normal text-slate-400">4주 단위</span></td>
+                  <td class="px-3 py-2.5 border border-white/10">같은 조건(비슷한 요일·시간·컨디션)으로 다시 측정해 전후 비교</td>
+                  <td class="px-3 py-2.5 border border-white/10">좋아진 항목·그대로인 항목의 구분, 다음 4주 계획</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            기록은 <strong class="text-white">MINA WORLD</strong> 앱의 <strong class="text-white">NEURO TRAINING</strong>에 회차별로 쌓이고, 측정 결과지는 <strong class="text-white">MY BRAIN</strong>에서 이전 결과와 나란히 비교됩니다. 훈련의 원리와 진행 방식이 궁금하다면 <a href="article-2026-11-26-neurofeedback-complete-guide.html" class="text-brand-blue hover:underline">뉴로피드백 완벽 가이드</a>에 더 자세히 정리해 두었습니다.
+          </p>
+
+          <h3 class="text-lg font-bold text-white pt-2">자주 묻는 질문</h3>
+          <div class="space-y-3 my-6">
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q1. 밤에 잡념이 심한데, 뇌파측정이나 훈련이 도움이 되나요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                도움이 될 수 있는 부분과 아닌 부분을 나눠 말씀드립니다. 미나월드의 뇌파측정은 <strong class="text-white">지금 내 각성이 어느 방향으로 치우쳐 있는지</strong>를 확인하는 데 쓰고, 훈련은 그 방향에 맞춰 <strong class="text-white">긴장을 내리는 감각, 가라앉았을 때 다시 켜는 감각</strong>을 연습하는 데 씁니다. 반면 잠들기 어려움이 오래 지속되거나 낮 생활이 어려울 정도라면 그 원인은 수면·정신건강·신체 질환 등 여러 갈래일 수 있어, <strong class="text-white">진료가 먼저</strong>입니다. 진단과 치료는 이 프로그램의 영역이 아닙니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q2. 뇌파측정으로 디폴트 모드 네트워크를 볼 수 있나요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                아닙니다. DMN은 fMRI·PET으로 확인하는 심부 네트워크이고, 미나월드의 뇌파측정은 이마 좌우에서 <strong class="text-white">피질의 대규모 리듬</strong>을 읽는 방식입니다. 뇌파로 보는 것은 알파·세타·베타 같은 <strong class="text-white">각성 리듬의 균형</strong>이며, 이를 DMN의 활동량으로 해석하지 않습니다. 두 가지는 서로 다른 층위의 측정입니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q3. 몇 회 해야 하나요? 한 회는 얼마나 걸리나요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                <strong class="text-white">1회는 약 40분</strong>(센서 착용·훈련·상담사 메모 포함)이며, 권장 리듬은 <strong class="text-white">주 1~2회</strong>입니다. 10회를 기본 단위로 보고, 20회는 2~3개월 지속 관리, 30회는 장기 과정으로 운영합니다. 변화는 <strong class="text-white">4주 단위 재측정</strong>으로 확인합니다. 변화의 속도와 폭은 사람마다 다르므로 "몇 회면 달라진다"고 약속하지 않습니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q4. 전기가 오거나 아픈가요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                아닙니다. 센서는 <strong class="text-white">패시브 방식</strong>으로 피부에 가볍게 대어 뇌가 스스로 내는 미세한 신호만 읽습니다. 통증도, 전기 자극도 없고, 읽은 신호로 몸에 무언가를 보내지도 않습니다. 훈련 중에는 앉아서 화면을 보고 소리를 듣는 것이 전부입니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q5. 수면제나 우울증 약을 먹고 있는데 받아도 되나요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                받으실 수 있습니다. 다만 시작 전에 <strong class="text-white">복용 중인 약과 최근 컨디션</strong>을 상담에서 먼저 확인합니다. 미나월드의 프로그램은 <strong class="text-white">처방약을 대신하거나 용량을 조절하기 위한 수단이 아니며</strong>, 그런 목적으로 진행하지도 안내하지도 않습니다. 복용에 관한 판단은 전적으로 담당 주치의의 영역입니다.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-brand-card/70 border border-white/10">
+              <h4 class="text-sm font-bold text-white mb-1.5">Q6. 명상이랑 무엇이 다른가요?</h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                겹치는 부분이 있습니다. 명상 중 후대상피질의 활동이 낮아진다는 fMRI 연구(Brewer et al., <em>PNAS</em> 2011)와, 후대상피질을 실시간 fMRI 신경피드백으로 조절하는 훈련이 가능함을 보여준 소규모 연구(Garrison et al., 2015)는 "집중을 스스로 조절할 수 있다"는 점을 보여줍니다. 다만 뉴로피드백은 <strong class="text-white">내 뇌파를 화면으로 확인하며 보상에 따라 연습하는 방식</strong>이라, 조용한 방에서 혼자 앉는 명상과는 진행과 피드백이 다릅니다. 둘 중 하나를 고르는 문제가 아니라, 생활 루틴과 훈련을 함께 쓰는 쪽이 일반적입니다.
+              </p>
+            </div>
+          </div>
+
+          <h3 class="text-lg font-bold text-white pt-2">이용 안내</h3>
+          <p>
+            뇌파측정과 뉴로피드백은 <strong class="text-white">1회 단회</strong>부터 <strong class="text-white">10·20·30회</strong> 단위로 진행합니다. 1회는 약 40분, 권장 리듬은 주 1~2회, 변화 확인은 4주 단위 재측정으로 합니다. 처음 오시는 날에는 3일 전부터의 컨디션 3줄(잠든 시각, 마지막 커피 시각, 잠들기까지 걸린 시간)을 적어 오시면 해석이 훨씬 정확해집니다.
+          </p>
+
+          <div class="p-5 rounded-2xl bg-brand-navy border border-brand-gold/30 my-6">
+            <h4 class="text-sm font-bold text-brand-gold mb-2">💬 예약·비용 안내</h4>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              <strong class="text-white">금액과 구성은 1:1 상담 및 예약 시 안내해 드립니다.</strong> 상담에서 목표와 지금의 컨디션, 밤에 잠들기까지 걸리는 시간과 방문 가능한 리듬을 먼저 듣고 그에 맞춰 회차 구성을 함께 정합니다. 기업·기관 워크숍과 제휴기관 프로그램은 인원과 장소에 따라 별도로 안내드립니다.
+            </p>
+            <a href="contact.html" class="inline-block px-5 py-2 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white text-xs font-bold transition">1:1 상담·예약 문의하기</a>
+          </div>
+
+          <!-- 하단 비의료 고지 (필수) -->
+          <div class="p-5 rounded-2xl bg-brand-accent/10 border border-brand-accent/40 my-6">
+            <p class="text-xs text-slate-200 leading-relaxed">
+              ⚠️ <strong class="text-white">본 글은 뇌과학 연구 동향과 비의료 웰니스 훈련 정보를 안내하는 글입니다.</strong>
+            </p>
+            <p class="text-xs text-slate-300 leading-relaxed mt-2">
+              미나월드의 뇌파측정과 뉴로피드백은 의료기관의 진단·치료를 대체하지 않는 <strong class="text-white">비의료 두뇌 훈련·뇌 컨디션 관리 서비스</strong>입니다. 질환이 의심되는 증상이 있으시면 먼저 의료기관에서 진료를 받으시길 권합니다. 본 프로그램은 약물 복용의 대체나 조절을 목적으로 하지 않습니다.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6">
+            <a href="diagnostic.html" class="p-4 rounded-2xl bg-brand-card/70 border border-white/10 hover:border-brand-accent/50 transition block">
+              <span class="text-[11px] font-bold text-brand-accent block mb-1">1분 자가진단</span>
+              <span class="text-sm font-bold text-white block mb-1">내 뇌 컨디션 먼저 확인</span>
+              <span class="text-[11px] text-slate-400">수면·스트레스·집중·번아웃 유형</span>
+            </a>
+            <a href="programs.html" class="p-4 rounded-2xl bg-brand-card/70 border border-white/10 hover:border-brand-blue/50 transition block">
+              <span class="text-[11px] font-bold text-brand-blue block mb-1">PROGRAM</span>
+              <span class="text-sm font-bold text-white block mb-1">프로그램 전체 보기</span>
+              <span class="text-[11px] text-slate-400">1:1 코칭 · 기업 워크숍 · 뉴로스포츠</span>
+            </a>
+            <a href="contact.html" class="p-4 rounded-2xl bg-brand-accent/15 border border-brand-accent/40 hover:bg-brand-accent/25 transition block">
+              <span class="text-[11px] font-bold text-brand-accent block mb-1">CONTACT</span>
+              <span class="text-sm font-bold text-white block mb-1">체험·예약 문의하기</span>
+              <span class="text-[11px] text-slate-300">카카오톡 · 전화 010-5424-0807</span>
+            </a>
+          </div>
+
+          <div class="mt-4 p-5 rounded-2xl bg-brand-card border border-brand-blue/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="text-base font-bold text-white mb-1">🧠 1:1 뇌파측정 &amp; 뉴로피드백 체험</h4>
+              <p class="text-xs text-slate-400">기준선 측정 + 맞춤 프로토콜 훈련 + 4주 단위 변화 추적</p>
+            </div>
+            <a href="contact.html" class="px-6 py-2.5 rounded-full bg-brand-accent hover:bg-brand-accentHover text-white text-xs font-bold shrink-0 transition">
+              상담 신청하기
+            </a>
+          </div>
+        </section>
+
+      </div>
+    </article>
+
+    <!-- 공유 및 하단 내비게이션 -->
+    <div class="py-8 border-t border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold">
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">아티클 공유하기:</span>
+        <button onclick="copyCurrentUrl()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition flex items-center gap-1.5">
+          <span>🔗 링크 복사</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="community.html" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">
+          목록으로 돌아가기
+        </a>
+        <a href="contact.html" class="px-5 py-2 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-white shadow-md transition">
+          1:1 프로그램 상담 신청
+        </a>
+      </div>
+    </div>
+
+    <!-- 다른 요일의 '하루 한 스푼, 뇌과학' 추천 링크 -->
+    <section class="mt-16">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>✨</span> 함께 읽으면 좋은 뇌과학 인사이트
+        </h3>
+        <a href="community.html" class="text-xs text-brand-accent hover:underline">전체보기 →</a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="article-2026-11-27-medication-brain-condition.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-amber-400/40 transition block group">
+          <div class="text-[11px] text-amber-300 font-bold mb-1">금요일 · 약물과 뇌 컨디션</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-amber-300 transition mb-1">
+            약과 함께 사는 뇌를 어떻게 볼까 — 장기복용 연구가 말한 '정기적 모니터링'과 뇌파로 읽는 내 컨디션
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">약물 관리와 별개로 내 각성 리듬을 확인해야 하는 이유</p>
+        </a>
+
+        <a href="article-2026-11-21-alpha-smr-beta-brainwaves.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-emerald-400/40 transition block group">
+          <div class="text-[11px] text-emerald-400 font-bold mb-1">토요일 · 뉴로피드백·뇌파 과학</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-emerald-400 transition mb-1">
+            눈만 감았는데 뇌파가 바뀐다 — 알파파·SMR파·하이베타파로 읽는 내 뇌의 컨디션 스위치
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">오늘 글의 대역 표를 더 깊이 — 베르거 효과와 대역별 의미</p>
+        </a>
+
+        <a href="article-2026-11-19-adenosine-caffeine-circadian.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-brand-gold/40 transition block group">
+          <div class="text-[11px] text-brand-gold font-bold mb-1">목요일 · 수면과 회복</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-brand-gold transition mb-1">
+            오후 커피와 야간 스마트폰이 깊은 잠을 훔치는 이유 — 아데노신 수면 압력과 뇌의 24시간 시계
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">밤에 잠이 안 오는 이유를 수면 압력 쪽에서 정리한 글</p>
+        </a>
+
+        <a href="article-2026-11-16-prefrontal-burnout.html" class="p-5 rounded-2xl bg-brand-card/60 hover:bg-brand-card border border-white/10 hover:border-purple-400/40 transition block group">
+          <div class="text-[11px] text-purple-300 font-bold mb-1">월요일 · 업무 뇌 컨디션</div>
+          <h4 class="text-sm font-bold text-white group-hover:text-purple-300 transition mb-1">
+            월요일만 되면 머리가 멈추는 이유 — 전두엽 의사결정 피로와 번아웃 리셋
+          </h4>
+          <p class="text-xs text-slate-400 line-clamp-2">DMN에 밀린 전전두엽 — 결정 피로와 오픈 루프 닫기</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (아임웹 정보 100% 반영) -->
+  <footer class="py-14 border-t border-white/10 text-xs text-slate-400 bg-brand-dark/95">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- 1열: 브랜드 로고 및 저작권 -->
+        <div>
+          <h4 class="text-base font-bold text-white tracking-wider mb-2 font-serif">MINA WORLD</h4>
+          <p class="text-slate-500 text-xs">© 2026 Make.</p>
+        </div>
+
+        <!-- 2열: SITEMAP -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">SITEMAP</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="about.html" class="hover:text-white transition">ABOUT US</a></li>
+            <li><a href="programs.html" class="hover:text-white transition">PROGRAM</a></li>
+            <li><a href="community.html" class="hover:text-white transition">COMMUNITY</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">CONTACT</a></li>
+          </ul>
+        </div>
+
+        <!-- 3열: SERVICE & BANK -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">SERVICE</h4>
+          <p class="text-slate-300 font-medium mb-1">010-5424-0807</p>
+          <p class="text-slate-500 mb-0.5">Mon - Fri AM 09:00 - 18:00</p>
+          <p class="text-slate-500 mb-4">Sat.Sun.Red-Day Off</p>
+
+          <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">BANK</h4>
+          <p class="text-slate-400">KAKAO BANK 3333-37-1190044</p>
+        </div>
+
+        <!-- 4열: INSTAGRAM, NAVER, KAKAO TALK -->
+        <div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">INSTAGRAM</h4>
+            <a href="https://www.instagram.com/wellnessworld.zip" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://www.instagram.com/wellnessworld.zip</a>
+          </div>
+          <div class="mb-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">NAVER</h4>
+            <a href="https://naver.me/xhPGBxC0" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">https://naver.me/xhPGBxC0</a>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">KAKAO TALK</h4>
+            <a href="http://pf.kakao.com/_WxmhEX" target="_blank" class="text-slate-400 hover:text-brand-accent transition break-all">http://pf.kakao.com/_WxmhEX</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 mb-6">
+        <div>
+          <span>Seoul, Korea</span>
+          <span class="mx-2">|</span>
+          <span>Biz License 893-53-00975</span>
+          <span class="mx-2">|</span>
+          <span>© 2026 MINA WORLD. All rights reserved</span>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-slate-300 transition">Terms of Use</a>
+          <span class="text-slate-600">|</span>
+          <a href="#" class="hover:text-slate-300 transition">Privacy</a>
+        </div>
+      </div>
+
+      <!-- 맨 하단 한 줄 사업자 상세 정보 -->
+      <div class="text-[11px] text-slate-600 leading-relaxed">
+        상호명: 미나월드 대표자: 이미나 사업장주소: 서울 송파구 오금로46길 41 (가락동) 2층 2567호 연락처: 01054240807 사업자등록번호: 893-53-00975 대표자 이메일: minawellnesslab@gmail.com
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // 읽기 진행률 표시
+    window.addEventListener('scroll', function() {
+      var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var scrolled = (winScroll / height) * 100;
+      var bar = document.getElementById('reading-bar');
+      if (bar) {
+        bar.style.width = scrolled + '%';
+      }
+    });
+
+    // 현재 URL 클립보드 복사
+    function copyCurrentUrl() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          alert('아티클 링크가 복사되었습니다! 원하는 곳에 공유해보세요.');
+        });
+      } else {
+        alert('주소창의 링크를 복사해주세요: ' + window.location.href);
+      }
+    }
+  </script>
+</body>
+</html>
